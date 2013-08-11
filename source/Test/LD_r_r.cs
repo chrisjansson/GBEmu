@@ -43,42 +43,6 @@ namespace Test
             return testCaseData;
         }
 
-        [Test]
-        public void LD_B_B()
-        {
-            AssertLD(RegisterMapping.B, RegisterMapping.B);
-        }
-
-        [Test]
-        public void LD_B_C()
-        {
-            AssertLD(RegisterMapping.C, RegisterMapping.B);
-        }
-
-        [Test]
-        public void LD_B_D()
-        {
-            AssertLD(RegisterMapping.D, RegisterMapping.B);
-        }
-
-        [Test]
-        public void LD_B_E()
-        {
-            AssertLD(RegisterMapping.E, RegisterMapping.B);
-        }
-
-        [Test]
-        public void LD_B_H()
-        {
-            AssertLD(RegisterMapping.H, RegisterMapping.B);
-        }
-
-        [Test]
-        public void LD_B_L()
-        {
-            AssertLD(RegisterMapping.L, RegisterMapping.B);
-        }
-
         private void AssertLD(RegisterMapping from, RegisterMapping to)
         {
             var expectedRegisterValue = _fixture.Create<byte>();
