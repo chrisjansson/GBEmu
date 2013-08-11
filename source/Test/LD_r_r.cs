@@ -28,6 +28,17 @@ namespace Test
             AssertLD(from, to);
         }
 
+        private void AssertLD(RegisterMapping from, RegisterMapping to)
+        {
+            var expectedRegisterValue = _fixture.Create<byte>();
+            from.Set(_sut, expectedRegisterValue);
+            var opcode = Build.LD.From(from).To(to);
+
+            _sut.Execute(opcode);
+
+            Assert.AreEqual(expectedRegisterValue, to.Get(_sut));
+        }
+
         private static IEnumerable<TestCaseData> LDCombinations()
         {
             return from fromRegister in RegisterMapping.GetAll()
@@ -41,17 +52,6 @@ namespace Test
             var opcode = Build.LD.From(@from).To(to);
             testCaseData.SetName(string.Format("LD {0}, {1}. Opcode: 0x{2:X}", to, from, opcode));
             return testCaseData;
-        }
-
-        private void AssertLD(RegisterMapping from, RegisterMapping to)
-        {
-            var expectedRegisterValue = _fixture.Create<byte>();
-            @from.Set(_sut, expectedRegisterValue);
-            var opcode = Build.LD.From(@from).To(to);
-
-            _sut.Execute(opcode);
-
-            Assert.AreEqual(expectedRegisterValue, to.Get(_sut));
         }
     }
 }
