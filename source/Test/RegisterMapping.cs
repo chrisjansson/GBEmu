@@ -7,7 +7,7 @@ namespace Test
 {
     public class RegisterMapping
     {
-        public static readonly RegisterMapping A = new RegisterMapping(7, x => 0, (c, x) => { });
+        public static readonly RegisterMapping A = new RegisterMapping(7, x => x.A, (c, x) => c.A = x);
         public static readonly RegisterMapping B = new RegisterMapping(0, x => x.B, (c, x) => c.B = x);
         public static readonly RegisterMapping C = new RegisterMapping(1, x => x.C, (c, x) => c.C = x);
         public static readonly RegisterMapping D = new RegisterMapping(2, x => x.D, (c, x) => c.D = x);
