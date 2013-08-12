@@ -1,26 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
-using Core;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 
 namespace Test
 {
     [TestFixture]
-    public class LD_r_r
+    public class LD_r_r : TestBase
     {
-        private Cpu _sut;
-        private Fixture _fixture;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _fixture = new Fixture();
-            _sut = new Cpu();
-        }
-
         [Test]
         [TestCaseSource("LDCombinations")]
         public void LD_r_rp(RegisterMapping from, RegisterMapping to)
@@ -30,16 +17,16 @@ namespace Test
 
         private void AssertLD(RegisterMapping from, RegisterMapping to)
         {
-            var expectedRegisterValue = _fixture.Create<byte>();
-            from.Set(_sut, expectedRegisterValue);
+            var expectedRegisterValue = Fixture.Create<byte>();
+            from.Set(Sut, expectedRegisterValue);
             var opcode = Build.LD.From(from).To(to);
-            var initialProgramCounter = _fixture.Create<ushort>();
-            _sut.ProgramCounter = initialProgramCounter;
+            var initialProgramCounter = Fixture.Create<ushort>();
+            Sut.ProgramCounter = initialProgramCounter;
 
-            _sut.Execute(opcode);
+            Sut.Execute(opcode);
 
-            Assert.AreEqual(expectedRegisterValue, to.Get(_sut));
-            Assert.AreEqual(initialProgramCounter + 1, _sut.ProgramCounter);
+            Assert.AreEqual(expectedRegisterValue, to.Get(Sut));
+            Assert.AreEqual(initialProgramCounter + 1, Sut.ProgramCounter);
         }
 
         private static IEnumerable<TestCaseData> LDCombinations()

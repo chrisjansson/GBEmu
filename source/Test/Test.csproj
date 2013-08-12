@@ -65,9 +65,11 @@
   <ItemGroup>
     <Compile Include="Build.cs" />
     <Compile Include="LDBuilder.cs" />
+    <Compile Include="LD_r_n.cs" />
     <Compile Include="LD_r_r.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisterMapping.cs" />
+    <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
