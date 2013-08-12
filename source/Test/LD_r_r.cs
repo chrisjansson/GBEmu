@@ -23,7 +23,7 @@ namespace Test
 
         [Test]
         [TestCaseSource("LDCombinations")]
-        public void LD(RegisterMapping from, RegisterMapping to)
+        public void LD_r_rp(RegisterMapping from, RegisterMapping to)
         {
             AssertLD(from, to);
         }
@@ -33,10 +33,13 @@ namespace Test
             var expectedRegisterValue = _fixture.Create<byte>();
             from.Set(_sut, expectedRegisterValue);
             var opcode = Build.LD.From(from).To(to);
+            var initialProgramCounter = _fixture.Create<ushort>();
+            _sut.ProgramCounter = initialProgramCounter;
 
             _sut.Execute(opcode);
 
             Assert.AreEqual(expectedRegisterValue, to.Get(_sut));
+            Assert.AreEqual(initialProgramCounter + 1, _sut.ProgramCounter);
         }
 
         private static IEnumerable<TestCaseData> LDCombinations()
