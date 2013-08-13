@@ -1,21 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Core;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 
 namespace Test
 {
-    public class FakeMmu : IMmu
-    {
-        public readonly byte[] Memory = new byte[ushort.MaxValue];
-
-        public byte GetByte(ushort address)
-        {
-            return Memory[address];
-        }
-    }
-
     [TestFixture]
     public class LD_r_n : TestBase
     {
@@ -32,6 +21,7 @@ namespace Test
             Sut.Execute(opcode);
 
             Assert.AreEqual(expectedConstant, target.Get(Sut));
+            Assert.AreEqual(programCounter + 2, Sut.ProgramCounter);
         }
 
         private IEnumerable<TestCaseData> GetRegisterCombinations()

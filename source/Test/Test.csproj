@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Build.cs" />
+    <Compile Include="FakeMmu.cs" />
     <Compile Include="LDBuilder.cs" />
     <Compile Include="LD_r_n.cs" />
     <Compile Include="LD_r_r.cs" />

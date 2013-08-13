@@ -38,6 +38,7 @@ namespace Core
         {
             var n = _mmu.GetByte((ushort)(ProgramCounter + 1));
             _registers[(int) target] = n;
+            ProgramCounter += 2;
         }
 
         public void Execute(byte opcode)
