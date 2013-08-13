@@ -21,6 +21,12 @@ namespace Core
     public class Cpu
     {
         private readonly byte[] _registers = new byte[7];
+        private IMmu _mmu;
+
+        public Cpu(IMmu mmu)
+        {
+            _mmu = mmu;
+        }
 
         private void LD_r_r(Register target, Register source)
         {
@@ -28,10 +34,37 @@ namespace Core
             ProgramCounter++;
         }
 
+        private void LD_r_n(Register target)
+        {
+            var n = _mmu.GetByte((ushort)(ProgramCounter + 1));
+            _registers[(int) target] = n;
+        }
+
         public void Execute(byte opcode)
         {
             switch (opcode)
             {
+                case 0x06:
+                    LD_r_n(Register.B);
+                    break;
+                case 0x0E:
+                    LD_r_n(Register.C);
+                    break;
+                case 0x16:
+                    LD_r_n(Register.D);
+                    break;
+                case 0x1E:
+                    LD_r_n(Register.E);
+                    break;
+                case 0x26:
+                    LD_r_n(Register.H);
+                    break;
+                case 0x2E:
+                    LD_r_n(Register.L);
+                    break;
+                case 0x3E:
+                    LD_r_n(Register.A);
+                    break;
                 case 0x40:
                     LD_r_r(Register.B, Register.B);
                     break;

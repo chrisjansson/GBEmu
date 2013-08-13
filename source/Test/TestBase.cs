@@ -14,8 +14,8 @@ namespace Test
         public void SetUp()
         {
             Fixture = new Fixture();
-            Sut = new Cpu();
             FakeMmu = new FakeMmu();
+            Sut = new Cpu(FakeMmu);
         }
     }
 }
