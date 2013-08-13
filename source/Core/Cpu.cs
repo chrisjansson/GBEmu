@@ -2,6 +2,11 @@
 
 namespace Core
 {
+    public interface IMmu
+    {
+        byte GetByte(ushort address);
+    }
+
     public enum Register
     {
         A = 0,

@@ -8,12 +8,14 @@ namespace Test
     {
         protected Cpu Sut;
         protected Fixture Fixture;
+        protected FakeMmu FakeMmu;
 
         [SetUp]
         public void SetUp()
         {
             Fixture = new Fixture();
             Sut = new Cpu();
+            FakeMmu = new FakeMmu();
         }
     }
 }
