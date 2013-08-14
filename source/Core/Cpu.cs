@@ -52,26 +52,30 @@ namespace Core
             { 0x43, new InstructionMetaData(1, 1, "LD B, E")},
             { 0x44, new InstructionMetaData(1, 1, "LD B, H")},
             { 0x45, new InstructionMetaData(1, 1, "LD B, L")},
+            { 0x46, new InstructionMetaData(1, 2, "LD B, (HL)")},
+            { 0x47, new InstructionMetaData(1, 1, "LD B, A")},
             { 0x48, new InstructionMetaData(1, 1, "LD C, B")},
             { 0x49, new InstructionMetaData(1, 1, "LD C, C")},
             { 0x4A, new InstructionMetaData(1, 1, "LD C, D")},
             { 0x4B, new InstructionMetaData(1, 1, "LD C, E")},
             { 0x4C, new InstructionMetaData(1, 1, "LD C, H")},
             { 0x4D, new InstructionMetaData(1, 1, "LD C, L")},
+            { 0x4E, new InstructionMetaData(1, 2, "LD C, (HL)")},
             { 0x4F, new InstructionMetaData(1, 1, "LD C, A")},
-            { 0x47, new InstructionMetaData(1, 1, "LD B, A")},
             { 0x50, new InstructionMetaData(1, 1, "LD D, B")},
             { 0x51, new InstructionMetaData(1, 1, "LD D, C")},
             { 0x52, new InstructionMetaData(1, 1, "LD D, D")},
             { 0x53, new InstructionMetaData(1, 1, "LD D, E")},
             { 0x54, new InstructionMetaData(1, 1, "LD D, H")},
             { 0x55, new InstructionMetaData(1, 1, "LD D, L")},
+            { 0x56, new InstructionMetaData(1, 2, "LD D, (HL)")},
             { 0x58, new InstructionMetaData(1, 1, "LD E, B")},
             { 0x59, new InstructionMetaData(1, 1, "LD E, C")},
             { 0x5A, new InstructionMetaData(1, 1, "LD E, D")},
             { 0x5B, new InstructionMetaData(1, 1, "LD E, E")},
             { 0x5C, new InstructionMetaData(1, 1, "LD E, H")},
             { 0x5D, new InstructionMetaData(1, 1, "LD E, L")},
+            { 0x5E, new InstructionMetaData(1, 2, "LD E, (HL)")},
             { 0x5F, new InstructionMetaData(1, 1, "LD E, A")},
             { 0x57, new InstructionMetaData(1, 1, "LD D, A")},
             { 0x60, new InstructionMetaData(1, 1, "LD H, B")},
@@ -80,6 +84,7 @@ namespace Core
             { 0x63, new InstructionMetaData(1, 1, "LD H, E")},
             { 0x64, new InstructionMetaData(1, 1, "LD H, H")},
             { 0x65, new InstructionMetaData(1, 1, "LD H, L")},
+            { 0x66, new InstructionMetaData(1, 2, "LD H, (HL)")},
             { 0x67, new InstructionMetaData(1, 1, "LD H, A")},
             { 0x68, new InstructionMetaData(1, 1, "LD L, B")},
             { 0x69, new InstructionMetaData(1, 1, "LD L, C")},
@@ -87,6 +92,7 @@ namespace Core
             { 0x6B, new InstructionMetaData(1, 1, "LD L, E")},
             { 0x6C, new InstructionMetaData(1, 1, "LD L, H")},
             { 0x6D, new InstructionMetaData(1, 1, "LD L, L")},
+            { 0x6E, new InstructionMetaData(1, 2, "LD L, (HL)")},
             { 0x6F, new InstructionMetaData(1, 1, "LD L, A")},
             { 0x78, new InstructionMetaData(1, 1, "LD A, B")},
             { 0x79, new InstructionMetaData(1, 1, "LD A, C")},
@@ -94,6 +100,7 @@ namespace Core
             { 0x7B, new InstructionMetaData(1, 1, "LD A, E")},
             { 0x7C, new InstructionMetaData(1, 1, "LD A, H")},
             { 0x7D, new InstructionMetaData(1, 1, "LD A, L")},
+            { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
         };
 
@@ -158,6 +165,9 @@ namespace Core
                 case 0x45:
                     LD_r_r(Register.B, Register.L);
                     break;
+                case 0x46:
+                    LD_r_HL(Register.B);
+                    break;
                 case 0x47: //LD_B_A
                     LD_r_r(Register.B, Register.A);
                     break;
@@ -203,6 +213,9 @@ namespace Core
                 case 0x4D:
                     LD_r_r(Register.C, Register.L);
                     break;
+                case 0x4E:
+                    LD_r_HL(Register.C);
+                    break;
                 case 0x50:
                     LD_r_r(Register.D, Register.B);
                     break;
@@ -222,7 +235,8 @@ namespace Core
                     LD_r_r(Register.D, Register.L);
                     break;
                 case 0x56:
-                    throw new NotImplementedException("LD D, (HL)");
+                    LD_r_HL(Register.D);
+                    break;
                 case 0x57:
                     LD_r_r(Register.D, Register.A);
                     break;
@@ -245,7 +259,8 @@ namespace Core
                     LD_r_r(Register.E, Register.L);
                     break;
                 case 0x5E:
-                    throw new NotImplementedException("LD E, (HL)");
+                    LD_r_HL(Register.E);
+                    break;
                 case 0x5F:
                     LD_r_r(Register.E, Register.A);
                     break;
@@ -268,7 +283,8 @@ namespace Core
                     LD_r_r(Register.H, Register.L);
                     break;
                 case 0x66:
-                    throw new NotImplementedException("LD H, (HL)");
+                    LD_r_HL(Register.H);
+                    break;
                 case 0x67:
                     LD_r_r(Register.H, Register.A);
                     break;
@@ -291,9 +307,13 @@ namespace Core
                     LD_r_r(Register.L, Register.L);
                     break;
                 case 0x6E:
-                    throw new NotImplementedException("LD L, (HL)");
+                    LD_r_HL(Register.L);
+                    break;
                 case 0x6F:
                     LD_r_r(Register.L, Register.A);
+                    break;
+                case 0x7E:
+                    LD_r_HL(Register.A);
                     break;
                 default:
                     throw new IllegalOpcodeException();
@@ -303,6 +323,12 @@ namespace Core
             {
                 ProgramCounter += _instructionMetaData[opcode].Size;
             }
+        }
+
+        private void LD_r_HL(Register register)
+        {
+            var n = _mmu.GetByte((ushort) (H << 8 | L));
+            _registers[(int) register] = n;
         }
 
         public byte A
