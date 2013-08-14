@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core
 {
@@ -18,10 +19,36 @@ namespace Core
         L
     }
 
+    public struct InstructionMetaData
+    {
+        public InstructionMetaData(ushort size, int cycles, string mnemonic)
+        {
+            Size = size;
+            Cycles = cycles;
+            Mnemonic = mnemonic;
+        }
+
+        public readonly ushort Size;
+        public readonly int Cycles;
+        public readonly string Mnemonic;
+    }
+
     public class Cpu
     {
         private readonly byte[] _registers = new byte[7];
-        private IMmu _mmu;
+
+        private readonly Dictionary<byte, InstructionMetaData> _instructionMetaData = new Dictionary<byte, InstructionMetaData>
+        {
+            { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
+            { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
+            { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
+            { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
+            { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
+            { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
+            { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
+        };
+
+        private readonly IMmu _mmu;
 
         public Cpu(IMmu mmu)
         {
@@ -37,8 +64,7 @@ namespace Core
         private void LD_r_n(Register target)
         {
             var n = _mmu.GetByte((ushort)(ProgramCounter + 1));
-            _registers[(int) target] = n;
-            ProgramCounter += 2;
+            _registers[(int)target] = n;
         }
 
         public void Execute(byte opcode)
@@ -223,6 +249,11 @@ namespace Core
                     break;
                 default:
                     throw new IllegalOpcodeException();
+            }
+
+            if (_instructionMetaData.ContainsKey(opcode))
+            {
+                ProgramCounter += _instructionMetaData[opcode].Size;
             }
         }
 
