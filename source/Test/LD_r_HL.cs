@@ -15,16 +15,19 @@ namespace Test
             var memoryLocation = Fixture.Create<ushort>();
             var expectedLoadedValue = Fixture.Create<byte>();
             var initialProgramCounter = Fixture.Create<ushort>();
+            var initialCycles = Fixture.Create<long>();
             FakeMmu.Memory[memoryLocation] = expectedLoadedValue;
             Sut.H = (byte)(memoryLocation >> 8);
             Sut.L = (byte)(memoryLocation & 0xFF);
             Sut.ProgramCounter = initialProgramCounter;
+            Sut.Cycles = initialCycles;
             var opcode = CreateOpcode(register);
 
             Sut.Execute(opcode);
 
             Assert.AreEqual(expectedLoadedValue, register.Get(Sut));
             Assert.AreEqual(initialProgramCounter + 1, Sut.ProgramCounter);
+            Assert.AreEqual(initialCycles + 2, Sut.Cycles);
         }
 
         private IEnumerable<TestCaseData> CreateTestCases()

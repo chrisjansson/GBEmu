@@ -10,23 +10,21 @@ namespace Test
     {
         [Test]
         [TestCaseSource("LDCombinations")]
-        public void LD_r_rp(RegisterMapping from, RegisterMapping to)
-        {
-            AssertLD(from, to);
-        }
-
-        private void AssertLD(RegisterMapping from, RegisterMapping to)
+        public void LD_r_rp(RegisterMapping source, RegisterMapping target)
         {
             var expectedRegisterValue = Fixture.Create<byte>();
-            from.Set(Sut, expectedRegisterValue);
-            var opcode = Build.LD.From(from).To(to);
+            source.Set(Sut, expectedRegisterValue);
+            var opcode = Build.LD.From(source).To(target);
             var initialProgramCounter = Fixture.Create<ushort>();
             Sut.ProgramCounter = initialProgramCounter;
+            var initialCycles = Fixture.Create<long>();
+            Sut.Cycles = initialCycles;
 
             Sut.Execute(opcode);
 
-            Assert.AreEqual(expectedRegisterValue, to.Get(Sut));
+            Assert.AreEqual(expectedRegisterValue, target.Get(Sut));
             Assert.AreEqual(initialProgramCounter + 1, Sut.ProgramCounter);
+            Assert.AreEqual(initialCycles + 1, Sut.Cycles);
         }
 
         private static IEnumerable<TestCaseData> LDCombinations()

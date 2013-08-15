@@ -322,6 +322,7 @@ namespace Core
             if (_instructionMetaData.ContainsKey(opcode))
             {
                 ProgramCounter += _instructionMetaData[opcode].Size;
+                Cycles += _instructionMetaData[opcode].Cycles;
             }
         }
 
@@ -374,6 +375,7 @@ namespace Core
         }
 
         public ushort ProgramCounter { get; set; }
+        public long Cycles { get; set; }
     }
 
     public class IllegalOpcodeException : Exception

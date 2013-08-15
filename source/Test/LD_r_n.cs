@@ -15,13 +15,16 @@ namespace Test
             var opcode = (byte) (0x06 | (target << 3));
             var expectedConstant = Fixture.Create<byte>();
             var programCounter = Fixture.Create<ushort>();
+            var initialCyles = Fixture.Create<long>();
             Sut.ProgramCounter = programCounter;
+            Sut.Cycles = initialCyles;
             FakeMmu.Memory[programCounter + 1] = expectedConstant;
 
             Sut.Execute(opcode);
 
             Assert.AreEqual(expectedConstant, target.Get(Sut));
             Assert.AreEqual(programCounter + 2, Sut.ProgramCounter);
+            Assert.AreEqual(initialCyles +2, Sut.Cycles);
         }
 
         private IEnumerable<TestCaseData> GetRegisterCombinations()
