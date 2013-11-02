@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Ploeh.AutoFixture;
+using Xunit;
+using Xunit.Extensions;
 
 namespace Test
 {
-    [TestFixture]
     public class LD_r_n : TestBase
     {
-        [Test]
-        [TestCaseSource("GetRegisterCombinations")]
+        [Theory]
+        [PropertyData("GetRegisterCombinations")]
         public void LD_r_n_immediate_data(RegisterMapping target)
         {
             var expectedConstant = Fixture.Create<byte>();
@@ -22,9 +22,9 @@ namespace Test
             var opcode = CreateOpcode(target);
             Sut.Execute(opcode);
 
-            Assert.AreEqual(expectedConstant, target.Get(Sut));
-            Assert.AreEqual(programCounter + 2, Sut.ProgramCounter);
-            Assert.AreEqual(initialCyles + 2, Sut.Cycles);
+            Assert.Equal(expectedConstant, target.Get(Sut));
+            Assert.Equal(programCounter + 2, Sut.ProgramCounter);
+            Assert.Equal(initialCyles + 2, Sut.Cycles);
         }
 
         private byte CreateOpcode(RegisterMapping register)
@@ -32,17 +32,13 @@ namespace Test
             return (byte)(0x06 | (register << 3));
         }
 
-        private IEnumerable<TestCaseData> GetRegisterCombinations()
+        public static IEnumerable<object[]> GetRegisterCombinations
         {
-            return RegisterMapping.GetAll()
-                .Select(x =>
-                {
-                    var testCaseData = new TestCaseData(x);
-                    testCaseData.SetName(string.Format("LD {0}, n Opcode: 0x{1:x8}", x, CreateOpcode(x)));
-
-                    return testCaseData;
-                })
-                .ToList();
+            get
+            {
+                return RegisterMapping.GetAll()
+                    .Select(x => new object[] { x });
+            }
         }
     }
 }

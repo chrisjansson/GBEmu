@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Ploeh.AutoFixture;
+using Xunit;
+using Xunit.Extensions;
 
 namespace Test
 {
-    [TestFixture]
     public class LD_r_HL : TestBase
     {
-        [Test]
-        [TestCaseSource("CreateTestCases")]
+        [Theory, PropertyData("CreateTestCases")]
         public void LD_r_HL_loads_memory_pointed_to_by_HL_into_r(RegisterMapping register)
         {
             var memoryLocation = Fixture.Create<ushort>();
@@ -25,22 +24,18 @@ namespace Test
 
             Sut.Execute(opcode);
 
-            Assert.AreEqual(expectedLoadedValue, register.Get(Sut));
-            Assert.AreEqual(initialProgramCounter + 1, Sut.ProgramCounter);
-            Assert.AreEqual(initialCycles + 2, Sut.Cycles);
+            Assert.Equal(expectedLoadedValue, register.Get(Sut));
+            Assert.Equal(initialProgramCounter + 1, Sut.ProgramCounter);
+            Assert.Equal(initialCycles + 2, Sut.Cycles);
         }
 
-        private IEnumerable<TestCaseData> CreateTestCases()
+        public static IEnumerable<object[]> CreateTestCases
         {
-            return RegisterMapping.GetAll()
-                .Select(x =>
-                {
-                    var testCase = new TestCaseData(x);
-                    var opcode = CreateOpcode(x);
-                    testCase.SetName(string.Format("LD {0}, (HL) Opcode: 0x{1:x8}", x, opcode));
-                    return testCase;
-                })
-                .ToList();
+            get
+            {
+                return RegisterMapping.GetAll()
+                    .Select(x => new[] {x}); 
+            }
         }
 
         private byte CreateOpcode(RegisterMapping register)

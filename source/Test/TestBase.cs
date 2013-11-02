@@ -1,5 +1,4 @@
 ﻿using Core;
-using NUnit.Framework;
 using Ploeh.AutoFixture;
 
 namespace Test
@@ -10,8 +9,7 @@ namespace Test
         protected Fixture Fixture;
         protected FakeMmu FakeMmu;
 
-        [SetUp]
-        public void SetUp()
+        public TestBase()
         {
             Fixture = new Fixture();
             FakeMmu = new FakeMmu();

@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Ploeh.AutoFixture;
+using Xunit;
+using Xunit.Extensions;
 
 namespace Test
 {
-    [TestFixture]
     public class LD_r_r : TestBase
     {
-        [Test]
-        [TestCaseSource("LDCombinations")]
+        [Theory, PropertyData("LDCombinations")]
         public void LD_r_rp(RegisterMapping source, RegisterMapping target)
         {
             var expectedRegisterValue = Fixture.Create<byte>();
@@ -22,29 +21,25 @@ namespace Test
             var opcode = CreateOpcode(source, target);
             Sut.Execute(opcode);
 
-            Assert.AreEqual(expectedRegisterValue, target.Get(Sut));
-            Assert.AreEqual(initialProgramCounter + 1, Sut.ProgramCounter);
-            Assert.AreEqual(initialCycles + 1, Sut.Cycles);
+            Assert.Equal(expectedRegisterValue, target.Get(Sut));
+            Assert.Equal(initialProgramCounter + 1, Sut.ProgramCounter);
+            Assert.Equal(initialCycles + 1, Sut.Cycles);
+        }
+
+        public static IEnumerable<object[]> LDCombinations
+        {
+            get
+            {
+                return from fromRegister in RegisterMapping.GetAll()
+                       from toRegister in RegisterMapping.GetAll()
+                       select new object[] { fromRegister, toRegister};
+            }
+
         }
 
         private static byte CreateOpcode(RegisterMapping source, RegisterMapping target)
         {
             return Build.LD.From(source).To(target);
-        }
-
-        private static IEnumerable<TestCaseData> LDCombinations()
-        {
-            return from fromRegister in RegisterMapping.GetAll()
-                from toRegister in RegisterMapping.GetAll()
-                select CreateTestCaseData(fromRegister, toRegister);
-        }
-
-        private static TestCaseData CreateTestCaseData(RegisterMapping source, RegisterMapping target)
-        {
-            var testCaseData = new TestCaseData(source, target);
-            var opcode = CreateOpcode(source, target);
-            testCaseData.SetName(string.Format("LD {0}, {1}. Opcode: 0x{2:X}", target, source, opcode));
-            return testCaseData;
         }
     }
 }

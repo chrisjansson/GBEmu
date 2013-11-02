@@ -357,15 +357,20 @@ namespace Core
 
         private void LD_HL_r(Register register)
         {
-            var target = (ushort)((H << 8) | L);
-            var value = _registers[(int) register];
+            var target = HL;
+            var value = _registers[(int)register];
             _mmu.SetByte(target, value);
         }
 
         private void LD_r_HL(Register register)
         {
-            var n = _mmu.GetByte((ushort)(H << 8 | L));
+            var n = _mmu.GetByte(HL);
             _registers[(int)register] = n;
+        }
+
+        private ushort HL
+        {
+            get { return (ushort)(H << 8 | L); }
         }
 
         public byte A
