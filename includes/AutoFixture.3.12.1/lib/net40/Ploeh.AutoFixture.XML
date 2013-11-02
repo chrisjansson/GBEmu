@@ -268,6 +268,95 @@
             </para>
             </remarks>
         </member>
+        <member name="T:Ploeh.AutoFixture.Kernel.TerminatingWithPathSpecimenBuilder">
+            <summary>
+            Decorates an <see cref="T:Ploeh.AutoFixture.Kernel.ISpecimenBuilder"/> with a node which tracks specimen requests, and
+            when <see cref="T:Ploeh.AutoFixture.Kernel.NoSpecimen"/> is detected, throws an <see cref="T:Ploeh.AutoFixture.ObjectCreationException"/>, which
+            includes a description of the request path.
+            </summary>
+        </member>
+        <member name="M:Ploeh.AutoFixture.Kernel.TerminatingWithPathSpecimenBuilder.#ctor(Ploeh.AutoFixture.Kernel.TracingBuilder)">
+            <summary>
+            Creates a new <see cref="T:Ploeh.AutoFixture.Kernel.TerminatingWithPathSpecimenBuilder"/> using the
+            supplied <see cref="T:Ploeh.AutoFixture.Kernel.TracingBuilder"/> to track specimen requests.
+            </summary>
+            <param name="tracer"></param>
+        </member>
+        <member name="M:Ploeh.AutoFixture.Kernel.TerminatingWithPathSpecimenBuilder.Create(System.Object,Ploeh.AutoFixture.Kernel.ISpecimenContext)">
+            <summary>
+            Creates a new specimen based on a request by delegating to its decorated builder.
+            </summary>
+            <param name="request">The request that describes what to create.</param>
+            <param name="context">A context that can be used to create other specimens.</param>
+            <returns>
+            The requested specimen if possible; otherwise a <see cref="T:Ploeh.AutoFixture.Kernel.NoSpecimen"/> instance.
+            </returns>
+        </member>
+        <member name="M:Ploeh.AutoFixture.Kernel.TerminatingWithPathSpecimenBuilder.Compose(System.Collections.Generic.IEnumerable{Ploeh.AutoFixture.Kernel.ISpecimenBuilder})">
+            <summary>Composes the supplied builders.</summary>
+            <param name="builders">The builders to compose.</param>
+            <returns>
+            A new <see cref="T:Ploeh.AutoFixture.Kernel.ISpecimenBuilderNode"/> instance containing
+            <paramref name="builders"/> as child nodes.
+            </returns>
+        </member>
+        <member name="M:Ploeh.AutoFixture.Kernel.TerminatingWithPathSpecimenBuilder.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to
+            iterate through the collection.
+            </returns>
+        </member>
+        <member name="P:Ploeh.AutoFixture.Kernel.TerminatingWithPathSpecimenBuilder.Tracer">
+            <summary>
+            Gets the <see cref="T:Ploeh.AutoFixture.Kernel.TracingBuilder"/> decorated by this instance.
+            </summary>
+        </member>
+        <member name="P:Ploeh.AutoFixture.Kernel.TerminatingWithPathSpecimenBuilder.SpecimenRequests">
+            <summary>
+            Gets the observed specimen requests, in the order they were requested.
+            </summary>
+        </member>
+        <member name="T:Ploeh.AutoFixture.Kernel.ObservableCollectionSpecification">
+            <summary>
+            Encapsulates logic that determines whether a request is a request for a
+            <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
+            </summary>
+        </member>
+        <member name="T:Ploeh.AutoFixture.Kernel.IRequestSpecification">
+            <summary>
+            A Specification that evaluates requests.
+            </summary>
+            <remarks>
+            <para>
+            This is a codification of the Specification patter for requests. This interface can (and
+            should) be used in any place where you need to filter requests for specimens.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ploeh.AutoFixture.Kernel.IRequestSpecification.IsSatisfiedBy(System.Object)">
+            <summary>
+            Evaluates a request for a specimen.
+            </summary>
+            <param name="request">The specimen request.</param>
+            <returns>
+            <see langword="true"/> if <paramref name="request"/> is satisfied by the Specification;
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:Ploeh.AutoFixture.Kernel.ObservableCollectionSpecification.IsSatisfiedBy(System.Object)">
+            <summary>
+            Evaluates a request for a specimen to determine whether it's a request for a
+            <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
+            </summary>
+            <param name="request">The specimen request.</param>
+            <returns>
+            <see langword="true"/> if <paramref name="request"/> is a request for a
+            <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
         <member name="T:Ploeh.AutoFixture.MapCreateManyToEnumerable">
             <summary>
             Maps a call to
@@ -364,27 +453,6 @@
             <summary>
             A specification that evaluates whether a request is a request for a type without public constructors.
             </summary>
-        </member>
-        <member name="T:Ploeh.AutoFixture.Kernel.IRequestSpecification">
-            <summary>
-            A Specification that evaluates requests.
-            </summary>
-            <remarks>
-            <para>
-            This is a codification of the Specification patter for requests. This interface can (and
-            should) be used in any place where you need to filter requests for specimens.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:Ploeh.AutoFixture.Kernel.IRequestSpecification.IsSatisfiedBy(System.Object)">
-            <summary>
-            Evaluates a request for a specimen.
-            </summary>
-            <param name="request">The specimen request.</param>
-            <returns>
-            <see langword="true"/> if <paramref name="request"/> is satisfied by the Specification;
-            otherwise, <see langword="false"/>.
-            </returns>
         </member>
         <member name="M:Ploeh.AutoFixture.Kernel.NoConstructorsSpecification.#ctor">
             <summary>
@@ -3807,7 +3875,7 @@
         <member name="T:Ploeh.AutoFixture.OmitOnRecursionBehavior">
             <summary>
             Decorates an <see cref="T:Ploeh.AutoFixture.Kernel.ISpecimenBuilder"/> with a
-            <see cref="T:Ploeh.AutoFixture.Kernel.OmitOnRecursionGuard"/>.
+            <see cref="T:Ploeh.AutoFixture.Kernel.RecursionGuard"/>.
             </summary>
         </member>
         <member name="T:Ploeh.AutoFixture.Kernel.ISpecimenBuilderTransformation">
@@ -3833,7 +3901,7 @@
         <member name="M:Ploeh.AutoFixture.OmitOnRecursionBehavior.Transform(Ploeh.AutoFixture.Kernel.ISpecimenBuilder)">
             <summary>
             Decorates the supplied <see cref="T:Ploeh.AutoFixture.Kernel.ISpecimenBuilder"/> with an
-            <see cref="T:Ploeh.AutoFixture.Kernel.OmitOnRecursionGuard"/>.
+            <see cref="T:Ploeh.AutoFixture.Kernel.RecursionGuard"/>.
             </summary>
             <param name="builder">The builder to decorate.</param>
             <returns>
