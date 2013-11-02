@@ -10,5 +10,10 @@ namespace Test
         {
             return Memory[address];
         }
+
+        public void SetByte(ushort address, byte value)
+        {
+            Memory[address] = value;
+        }
     }
 }

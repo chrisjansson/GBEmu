@@ -6,6 +6,7 @@ namespace Core
     public interface IMmu
     {
         byte GetByte(ushort address);
+        void SetByte(ushort address, byte value);
     }
 
     public enum Register
@@ -94,6 +95,13 @@ namespace Core
             { 0x6D, new InstructionMetaData(1, 1, "LD L, L")},
             { 0x6E, new InstructionMetaData(1, 2, "LD L, (HL)")},
             { 0x6F, new InstructionMetaData(1, 1, "LD L, A")},
+            { 0x70, new InstructionMetaData(1, 2, "LD (HL), B")},
+            { 0x71, new InstructionMetaData(1, 2, "LD (HL), C")},
+            { 0x72, new InstructionMetaData(1, 2, "LD (HL), D")},
+            { 0x73, new InstructionMetaData(1, 2, "LD (HL), E")},
+            { 0x74, new InstructionMetaData(1, 2, "LD (HL), H")},
+            { 0x75, new InstructionMetaData(1, 2, "LD (HL), L")},
+            { 0x77, new InstructionMetaData(1, 2, "LD (HL), A")},
             { 0x78, new InstructionMetaData(1, 1, "LD A, B")},
             { 0x79, new InstructionMetaData(1, 1, "LD A, C")},
             { 0x7A, new InstructionMetaData(1, 1, "LD A, D")},
@@ -170,6 +178,27 @@ namespace Core
                     break;
                 case 0x47: //LD_B_A
                     LD_r_r(Register.B, Register.A);
+                    break;
+                case 0x70:
+                    LD_HL_r(Register.B);
+                    break;
+                case 0x71:
+                    LD_HL_r(Register.C);
+                    break;
+                case 0x72:
+                    LD_HL_r(Register.D);
+                    break;
+                case 0x73:
+                    LD_HL_r(Register.E);
+                    break;
+                case 0x74:
+                    LD_HL_r(Register.H);
+                    break;
+                case 0x75:
+                    LD_HL_r(Register.L);
+                    break;
+                case 0x77:
+                    LD_HL_r(Register.A);
                     break;
                 case 0x7F: //LD_A_A
                     LD_r_r(Register.A, Register.A);
@@ -326,10 +355,17 @@ namespace Core
             }
         }
 
+        private void LD_HL_r(Register register)
+        {
+            var target = (ushort)((H << 8) | L);
+            var value = _registers[(int) register];
+            _mmu.SetByte(target, value);
+        }
+
         private void LD_r_HL(Register register)
         {
-            var n = _mmu.GetByte((ushort) (H << 8 | L));
-            _registers[(int) register] = n;
+            var n = _mmu.GetByte((ushort)(H << 8 | L));
+            _registers[(int)register] = n;
         }
 
         public byte A

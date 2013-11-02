@@ -13,18 +13,23 @@ namespace Test
         public void LD_r_rp(RegisterMapping source, RegisterMapping target)
         {
             var expectedRegisterValue = Fixture.Create<byte>();
-            source.Set(Sut, expectedRegisterValue);
-            var opcode = Build.LD.From(source).To(target);
             var initialProgramCounter = Fixture.Create<ushort>();
-            Sut.ProgramCounter = initialProgramCounter;
             var initialCycles = Fixture.Create<long>();
+            source.Set(Sut, expectedRegisterValue);
+            Sut.ProgramCounter = initialProgramCounter;
             Sut.Cycles = initialCycles;
 
+            var opcode = CreateOpcode(source, target);
             Sut.Execute(opcode);
 
             Assert.AreEqual(expectedRegisterValue, target.Get(Sut));
             Assert.AreEqual(initialProgramCounter + 1, Sut.ProgramCounter);
             Assert.AreEqual(initialCycles + 1, Sut.Cycles);
+        }
+
+        private static byte CreateOpcode(RegisterMapping source, RegisterMapping target)
+        {
+            return Build.LD.From(source).To(target);
         }
 
         private static IEnumerable<TestCaseData> LDCombinations()
@@ -34,11 +39,11 @@ namespace Test
                 select CreateTestCaseData(fromRegister, toRegister);
         }
 
-        private static TestCaseData CreateTestCaseData(RegisterMapping from, RegisterMapping to)
+        private static TestCaseData CreateTestCaseData(RegisterMapping source, RegisterMapping target)
         {
-            var testCaseData = new TestCaseData(@from, to);
-            var opcode = Build.LD.From(@from).To(to);
-            testCaseData.SetName(string.Format("LD {0}, {1}. Opcode: 0x{2:X}", to, from, opcode));
+            var testCaseData = new TestCaseData(source, target);
+            var opcode = CreateOpcode(source, target);
+            testCaseData.SetName(string.Format("LD {0}, {1}. Opcode: 0x{2:X}", target, source, opcode));
             return testCaseData;
         }
     }
