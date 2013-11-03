@@ -43,8 +43,10 @@ namespace Core
             { 0x00, new InstructionMetaData(1, 1, "NOP")},
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
+            { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
+            { 0x21, new InstructionMetaData(3, 3, "LD HL, nn")},
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
@@ -145,11 +147,19 @@ namespace Core
                 case 0x0E:
                     LD_r_n(Register.C);
                     break;
+                case 0x11:
+                    E = _mmu.GetByte((ushort) (ProgramCounter + 1));
+                    D = _mmu.GetByte((ushort) (ProgramCounter + 2));
+                    break;
                 case 0x16:
                     LD_r_n(Register.D);
                     break;
                 case 0x1E:
                     LD_r_n(Register.E);
+                    break;
+                case 0x21:
+                    L = _mmu.GetByte((ushort) (ProgramCounter + 1));
+                    H = _mmu.GetByte((ushort) (ProgramCounter + 2));
                     break;
                 case 0x26:
                     LD_r_n(Register.H);

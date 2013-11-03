@@ -7,7 +7,7 @@ namespace Test
     {
         public LD_acceptance_test()
         {
-            var ldAcceptanceTestRom = File.ReadAllBytes("06-ld r,r.gb");
+            var ldAcceptanceTestRom = File.ReadAllBytes("07-jr,jp,call,ret,rst.gb");
 
             for (var i = 0; i < ldAcceptanceTestRom.Length; i++)
             {
