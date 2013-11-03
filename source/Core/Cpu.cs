@@ -40,6 +40,7 @@ namespace Core
 
         private readonly Dictionary<byte, InstructionMetaData> _instructionMetaData = new Dictionary<byte, InstructionMetaData>
         {
+            { 0x00, new InstructionMetaData(1, 1, "NOP")},
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
@@ -134,6 +135,9 @@ namespace Core
         {
             switch (opcode)
             {
+                case 0x00:
+                    //NOP
+                    break;
                 case 0x06:
                     LD_r_n(Register.B);
                     break;

@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Build.cs" />
+    <Compile Include="CpuFixture.cs" />
     <Compile Include="FakeMmu.cs" />
     <Compile Include="LDBuilder.cs" />
     <Compile Include="LD_acceptance_test.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="LD_r_HL.cs" />
     <Compile Include="LD_r_n.cs" />
     <Compile Include="LD_r_r.cs" />
+    <Compile Include="Nop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisterMapping.cs" />
     <Compile Include="TestBase.cs" />
