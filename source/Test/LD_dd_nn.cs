@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Core;
 using Xunit;
 using Xunit.Extensions;
@@ -27,6 +28,12 @@ namespace Test
             Assert.Equal(9826, _cpu.Cycles);
         }
 
+        [Fact]
+        public void FactMethodName()
+        {
+            throw new NotImplementedException("0x31 LD SP, nn");
+        }
+
         public static IEnumerable<object[]> RegisterPairs
         {
             get
@@ -35,7 +42,8 @@ namespace Test
                     new List<object[]>
                     {
                         new object[]{0x02, RegisterMapping.H, RegisterMapping.L},
-                        new object[]{0x01, RegisterMapping.D, RegisterMapping.E}
+                        new object[]{0x01, RegisterMapping.D, RegisterMapping.E},
+                        new object[]{0x00, RegisterMapping.B, RegisterMapping.C},
                     };
             }
         }
