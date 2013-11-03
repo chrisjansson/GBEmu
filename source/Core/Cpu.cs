@@ -345,7 +345,7 @@ namespace Core
                     LD_r_HL(Register.A);
                     break;
                 default:
-                    throw new IllegalOpcodeException();
+                    throw new IllegalOpcodeException(opcode);
             }
 
             if (_instructionMetaData.ContainsKey(opcode))
@@ -421,9 +421,16 @@ namespace Core
 
     public class IllegalOpcodeException : Exception
     {
+        private readonly byte _opcode;
+
+        public IllegalOpcodeException(byte opcode)
+        {
+            _opcode = opcode;
+        }
+
         public override string Message
         {
-            get { return "Illegal opcode"; }
+            get { return string.Format("Illegal opcode 0x{0:x2}", _opcode); }
         }
     }
 }

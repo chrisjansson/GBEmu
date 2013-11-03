@@ -72,6 +72,7 @@
     <Compile Include="Build.cs" />
     <Compile Include="FakeMmu.cs" />
     <Compile Include="LDBuilder.cs" />
+    <Compile Include="LD_acceptance_test.cs" />
     <Compile Include="LD_HL_r.cs" />
     <Compile Include="LD_r_HL.cs" />
     <Compile Include="LD_r_n.cs" />
