@@ -111,6 +111,7 @@ namespace Core
             { 0x7D, new InstructionMetaData(1, 1, "LD A, L")},
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
+            { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
         };
 
         private readonly IMmu _mmu;
@@ -347,6 +348,11 @@ namespace Core
                     break;
                 case 0x7E:
                     LD_r_HL(Register.A);
+                    break;
+                case 0xC3:
+                    var l = _mmu.GetByte((ushort) (ProgramCounter + 1));
+                    var h = _mmu.GetByte((ushort) (ProgramCounter + 2));
+                    ProgramCounter = (ushort) ((h << 8) | l);
                     break;
                 default:
                     throw new IllegalOpcodeException(opcode);
