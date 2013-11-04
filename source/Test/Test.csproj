@@ -75,6 +75,7 @@
     <Compile Include="JP_nn.cs" />
     <Compile Include="LDBuilder.cs" />
     <Compile Include="LD_acceptance_test.cs" />
+    <Compile Include="LD_A_HLI.cs" />
     <Compile Include="LD_dd_nn.cs" />
     <Compile Include="LD_HL_r.cs" />
     <Compile Include="LD_r_HL.cs" />

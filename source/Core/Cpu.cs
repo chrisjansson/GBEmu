@@ -48,6 +48,7 @@ namespace Core
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
             { 0x21, new InstructionMetaData(3, 3, "LD HL, nn")},
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
+            { 0x2A, new InstructionMetaData(1, 2, "LD A, (HLI)")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
             { 0x40, new InstructionMetaData(1, 1, "LD B, B")},
@@ -163,6 +164,12 @@ namespace Core
                     break;
                 case 0x26:
                     LD_r_n(Register.H);
+                    break;
+                case 0x2A:
+                    A = _mmu.GetByte(HL);
+                    var increment = HL + 1;
+                    L = (byte) (increment & 0xFF);
+                    H = (byte) ((increment >> 8) & 0xFF);
                     break;
                 case 0x2E:
                     LD_r_n(Register.L);
