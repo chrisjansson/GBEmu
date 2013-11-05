@@ -77,6 +77,7 @@
     <Compile Include="LD_acceptance_test.cs" />
     <Compile Include="LD_A_HLI.cs" />
     <Compile Include="LD_dd_nn.cs" />
+    <Compile Include="LD_DE_A.cs" />
     <Compile Include="LD_HL_r.cs" />
     <Compile Include="LD_r_HL.cs" />
     <Compile Include="LD_r_n.cs" />
