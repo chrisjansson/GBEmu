@@ -46,6 +46,7 @@ namespace Core
             { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
             { 0x12, new InstructionMetaData(1, 2, "LD (DE), A")},
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
+            { 0x1C, new InstructionMetaData(1, 1, "INC E")},
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
             { 0x21, new InstructionMetaData(3, 3, "LD HL, nn")},
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
@@ -150,22 +151,28 @@ namespace Core
                     LD_r_n(Register.C);
                     break;
                 case 0x11:
-                    E = _mmu.GetByte((ushort) (ProgramCounter + 1));
-                    D = _mmu.GetByte((ushort) (ProgramCounter + 2));
+                    E = _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    D = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     break;
                 case 0x12:
                     var target = (D << 8 | E);
-                    _mmu.SetByte((ushort) target, A);
+                    _mmu.SetByte((ushort)target, A);
                     break;
                 case 0x16:
                     LD_r_n(Register.D);
+                    break;
+                case 0x1C:
+                    E = (byte)(E + 1);
+                    Z = (byte) (E == 0 ? 1 : 0);
+                    N = 0;
+                    HC = 1;
                     break;
                 case 0x1E:
                     LD_r_n(Register.E);
                     break;
                 case 0x21:
-                    L = _mmu.GetByte((ushort) (ProgramCounter + 1));
-                    H = _mmu.GetByte((ushort) (ProgramCounter + 2));
+                    L = _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    H = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     break;
                 case 0x26:
                     LD_r_n(Register.H);
@@ -173,8 +180,8 @@ namespace Core
                 case 0x2A:
                     A = _mmu.GetByte(HL);
                     var increment = HL + 1;
-                    L = (byte) (increment & 0xFF);
-                    H = (byte) ((increment >> 8) & 0xFF);
+                    L = (byte)(increment & 0xFF);
+                    H = (byte)((increment >> 8) & 0xFF);
                     break;
                 case 0x2E:
                     LD_r_n(Register.L);
@@ -372,9 +379,9 @@ namespace Core
                     LD_r_HL(Register.A);
                     break;
                 case 0xC3:
-                    var l = _mmu.GetByte((ushort) (ProgramCounter + 1));
-                    var h = _mmu.GetByte((ushort) (ProgramCounter + 2));
-                    ProgramCounter = (ushort) ((h << 8) | l);
+                    var l = _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
+                    ProgramCounter = (ushort)((h << 8) | l);
                     break;
                 default:
                     throw new IllegalOpcodeException(opcode);
@@ -449,6 +456,10 @@ namespace Core
 
         public ushort ProgramCounter { get; set; }
         public long Cycles { get; set; }
+
+        public byte Z { get; set; }
+        public byte N { get; set; }
+        public byte HC { get; set; }
     }
 
     public class IllegalOpcodeException : Exception
