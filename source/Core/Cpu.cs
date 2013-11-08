@@ -165,7 +165,7 @@ namespace Core
                     E = (byte)(E + 1);
                     Z = (byte) (E == 0 ? 1 : 0);
                     N = 0;
-                    HC = 1;
+                    HC = (byte) ((((E & 0xF) + 1) & 0x10) == 0 ? 0 : 1);
                     break;
                 case 0x1E:
                     LD_r_n(Register.E);
