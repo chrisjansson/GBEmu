@@ -74,6 +74,7 @@
     <Compile Include="FakeMmu.cs" />
     <Compile Include="INC_r.cs" />
     <Compile Include="JP_nn.cs" />
+    <Compile Include="JR_cc_e.cs" />
     <Compile Include="LDBuilder.cs" />
     <Compile Include="LD_acceptance_test.cs" />
     <Compile Include="LD_A_HLI.cs" />

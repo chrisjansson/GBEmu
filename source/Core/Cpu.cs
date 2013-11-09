@@ -170,6 +170,13 @@ namespace Core
                 case 0x1E:
                     LD_r_n(Register.E);
                     break;
+                case 0x20:
+                    var eMinusTwo = (sbyte) _mmu.GetByte((ushort) (ProgramCounter + 1));
+                    var e = eMinusTwo + 2;
+                    //Move instrunction length 2 and cycle 2 into metadata
+                    ProgramCounter += (ushort) (Z == 0 ? e : 2);
+                    Cycles += Z == 0 ? 3 : 2;
+                    break;
                 case 0x21:
                     L = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     H = _mmu.GetByte((ushort)(ProgramCounter + 2));
