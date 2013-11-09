@@ -45,6 +45,7 @@ namespace Core
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
             { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
             { 0x12, new InstructionMetaData(1, 2, "LD (DE), A")},
+            { 0x14, new InstructionMetaData(1, 1, "INC D")},
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
             { 0x1C, new InstructionMetaData(1, 1, "INC E")},
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
@@ -137,6 +138,14 @@ namespace Core
             _registers[(int)target] = n;
         }
 
+        private void INC_r(Register register)
+        {
+            HC = (byte)((((_registers[(int) register] & 0xF) + 1) & 0x10) == 0 ? 0 : 1);
+            _registers[(int) register] = (byte)(_registers[(int) register] + 1);
+            Z = (byte)(_registers[(int) register] == 0 ? 1 : 0);
+            N = 0;
+        }
+
         public void Execute(byte opcode)
         {
             switch (opcode)
@@ -158,14 +167,14 @@ namespace Core
                     var target = (D << 8 | E);
                     _mmu.SetByte((ushort)target, A);
                     break;
+                case 0x14:
+                    INC_r(Register.D);
+                    break;
                 case 0x16:
                     LD_r_n(Register.D);
                     break;
                 case 0x1C:
-                    E = (byte)(E + 1);
-                    Z = (byte) (E == 0 ? 1 : 0);
-                    N = 0;
-                    HC = (byte) ((((E & 0xF) + 1) & 0x10) == 0 ? 0 : 1);
+                    INC_r(Register.E);
                     break;
                 case 0x1E:
                     LD_r_n(Register.E);
