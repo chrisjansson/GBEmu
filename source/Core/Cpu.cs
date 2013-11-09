@@ -42,6 +42,7 @@ namespace Core
         {
             { 0x00, new InstructionMetaData(1, 1, "NOP")},
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
+            { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
             { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
             { 0x12, new InstructionMetaData(1, 2, "LD (DE), A")},
@@ -155,6 +156,12 @@ namespace Core
                     break;
                 case 0x06:
                     LD_r_n(Register.B);
+                    break;
+                case 0x0D:
+                    N = 1;
+                    HC = (byte) ((C & 0x0F) == 0 ? 1 : 0);
+                    C = (byte) (C - 1);
+                    Z = (byte) (C == 0 ? 1 : 0);
                     break;
                 case 0x0E:
                     LD_r_n(Register.C);
