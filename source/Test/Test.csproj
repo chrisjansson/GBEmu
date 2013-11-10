@@ -93,6 +93,7 @@
     <Compile Include="Nop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisterMapping.cs" />
+    <Compile Include="RET.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>

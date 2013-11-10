@@ -121,6 +121,7 @@ namespace Core
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
+            { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
@@ -420,9 +421,11 @@ namespace Core
                     var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     ProgramCounter = (ushort)((h << 8) | l);
                     break;
+                case 0xC9:
+                    RET();
+                    break;
                 case 0xCD:
                     Call();
-
                     break;
                 case 0xE0:
                     _mmu.SetByte((ushort)(0xFF00 | _mmu.GetByte((ushort)(ProgramCounter + 1))), A);
@@ -443,6 +446,15 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void RET()
+        {
+            var low = _mmu.GetByte(SP);
+            var high = _mmu.GetByte((ushort) (SP + 1));
+
+            ProgramCounter = (ushort) (high << 8 | low);
+            SP = (ushort) (SP + 2);
         }
 
         private void JR_e()
