@@ -54,6 +54,7 @@ namespace Core
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
             { 0x2A, new InstructionMetaData(1, 2, "LD A, (HLI)")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
+            { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
             { 0x40, new InstructionMetaData(1, 1, "LD B, B")},
             { 0x41, new InstructionMetaData(1, 1, "LD B, C")},
@@ -142,9 +143,9 @@ namespace Core
 
         private void INC_r(Register register)
         {
-            HC = (byte)((((_registers[(int) register] & 0xF) + 1) & 0x10) == 0 ? 0 : 1);
-            _registers[(int) register] = (byte)(_registers[(int) register] + 1);
-            Z = (byte)(_registers[(int) register] == 0 ? 1 : 0);
+            HC = (byte)((((_registers[(int)register] & 0xF) + 1) & 0x10) == 0 ? 0 : 1);
+            _registers[(int)register] = (byte)(_registers[(int)register] + 1);
+            Z = (byte)(_registers[(int)register] == 0 ? 1 : 0);
             N = 0;
         }
 
@@ -160,9 +161,9 @@ namespace Core
                     break;
                 case 0x0D:
                     N = 1;
-                    HC = (byte) ((C & 0x0F) == 0 ? 1 : 0);
-                    C = (byte) (C - 1);
-                    Z = (byte) (C == 0 ? 1 : 0);
+                    HC = (byte)((C & 0x0F) == 0 ? 1 : 0);
+                    C = (byte)(C - 1);
+                    Z = (byte)(C == 0 ? 1 : 0);
                     break;
                 case 0x0E:
                     LD_r_n(Register.C);
@@ -188,10 +189,10 @@ namespace Core
                     LD_r_n(Register.E);
                     break;
                 case 0x20:
-                    var eMinusTwo = (sbyte) _mmu.GetByte((ushort) (ProgramCounter + 1));
+                    var eMinusTwo = (sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1));
                     var e = eMinusTwo + 2;
                     //Move instrunction length 2 and cycle 2 into metadata
-                    ProgramCounter += (ushort) (Z == 0 ? e : 2);
+                    ProgramCounter += (ushort)(Z == 0 ? e : 2);
                     Cycles += Z == 0 ? 3 : 2;
                     break;
                 case 0x21:
@@ -209,6 +210,11 @@ namespace Core
                     break;
                 case 0x2E:
                     LD_r_n(Register.L);
+                    break;
+                case 0x31:
+                    var low = _mmu.GetByte((ushort) (ProgramCounter + 1));
+                    var high = _mmu.GetByte((ushort) (ProgramCounter + 2));
+                    SP = (ushort) ((high << 8) | low);
                     break;
                 case 0x3E:
                     LD_r_n(Register.A);
@@ -479,6 +485,8 @@ namespace Core
             get { return _registers[(int)Register.L]; }
             set { _registers[(int)Register.L] = value; }
         }
+
+        public ushort SP { get; set; }
 
         public ushort ProgramCounter { get; set; }
         public long Cycles { get; set; }

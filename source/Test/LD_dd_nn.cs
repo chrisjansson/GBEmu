@@ -29,9 +29,19 @@ namespace Test
         }
 
         [Fact]
-        public void FactMethodName()
+        public void Loads_nn_into_sp()
         {
-            throw new NotImplementedException("0x31 LD SP, nn");
+            byte opcode = (0x03 << 4) | 0x01;
+            _cpu.ProgramCounter = 10294;
+            _cpu.Cycles = 9823;
+            _fakeMmu.SetByte((ushort)(_cpu.ProgramCounter + 1), 194);
+            _fakeMmu.SetByte((ushort)(_cpu.ProgramCounter + 2), 205);
+
+            _cpu.Execute(opcode);
+
+            Assert.Equal(52674, _cpu.SP);
+            Assert.Equal(10297, _cpu.ProgramCounter);
+            Assert.Equal(9826, _cpu.Cycles);
         }
 
         public static IEnumerable<object[]> RegisterPairs
