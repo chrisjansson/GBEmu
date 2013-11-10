@@ -120,6 +120,7 @@ namespace Core
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
+            { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
@@ -214,9 +215,9 @@ namespace Core
                     LD_r_n(Register.L);
                     break;
                 case 0x31:
-                    var low = _mmu.GetByte((ushort) (ProgramCounter + 1));
-                    var high = _mmu.GetByte((ushort) (ProgramCounter + 2));
-                    SP = (ushort) ((high << 8) | low);
+                    var low = _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    var high = _mmu.GetByte((ushort)(ProgramCounter + 2));
+                    SP = (ushort)((high << 8) | low);
                     break;
                 case 0x3E:
                     LD_r_n(Register.A);
@@ -415,12 +416,16 @@ namespace Core
                     var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     ProgramCounter = (ushort)((h << 8) | l);
                     break;
+                case 0xCD:
+                    Call();
+
+                    break;
                 case 0xE0:
-                    _mmu.SetByte((ushort) (0xFF00 | _mmu.GetByte((ushort) (ProgramCounter + 1))), A);
+                    _mmu.SetByte((ushort)(0xFF00 | _mmu.GetByte((ushort)(ProgramCounter + 1))), A);
                     break;
                 case 0xEA:
                     _mmu.SetByte(
-                        (ushort) ((_mmu.GetByte((ushort) (ProgramCounter + 2)) << 8) | _mmu.GetByte((ushort) (ProgramCounter + 1))),
+                        (ushort)((_mmu.GetByte((ushort)(ProgramCounter + 2)) << 8) | _mmu.GetByte((ushort)(ProgramCounter + 1))),
                         A);
                     break;
                 case 0xF3:
@@ -434,6 +439,20 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void Call()
+        {
+            var high = _mmu.GetByte((ushort)(ProgramCounter + 2)) << 8;
+            var low = _mmu.GetByte((ushort)(ProgramCounter + 1));
+            var subroutineAddress = (ushort)(high | low);
+
+            var returnAddress = ProgramCounter + 3;
+            _mmu.SetByte((ushort) (SP - 1), (byte) (returnAddress >> 8));
+            _mmu.SetByte((ushort) (SP - 2), (byte) returnAddress);
+
+            SP = (ushort) (SP - 2);
+            ProgramCounter = subroutineAddress;
         }
 
         private void LD_HL_r(Register register)
