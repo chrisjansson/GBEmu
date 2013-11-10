@@ -5,7 +5,7 @@ namespace Test
 {
     public class FakeMmu : IMmu
     {
-        public readonly byte[] Memory = new byte[ushort.MaxValue];
+        public readonly byte[] Memory = new byte[ushort.MaxValue + 1];
 
         public byte GetByte(ushort address)
         {

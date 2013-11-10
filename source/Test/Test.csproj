@@ -84,6 +84,7 @@
     <Compile Include="LD_dd_nn.cs" />
     <Compile Include="LD_DE_A.cs" />
     <Compile Include="LD_HL_r.cs" />
+    <Compile Include="LD_n_A.cs" />
     <Compile Include="LD_r_HL.cs" />
     <Compile Include="LD_r_n.cs" />
     <Compile Include="LD_r_r.cs" />
