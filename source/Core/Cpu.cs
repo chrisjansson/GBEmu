@@ -120,6 +120,7 @@ namespace Core
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
+            { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
         };
 
@@ -412,6 +413,11 @@ namespace Core
                     var l = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     ProgramCounter = (ushort)((h << 8) | l);
+                    break;
+                case 0xEA:
+                    _mmu.SetByte(
+                        (ushort) ((_mmu.GetByte((ushort) (ProgramCounter + 2)) << 8) | _mmu.GetByte((ushort) (ProgramCounter + 1))),
+                        A);
                     break;
                 case 0xF3:
                     break;

@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Build.cs" />
+    <Compile Include="LD_nn_A.cs" />
     <Compile Include="CpuFixture.cs" />
     <Compile Include="DEC_r.cs" />
     <Compile Include="DI.cs" />
