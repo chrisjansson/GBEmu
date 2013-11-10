@@ -72,6 +72,7 @@
     <Compile Include="Build.cs" />
     <Compile Include="CpuFixture.cs" />
     <Compile Include="DEC_r.cs" />
+    <Compile Include="DI.cs" />
     <Compile Include="FakeMmu.cs" />
     <Compile Include="INC_r.cs" />
     <Compile Include="JP_nn.cs" />
