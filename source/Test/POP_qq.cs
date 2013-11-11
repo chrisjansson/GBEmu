@@ -35,6 +35,11 @@ namespace Test
             Assert.Equal(33814, _cpu.SP);
         }
 
+        private byte CreateOpCode(RegisterPair registerPair)
+        {
+            return (byte) (0xC5 << 4 | registerPair);
+        }
+
         public void SetFixture(CpuFixture data)
         {
             _cpu = data.Cpu;

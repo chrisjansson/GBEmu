@@ -95,6 +95,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PUSH_qq.cs" />
     <Compile Include="RegisterMapping.cs" />
+    <Compile Include="RegisterPair.cs" />
     <Compile Include="RET.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
