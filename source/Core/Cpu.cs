@@ -124,6 +124,7 @@ namespace Core
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
+            { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
@@ -431,6 +432,11 @@ namespace Core
                 case 0xE0:
                     _mmu.SetByte((ushort)(0xFF00 | _mmu.GetByte((ushort)(ProgramCounter + 1))), A);
                     break;
+                case 0xE1:
+                    L = _mmu.GetByte(SP);
+                    H = _mmu.GetByte((ushort) (SP + 1));
+                    SP += 2;
+                    break;
                 case 0xE5:
                     _mmu.SetByte((ushort) (SP - 1), H);
                     _mmu.SetByte((ushort) (SP - 2), L);
@@ -457,18 +463,18 @@ namespace Core
         private void RET()
         {
             var low = _mmu.GetByte(SP);
-            var high = _mmu.GetByte((ushort) (SP + 1));
+            var high = _mmu.GetByte((ushort)(SP + 1));
 
-            ProgramCounter = (ushort) (high << 8 | low);
-            SP = (ushort) (SP + 2);
+            ProgramCounter = (ushort)(high << 8 | low);
+            SP = (ushort)(SP + 2);
         }
 
         private void JR_e()
         {
-            var eMinusTwo = (sbyte)_mmu.GetByte((ushort) (ProgramCounter + 1));
+            var eMinusTwo = (sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1));
             var e = eMinusTwo + 2;
 
-            ProgramCounter = (ushort) (ProgramCounter + e);
+            ProgramCounter = (ushort)(ProgramCounter + e);
         }
 
         private void Call()
@@ -478,10 +484,10 @@ namespace Core
             var subroutineAddress = (ushort)(high | low);
 
             var returnAddress = ProgramCounter + 3;
-            _mmu.SetByte((ushort) (SP - 1), (byte) (returnAddress >> 8));
-            _mmu.SetByte((ushort) (SP - 2), (byte) returnAddress);
+            _mmu.SetByte((ushort)(SP - 1), (byte)(returnAddress >> 8));
+            _mmu.SetByte((ushort)(SP - 2), (byte)returnAddress);
 
-            SP = (ushort) (SP - 2);
+            SP = (ushort)(SP - 2);
             ProgramCounter = subroutineAddress;
         }
 
