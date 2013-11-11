@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 
 namespace Test
 {
@@ -13,6 +14,10 @@ namespace Test
 
         public void SetByte(ushort address, byte value)
         {
+            if (address == 0xFF01 || address == 0xFF02)
+            {
+                Console.WriteLine(value);
+            }
             Memory[address] = value;
         }
     }
