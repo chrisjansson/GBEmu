@@ -434,12 +434,12 @@ namespace Core
                     break;
                 case 0xE1:
                     L = _mmu.GetByte(SP);
-                    H = _mmu.GetByte((ushort) (SP + 1));
+                    H = _mmu.GetByte((ushort)(SP + 1));
                     SP += 2;
                     break;
                 case 0xE5:
-                    _mmu.SetByte((ushort) (SP - 1), H);
-                    _mmu.SetByte((ushort) (SP - 2), L);
+                    _mmu.SetByte((ushort)(SP - 1), H);
+                    _mmu.SetByte((ushort)(SP - 2), L);
                     SP -= 2;
                     break;
                 case 0xEA:
@@ -551,14 +551,41 @@ namespace Core
             set { _registers[(int)Register.L] = value; }
         }
 
+        private byte _f;
+        public byte F
+        {
+            get
+            {
+                return _f;
+            }
+            set { _f = value; }
+        }
+
         public ushort SP { get; set; }
 
         public ushort ProgramCounter { get; set; }
         public long Cycles { get; set; }
 
-        public byte Z { get; set; }
-        public byte N { get; set; }
-        public byte HC { get; set; }
+        public byte Z
+        {
+            get { return (byte) ((0x80 & _f) == 0x80 ? 1 : 0); }
+            set { _f = (byte) ((_f & 0x7F) | (value << 7)); }
+        }
+
+        public byte N
+        {
+            get { return (byte)((0x40 & _f) == 0x40 ? 1 : 0); }
+            set
+            {
+                _f = (byte)((_f & 0xBF) | (value << 6));
+            }
+        }
+
+        public byte HC
+        {
+            get { return (byte)((0x20 & _f) == 0x20 ? 1 : 0); }
+            set { _f = (byte)((_f & 0xDF) | (value << 5)); }
+        }
     }
 
     public class IllegalOpcodeException : Exception
