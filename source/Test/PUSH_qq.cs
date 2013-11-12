@@ -6,7 +6,7 @@ using Xunit.Extensions;
 
 namespace Test
 {
-    public class PUSH_qq : IUseFixture<CpuFixture>
+    public class PUSH_qq
     {
         private Cpu _cpu;
         private FakeMmu _fakeMmu;
@@ -51,10 +51,11 @@ namespace Test
             return (byte)(0xC5 | (registerPair << 4));
         }
 
-        public void SetFixture(CpuFixture data)
+        public PUSH_qq()
         {
-            _cpu = data.Cpu;
-            _fakeMmu = data.FakeMmu;
+            var cpuFixture = new CpuFixture();
+            _cpu = cpuFixture.Cpu;
+            _fakeMmu = cpuFixture.FakeMmu;
         }
     }
 }

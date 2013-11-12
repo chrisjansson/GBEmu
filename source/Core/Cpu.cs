@@ -128,6 +128,7 @@ namespace Core
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
+            { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
         };
 
         private readonly IMmu _mmu;
@@ -448,6 +449,11 @@ namespace Core
                         A);
                     break;
                 case 0xF3:
+                    break;
+                case 0xF5:
+                    _mmu.SetByte((ushort)(SP - 1), A);
+                    _mmu.SetByte((ushort)(SP - 2), F);
+                    SP -= 2;
                     break;
                 default:
                     throw new IllegalOpcodeException(opcode);

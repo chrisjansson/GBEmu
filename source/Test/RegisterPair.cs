@@ -16,7 +16,12 @@ namespace Test
                 cpu.H = h;
                 cpu.L = l;
             });
-        public static readonly RegisterPair AF = new RegisterPair(0x03, cpu => 0, (cpu, b, arg3) => { });
+        public static readonly RegisterPair AF = new RegisterPair(0x03, cpu => (ushort)(cpu.A << 8 | cpu.L),
+            (cpu, h, l) =>
+            {
+                cpu.A = h;
+                cpu.F = l;
+            });
 
         public static implicit operator byte(RegisterPair registerPair)
         {
