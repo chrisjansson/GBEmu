@@ -123,6 +123,7 @@ namespace Core
             { 0x7D, new InstructionMetaData(1, 1, "LD A, L")},
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
+            { 0xB1, new InstructionMetaData(1, 1, "OR C")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
@@ -438,6 +439,13 @@ namespace Core
                 case 0x7E:
                     LD_r_HL(Register.A);
                     break;
+                case 0xB1:
+                    A = (byte) (A | C);
+                    HC = 0;
+                    N = 0;
+                    Carry = 0;
+                    Z = (byte) (A == 0 ? 1 : 0);
+                    break;
                 case 0xC3:
                     var l = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
@@ -621,6 +629,12 @@ namespace Core
         {
             get { return (byte)((0x20 & _f) == 0x20 ? 1 : 0); }
             set { _f = (byte)((_f & 0xDF) | (value << 5)); }
+        }
+
+        public byte Carry
+        {
+            get { return (byte) ((0x10 & _f) == 0x10 ? 1 : 0); }
+            set { _f = (byte) ((_f & 0xEF) | (value << 4)); }
         }
     }
 
