@@ -42,6 +42,7 @@ namespace Test
                 return new List<object[]>
                 {
                     new object[] {RegisterPair.HL},
+                    new object[] {RegisterPair.BC},
                 };
             }
         }
