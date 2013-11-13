@@ -73,6 +73,7 @@
     <Compile Include="Call.cs" />
     <Compile Include="INC_ss.cs" />
     <Compile Include="JR.cs" />
+    <Compile Include="LD_A_n.cs" />
     <Compile Include="LD_nn_A.cs" />
     <Compile Include="CpuFixture.cs" />
     <Compile Include="DEC_r.cs" />
