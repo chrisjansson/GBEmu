@@ -23,6 +23,8 @@ namespace Test
                 cpu.F = l;
             });
 
+        public static readonly RegisterPair SP = new RegisterPair(0x03, cpu => 0, (cpu, b, arg3) => {});
+
         public static implicit operator byte(RegisterPair registerPair)
         {
             return (byte)registerPair._value;
