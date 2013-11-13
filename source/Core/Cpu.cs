@@ -128,6 +128,7 @@ namespace Core
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
+            { 0xF1, new InstructionMetaData(1, 3, "POP AF")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
             { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
         };
@@ -213,8 +214,8 @@ namespace Core
                     break;
                 case 0x23:
                     var result = HL + 1;
-                    H = (byte) ((result >> 8) & 0xFF);
-                    L = (byte) (result & 0xFF);
+                    H = (byte)((result >> 8) & 0xFF);
+                    L = (byte)(result & 0xFF);
                     break;
                 case 0x26:
                     LD_r_n(Register.H);
@@ -454,6 +455,11 @@ namespace Core
                         (ushort)((_mmu.GetByte((ushort)(ProgramCounter + 2)) << 8) | _mmu.GetByte((ushort)(ProgramCounter + 1))),
                         A);
                     break;
+                case 0xF1:
+                    F = _mmu.GetByte(SP);
+                    A = _mmu.GetByte((ushort) (SP + 1));
+                    SP += 2;
+                    break;
                 case 0xF3:
                     break;
                 case 0xF5:
@@ -580,8 +586,8 @@ namespace Core
 
         public byte Z
         {
-            get { return (byte) ((0x80 & _f) == 0x80 ? 1 : 0); }
-            set { _f = (byte) ((_f & 0x7F) | (value << 7)); }
+            get { return (byte)((0x80 & _f) == 0x80 ? 1 : 0); }
+            set { _f = (byte)((_f & 0x7F) | (value << 7)); }
         }
 
         public byte N

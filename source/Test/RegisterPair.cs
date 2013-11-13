@@ -16,7 +16,7 @@ namespace Test
                 cpu.H = h;
                 cpu.L = l;
             });
-        public static readonly RegisterPair AF = new RegisterPair(0x03, cpu => (ushort)(cpu.A << 8 | cpu.L),
+        public static readonly RegisterPair AF = new RegisterPair(0x03, cpu => (ushort)(cpu.A << 8 | cpu.F),
             (cpu, h, l) =>
             {
                 cpu.A = h;
