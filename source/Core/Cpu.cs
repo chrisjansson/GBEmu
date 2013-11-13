@@ -122,6 +122,7 @@ namespace Core
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
+            { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
@@ -430,6 +431,12 @@ namespace Core
                     var l = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     ProgramCounter = (ushort)((h << 8) | l);
+                    break;
+                case 0xC5:
+                    //BC
+                    _mmu.SetByte((ushort) (SP - 1), B);
+                    _mmu.SetByte((ushort) (SP - 2), C);
+                    SP -= 2;
                     break;
                 case 0xC9:
                     RET();
