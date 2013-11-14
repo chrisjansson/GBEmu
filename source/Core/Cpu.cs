@@ -137,6 +137,7 @@ namespace Core
             { 0xF1, new InstructionMetaData(1, 3, "POP AF")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
             { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
+            { 0xFE, new InstructionMetaData(2, 2, "CP n")},
         };
 
         private readonly IMmu _mmu;
@@ -173,13 +174,13 @@ namespace Core
                     //NOP
                     break;
                 case 0x01:
-                    C = _mmu.GetByte((ushort) (ProgramCounter + 1));
-                    B = _mmu.GetByte((ushort) (ProgramCounter + 2));
+                    C = _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    B = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     break;
                 case 0x03:
                     var newValue = (B << 8 | C) + 1;
-                    B = (byte) ((newValue >> 8) & 0xFF);
-                    C = (byte) (newValue & 0xFF);
+                    B = (byte)((newValue >> 8) & 0xFF);
+                    C = (byte)(newValue & 0xFF);
                     break;
                 case 0x06:
                     LD_r_n(Register.B);
@@ -236,7 +237,7 @@ namespace Core
                     LD_r_n(Register.H);
                     break;
                 case 0x28:
-                    var n = ((sbyte)_mmu.GetByte((ushort) (ProgramCounter + 1))) + 2;
+                    var n = ((sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1))) + 2;
                     ProgramCounter += (ushort)(Z == 1 ? n : 2);
                     Cycles += Z == 1 ? 3 : 2;
                     break;
@@ -447,11 +448,11 @@ namespace Core
                     LD_r_HL(Register.A);
                     break;
                 case 0xB1:
-                    A = (byte) (A | C);
+                    A = (byte)(A | C);
                     HC = 0;
                     N = 0;
                     Carry = 0;
-                    Z = (byte) (A == 0 ? 1 : 0);
+                    Z = (byte)(A == 0 ? 1 : 0);
                     break;
                 case 0xC3:
                     var l = _mmu.GetByte((ushort)(ProgramCounter + 1));
@@ -460,8 +461,8 @@ namespace Core
                     break;
                 case 0xC5:
                     //BC
-                    _mmu.SetByte((ushort) (SP - 1), B);
-                    _mmu.SetByte((ushort) (SP - 2), C);
+                    _mmu.SetByte((ushort)(SP - 1), B);
+                    _mmu.SetByte((ushort)(SP - 2), C);
                     SP -= 2;
                     break;
                 case 0xC9:
@@ -489,12 +490,12 @@ namespace Core
                         A);
                     break;
                 case 0xF0:
-                    var offset = _mmu.GetByte((ushort) (ProgramCounter + 1));
-                    A = _mmu.GetByte((ushort) (0xFF00 + offset));
+                    var offset = _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    A = _mmu.GetByte((ushort)(0xFF00 + offset));
                     break;
                 case 0xF1:
                     F = _mmu.GetByte(SP);
-                    A = _mmu.GetByte((ushort) (SP + 1));
+                    A = _mmu.GetByte((ushort)(SP + 1));
                     SP += 2;
                     break;
                 case 0xF3:
@@ -503,6 +504,11 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 1), A);
                     _mmu.SetByte((ushort)(SP - 2), F);
                     SP -= 2;
+                    break;
+                case 0xFE:
+                    var res = A == _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    Z = (byte) (res ? 1 : 0);
+                    N = 1;
                     break;
                 default:
                     throw new IllegalOpcodeException(opcode);
@@ -644,8 +650,8 @@ namespace Core
 
         public byte Carry
         {
-            get { return (byte) ((0x10 & _f) == 0x10 ? 1 : 0); }
-            set { _f = (byte) ((_f & 0xEF) | (value << 4)); }
+            get { return (byte)((0x10 & _f) == 0x10 ? 1 : 0); }
+            set { _f = (byte)((_f & 0xEF) | (value << 4)); }
         }
     }
 

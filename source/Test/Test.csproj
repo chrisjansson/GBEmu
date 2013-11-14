@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Build.cs" />
     <Compile Include="Call.cs" />
+    <Compile Include="CP_n.cs" />
     <Compile Include="INC_ss.cs" />
     <Compile Include="JR.cs" />
     <Compile Include="LD_A_n.cs" />
