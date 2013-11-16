@@ -125,6 +125,7 @@ namespace Core
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0xB1, new InstructionMetaData(1, 1, "OR C")},
+            { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
@@ -137,6 +138,7 @@ namespace Core
             { 0xF1, new InstructionMetaData(1, 3, "POP AF")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
             { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
+            { 0xFA, new InstructionMetaData(3, 4, "LD A, (nn)")},
             { 0xFE, new InstructionMetaData(2, 2, "CP n")},
         };
 
@@ -454,6 +456,11 @@ namespace Core
                     Carry = 0;
                     Z = (byte)(A == 0 ? 1 : 0);
                     break;
+                case 0xC1:
+                    C = _mmu.GetByte(SP);
+                    B = _mmu.GetByte((ushort)(SP + 1));
+                    SP += 2;
+                    break;
                 case 0xC3:
                     var l = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
@@ -505,9 +512,13 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 2), F);
                     SP -= 2;
                     break;
+                case 0xFA:
+                    var address = _mmu.GetByte((ushort) (ProgramCounter + 1)) | (_mmu.GetByte((ushort) (ProgramCounter + 2)) << 8);
+                    A = _mmu.GetByte((ushort) address);
+                    break;
                 case 0xFE:
                     var res = A == _mmu.GetByte((ushort)(ProgramCounter + 1));
-                    Z = (byte) (res ? 1 : 0);
+                    Z = (byte)(res ? 1 : 0);
                     N = 1;
                     break;
                 default:
