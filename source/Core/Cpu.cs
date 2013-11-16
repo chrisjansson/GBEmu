@@ -43,6 +43,7 @@ namespace Core
             { 0x00, new InstructionMetaData(1, 1, "NOP")},
             { 0x01, new InstructionMetaData(3, 3, "LD BC, nn")},
             { 0x03, new InstructionMetaData(1, 2, "INC BC")},
+            { 0x05, new InstructionMetaData(1, 1, "DEC B")},
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
@@ -55,6 +56,7 @@ namespace Core
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
             { 0x21, new InstructionMetaData(3, 3, "LD HL, nn")},
             { 0x23, new InstructionMetaData(1, 2, "INC HL")},
+            { 0x24, new InstructionMetaData(1, 1, "INC H")},
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
             { 0x28, new InstructionMetaData(0, 0, "JR Z, $ + e")},
             { 0x2A, new InstructionMetaData(1, 2, "LD A, (HLI)")},
@@ -185,14 +187,14 @@ namespace Core
                     B = (byte)((newValue >> 8) & 0xFF);
                     C = (byte)(newValue & 0xFF);
                     break;
+                case 0x05:
+                    DEC_r(Register.B);
+                    break;
                 case 0x06:
                     LD_r_n(Register.B);
                     break;
                 case 0x0D:
-                    N = 1;
-                    HC = (byte)((C & 0x0F) == 0 ? 1 : 0);
-                    C = (byte)(C - 1);
-                    Z = (byte)(C == 0 ? 1 : 0);
+                    DEC_r(Register.C);
                     break;
                 case 0x0E:
                     LD_r_n(Register.C);
@@ -235,6 +237,9 @@ namespace Core
                     var result = HL + 1;
                     H = (byte)((result >> 8) & 0xFF);
                     L = (byte)(result & 0xFF);
+                    break;
+                case 0x24:
+                    INC_r(Register.H);
                     break;
                 case 0x26:
                     LD_r_n(Register.H);
@@ -534,6 +539,14 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void DEC_r(Register register)
+        {
+            N = 1;
+            HC = (byte)((_registers[(int) register] & 0x0F) == 0 ? 1 : 0);
+            _registers[(int) register] = (byte)(_registers[(int)register] - 1);
+            Z = (byte)(_registers[(int)register] == 0 ? 1 : 0);
         }
 
         private void RET()

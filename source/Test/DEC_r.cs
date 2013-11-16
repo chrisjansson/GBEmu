@@ -1,5 +1,8 @@
-﻿using Core;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Core;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Test
 {
@@ -7,74 +10,84 @@ namespace Test
     {
         private Cpu _cpu;
 
-        [Fact]
-        public void DEC_c()
+        [Theory, PropertyData("Registers")]
+        public void Decrements_r(RegisterMapping register)
         {
-            _cpu.C = 0x05;
+            register.Set(_cpu, 0x05);
             _cpu.ProgramCounter = 18349;
             _cpu.Cycles = 934821;
 
-            _cpu.Execute(0x0D);
+            _cpu.Execute(CreateOpCode(register));
 
-            Assert.Equal(0x04, _cpu.C);
+            Assert.Equal(0x04, register.Get(_cpu));
             Assert.Equal(18350, _cpu.ProgramCounter);
             Assert.Equal(934822, _cpu.Cycles);
         }
 
-        [Fact]
-        public void Sets_hc_when_borrow_from_bit_4()
+        [Theory, PropertyData("Registers")]
+        public void Sets_hc_when_borrow_from_bit_4(RegisterMapping register)
         {
-            _cpu.C = 0xA0;
+            register.Set(_cpu, 0xA0);
             _cpu.HC = 0;
 
-            _cpu.Execute(0x0D);
+            _cpu.Execute(CreateOpCode(register));
 
             Assert.Equal(1, _cpu.HC);
         }
 
-        [Fact]
-        public void Resets_hc_when_not_borrow_from_bit_4()
+        [Theory, PropertyData("Registers")]
+        public void Resets_hc_when_not_borrow_from_bit_4(RegisterMapping register)
         {
-            _cpu.C = 0x01;
+            register.Set(_cpu, 0x01);
             _cpu.HC = 1;
 
-            _cpu.Execute(0x0D);
+            _cpu.Execute(CreateOpCode(register));
 
             Assert.Equal(0, _cpu.HC);
         }
 
-        [Fact]
-        public void Sets_N_when_dec()
+        [Theory, PropertyData("Registers")]
+        public void Sets_N_when_dec(RegisterMapping register)
         {
             _cpu.N = 0;
 
-            _cpu.Execute(0x0D);
+            _cpu.Execute(CreateOpCode(register));
 
             Assert.Equal(1, _cpu.N);
         }
 
-        [Fact]
-        public void Unsets_z_when_result_is_non_zero()
+        [Theory, PropertyData("Registers")]
+        public void Unsets_z_when_result_is_non_zero(RegisterMapping register)
         {
-            _cpu.Z  = 1;
-            _cpu.C = 0x02;
+            _cpu.Z = 1;
+            register.Set(_cpu, 0x02);
 
-            _cpu.Execute(0x0D);
+            _cpu.Execute(CreateOpCode(register));
 
             Assert.Equal(0, _cpu.Z);
         }
 
-        [Fact]
-        public void Sets_z_when_result_is_zero()
+        [Theory, PropertyData("Registers")]
+        public void Sets_z_when_result_is_zero(RegisterMapping register)
         {
             _cpu.Z = 0;
-            _cpu.C = 0x01;
+            register.Set(_cpu, 0x01);
 
-            _cpu.Execute(0x0D);
+            _cpu.Execute(CreateOpCode(register));
 
             Assert.Equal(1, _cpu.Z);
         }
-        
+
+        private byte CreateOpCode(RegisterMapping registerMapping)
+        {
+            return (byte)(0x05 | registerMapping << 3);
+        }
+
+        public static IEnumerable<object[]> Registers
+        {
+            get { return RegisterMapping.GetAll().Select(x => new object[] { x }); }
+        }
+
         public void SetFixture(CpuFixture data)
         {
             _cpu = data.Cpu;
