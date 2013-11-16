@@ -58,6 +58,7 @@ namespace Core
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
             { 0x28, new InstructionMetaData(0, 0, "JR Z, $ + e")},
             { 0x2A, new InstructionMetaData(1, 2, "LD A, (HLI)")},
+            { 0x2C, new InstructionMetaData(1, 1, "INC L")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
@@ -248,6 +249,9 @@ namespace Core
                     var increment = HL + 1;
                     L = (byte)(increment & 0xFF);
                     H = (byte)((increment >> 8) & 0xFF);
+                    break;
+                case 0x2C:
+                    INC_r(Register.L);
                     break;
                 case 0x2E:
                     LD_r_n(Register.L);
