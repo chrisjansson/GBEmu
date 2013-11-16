@@ -43,6 +43,7 @@ namespace Test
                 {
                     new object[] {RegisterPair.HL},
                     new object[] {RegisterPair.BC},
+                    new object[] {RegisterPair.DE},
                 };
             }
         }

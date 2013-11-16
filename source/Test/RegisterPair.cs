@@ -13,7 +13,7 @@ namespace Test
                 cpu.B = h;
                 cpu.C = l;
             });
-        public static readonly RegisterPair DE = new RegisterPair(0x01, cpu => 0, (cpu, h, l) =>
+        public static readonly RegisterPair DE = new RegisterPair(0x01, cpu => (ushort)(cpu.D << 8 | cpu.E), (cpu, h, l) =>
         {
             cpu.D = h;
             cpu.E = l;

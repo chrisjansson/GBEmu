@@ -49,6 +49,7 @@ namespace Core
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
             { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
             { 0x12, new InstructionMetaData(1, 2, "LD (DE), A")},
+            { 0x13, new InstructionMetaData(1, 2, "INC DE")},
             { 0x14, new InstructionMetaData(1, 1, "INC D")},
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
             { 0x18, new InstructionMetaData(0, 3, "JR, $+e")},
@@ -207,6 +208,11 @@ namespace Core
                 case 0x12:
                     var target = (D << 8 | E);
                     _mmu.SetByte((ushort)target, A);
+                    break;
+                case 0x13:
+                    var res2 = (D << 8 | E) + 1;
+                    D = (byte) ((res2 >> 8) & 0xFF);
+                    E = (byte) (res2 & 0xFF);
                     break;
                 case 0x14:
                     INC_r(Register.D);
@@ -535,7 +541,7 @@ namespace Core
                     N = 1;
                     break;
                 default:
-                    throw new IllegalOpcodeException(opcode);
+                    throw new IllegalOpcodeException(opcode, ProgramCounter);
             }
 
             if (_instructionMetaData.ContainsKey(opcode))
@@ -690,15 +696,17 @@ namespace Core
     public class IllegalOpcodeException : Exception
     {
         private readonly byte _opcode;
+        private readonly ushort _programCounter;
 
-        public IllegalOpcodeException(byte opcode)
+        public IllegalOpcodeException(byte opcode, ushort programCounter)
         {
+            _programCounter = programCounter;
             _opcode = opcode;
         }
 
         public override string Message
         {
-            get { return string.Format("Illegal opcode 0x{0:x2}", _opcode); }
+            get { return string.Format("Illegal opcode 0x{0:x2} at {1:x}", _opcode, _programCounter); }
         }
     }
 }
