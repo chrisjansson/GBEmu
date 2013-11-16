@@ -57,6 +57,7 @@ namespace Core
             { 0x1C, new InstructionMetaData(1, 1, "INC E")},
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
             { 0x21, new InstructionMetaData(3, 3, "LD HL, nn")},
+            { 0x22, new InstructionMetaData(1, 2, "LD (HLI), A")},
             { 0x23, new InstructionMetaData(1, 2, "INC HL")},
             { 0x24, new InstructionMetaData(1, 1, "INC H")},
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
@@ -242,6 +243,12 @@ namespace Core
                 case 0x21:
                     L = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     H = _mmu.GetByte((ushort)(ProgramCounter + 2));
+                    break;
+                case 0x22:
+                    _mmu.SetByte(HL, A);
+                    var nextHL = HL + 1;
+                    H = (byte) (nextHL >> 8);
+                    L = (byte) nextHL;
                     break;
                 case 0x23:
                     var result = HL + 1;
