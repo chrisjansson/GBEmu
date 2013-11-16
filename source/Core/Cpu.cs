@@ -66,6 +66,7 @@ namespace Core
             { 0x2C, new InstructionMetaData(1, 1, "INC L")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
+            { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
             { 0x40, new InstructionMetaData(1, 1, "LD B, B")},
             { 0x41, new InstructionMetaData(1, 1, "LD B, C")},
@@ -212,8 +213,8 @@ namespace Core
                     break;
                 case 0x13:
                     var res2 = (D << 8 | E) + 1;
-                    D = (byte) ((res2 >> 8) & 0xFF);
-                    E = (byte) (res2 & 0xFF);
+                    D = (byte)((res2 >> 8) & 0xFF);
+                    E = (byte)(res2 & 0xFF);
                     break;
                 case 0x14:
                     INC_r(Register.D);
@@ -225,7 +226,7 @@ namespace Core
                     JR_e();
                     break;
                 case 0x1A:
-                    A = _mmu.GetByte((ushort) (D << 8 | E));
+                    A = _mmu.GetByte((ushort)(D << 8 | E));
                     break;
                 case 0x1C:
                     INC_r(Register.E);
@@ -247,8 +248,8 @@ namespace Core
                 case 0x22:
                     _mmu.SetByte(HL, A);
                     var nextHL = HL + 1;
-                    H = (byte) (nextHL >> 8);
-                    L = (byte) nextHL;
+                    H = (byte)(nextHL >> 8);
+                    L = (byte)nextHL;
                     break;
                 case 0x23:
                     var result = HL + 1;
@@ -282,6 +283,12 @@ namespace Core
                     var low = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     var high = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     SP = (ushort)((high << 8) | low);
+                    break;
+                case 0x32:
+                    _mmu.SetByte(HL, A);
+                    var nextHLD = HL - 1;
+                    H = (byte) (nextHLD >> 8);
+                    L = (byte) nextHLD;
                     break;
                 case 0x3E:
                     LD_r_n(Register.A);
@@ -539,8 +546,8 @@ namespace Core
                     SP -= 2;
                     break;
                 case 0xFA:
-                    var address = _mmu.GetByte((ushort) (ProgramCounter + 1)) | (_mmu.GetByte((ushort) (ProgramCounter + 2)) << 8);
-                    A = _mmu.GetByte((ushort) address);
+                    var address = _mmu.GetByte((ushort)(ProgramCounter + 1)) | (_mmu.GetByte((ushort)(ProgramCounter + 2)) << 8);
+                    A = _mmu.GetByte((ushort)address);
                     break;
                 case 0xFE:
                     var res = A == _mmu.GetByte((ushort)(ProgramCounter + 1));
@@ -561,8 +568,8 @@ namespace Core
         private void DEC_r(Register register)
         {
             N = 1;
-            HC = (byte)((_registers[(int) register] & 0x0F) == 0 ? 1 : 0);
-            _registers[(int) register] = (byte)(_registers[(int)register] - 1);
+            HC = (byte)((_registers[(int)register] & 0x0F) == 0 ? 1 : 0);
+            _registers[(int)register] = (byte)(_registers[(int)register] - 1);
             Z = (byte)(_registers[(int)register] == 0 ? 1 : 0);
         }
 

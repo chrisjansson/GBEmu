@@ -77,6 +77,7 @@
     <Compile Include="LD_A_DE.cs" />
     <Compile Include="LD_A_n.cs" />
     <Compile Include="LD_A_nn.cs" />
+    <Compile Include="LD_HLD_A.cs" />
     <Compile Include="LD_HLI_A.cs" />
     <Compile Include="LD_nn_A.cs" />
     <Compile Include="CpuFixture.cs" />
