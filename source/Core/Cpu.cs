@@ -52,6 +52,7 @@ namespace Core
             { 0x14, new InstructionMetaData(1, 1, "INC D")},
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
             { 0x18, new InstructionMetaData(0, 3, "JR, $+e")},
+            { 0x1A, new InstructionMetaData(1, 2, "LD A, (DE)")},
             { 0x1C, new InstructionMetaData(1, 1, "INC E")},
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
             { 0x21, new InstructionMetaData(3, 3, "LD HL, nn")},
@@ -215,6 +216,9 @@ namespace Core
                     break;
                 case 0x18:
                     JR_e();
+                    break;
+                case 0x1A:
+                    A = _mmu.GetByte((ushort) (D << 8 | E));
                     break;
                 case 0x1C:
                     INC_r(Register.E);
