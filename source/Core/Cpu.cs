@@ -9,15 +9,28 @@ namespace Core
         void SetByte(ushort address, byte value);
     }
 
-    public enum Register
+    public class Register
     {
-        A = 0,
-        B,
-        C,
-        D,
-        E,
-        H,
-        L
+        public static readonly Register A = new Register(0);
+        public static readonly Register B = new Register(1);
+        public static readonly Register C = new Register(2);
+        public static readonly Register D = new Register(3);
+        public static readonly Register E = new Register(4);
+        public static readonly Register H = new Register(5);
+        public static readonly Register L = new Register(6);
+
+        private Register(int index)
+        {
+            _index = index;
+        }
+
+        
+        private readonly int _index;
+
+        public static implicit operator int(Register register)
+        {
+            return register._index;
+        }
     }
 
     public struct InstructionMetaData
@@ -158,20 +171,20 @@ namespace Core
 
         private void LD_r_r(Register target, Register source)
         {
-            _registers[(int)target] = _registers[(int)source];
+            _registers[target] = _registers[source];
         }
 
         private void LD_r_n(Register target)
         {
             var n = _mmu.GetByte((ushort)(ProgramCounter + 1));
-            _registers[(int)target] = n;
+            _registers[target] = n;
         }
 
         private void INC_r(Register register)
         {
-            HC = (byte)((((_registers[(int)register] & 0xF) + 1) & 0x10) == 0 ? 0 : 1);
-            _registers[(int)register] = (byte)(_registers[(int)register] + 1);
-            Z = (byte)(_registers[(int)register] == 0 ? 1 : 0);
+            HC = (byte)((((_registers[register] & 0xF) + 1) & 0x10) == 0 ? 0 : 1);
+            _registers[register] = (byte)(_registers[register] + 1);
+            Z = (byte)(_registers[register] == 0 ? 1 : 0);
             N = 0;
         }
 
@@ -483,11 +496,7 @@ namespace Core
                     LD_r_HL(Register.A);
                     break;
                 case 0xB1:
-                    A = (byte)(A | C);
-                    HC = 0;
-                    N = 0;
-                    Carry = 0;
-                    Z = (byte)(A == 0 ? 1 : 0);
+                    OR_r(Register.C);
                     break;
                 case 0xC1:
                     C = _mmu.GetByte(SP);
@@ -565,12 +574,21 @@ namespace Core
             }
         }
 
+        private void OR_r(Register register)
+        {
+            A = (byte) (A | _registers[register]);
+            HC = 0;
+            N = 0;
+            Carry = 0;
+            Z = (byte)(A == 0 ? 1 : 0);
+        }
+
         private void DEC_r(Register register)
         {
             N = 1;
-            HC = (byte)((_registers[(int)register] & 0x0F) == 0 ? 1 : 0);
-            _registers[(int)register] = (byte)(_registers[(int)register] - 1);
-            Z = (byte)(_registers[(int)register] == 0 ? 1 : 0);
+            HC = (byte)((_registers[register] & 0x0F) == 0 ? 1 : 0);
+            _registers[register] = (byte)(_registers[register] - 1);
+            Z = (byte)(_registers[register] == 0 ? 1 : 0);
         }
 
         private void RET()
@@ -607,14 +625,14 @@ namespace Core
         private void LD_HL_r(Register register)
         {
             var target = HL;
-            var value = _registers[(int)register];
+            var value = _registers[register];
             _mmu.SetByte(target, value);
         }
 
         private void LD_r_HL(Register register)
         {
             var n = _mmu.GetByte(HL);
-            _registers[(int)register] = n;
+            _registers[register] = n;
         }
 
         private ushort HL
@@ -624,44 +642,44 @@ namespace Core
 
         public byte A
         {
-            get { return _registers[(int)Register.A]; }
-            set { _registers[(int)Register.A] = value; }
+            get { return _registers[Register.A]; }
+            set { _registers[Register.A] = value; }
         }
 
         public byte B
         {
-            get { return _registers[(int)Register.B]; }
-            set { _registers[(int)Register.B] = value; }
+            get { return _registers[Register.B]; }
+            set { _registers[Register.B] = value; }
         }
 
         public byte C
         {
-            get { return _registers[(int)Register.C]; }
-            set { _registers[(int)Register.C] = value; }
+            get { return _registers[Register.C]; }
+            set { _registers[Register.C] = value; }
         }
 
         public byte D
         {
-            get { return _registers[(int)Register.D]; }
-            set { _registers[(int)Register.D] = value; }
+            get { return _registers[Register.D]; }
+            set { _registers[Register.D] = value; }
         }
 
         public byte E
         {
-            get { return _registers[(int)Register.E]; }
-            set { _registers[(int)Register.E] = value; }
+            get { return _registers[Register.E]; }
+            set { _registers[Register.E] = value; }
         }
 
         public byte H
         {
-            get { return _registers[(int)Register.H]; }
-            set { _registers[(int)Register.H] = value; }
+            get { return _registers[Register.H]; }
+            set { _registers[Register.H] = value; }
         }
 
         public byte L
         {
-            get { return _registers[(int)Register.L]; }
-            set { _registers[(int)Register.L] = value; }
+            get { return _registers[Register.L]; }
+            set { _registers[Register.L] = value; }
         }
 
         private byte _f;
