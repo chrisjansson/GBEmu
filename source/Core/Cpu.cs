@@ -145,6 +145,7 @@ namespace Core
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0xB1, new InstructionMetaData(1, 1, "OR C")},
+            { 0xB7, new InstructionMetaData(1, 1, "OR A")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
@@ -497,6 +498,9 @@ namespace Core
                     break;
                 case 0xB1:
                     OR_r(Register.C);
+                    break;
+                case 0xB7:
+                    OR_r(Register.A);
                     break;
                 case 0xC1:
                     C = _mmu.GetByte(SP);
