@@ -145,6 +145,7 @@ namespace Core
             { 0x7D, new InstructionMetaData(1, 1, "LD A, L")},
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
+            { 0xAE, new InstructionMetaData(1, 2, "XOR (HL)")},
             { 0xB1, new InstructionMetaData(1, 1, "OR C")},
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
@@ -501,6 +502,9 @@ namespace Core
                 case 0x7E:
                     LD_r_HL(Register.A);
                     break;
+                case 0xAE:
+                    XOR(_mmu.GetByte(HL));
+                    break;
                 case 0xB1:
                     OR_r(Register.C);
                     break;
@@ -586,6 +590,15 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void XOR(byte value)
+        {
+            A = (byte) (A ^ value);
+            Z = (byte) (A == 0 ? 1 : 0);
+            N = 0;
+            HC = 0;
+            Carry = 0;
         }
 
         private void OR_r(Register register)
