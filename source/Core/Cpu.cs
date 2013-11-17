@@ -77,6 +77,7 @@ namespace Core
             { 0x28, new InstructionMetaData(0, 0, "JR Z, $ + e")},
             { 0x2A, new InstructionMetaData(1, 2, "LD A, (HLI)")},
             { 0x2C, new InstructionMetaData(1, 1, "INC L")},
+            { 0x2D, new InstructionMetaData(1, 1, "DEC L")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
@@ -290,6 +291,9 @@ namespace Core
                     break;
                 case 0x2C:
                     INC_r(Register.L);
+                    break;
+                case 0x2D:
+                    DEC_r(Register.L);
                     break;
                 case 0x2E:
                     LD_r_n(Register.L);
