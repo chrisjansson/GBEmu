@@ -71,6 +71,8 @@
   <ItemGroup>
     <Compile Include="Build.cs" />
     <Compile Include="Call.cs" />
+    <Compile Include="CBTestBase.cs" />
+    <Compile Include="CpuAssertion.cs" />
     <Compile Include="CP_n.cs" />
     <Compile Include="INC_ss.cs" />
     <Compile Include="JR.cs" />
