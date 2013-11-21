@@ -71,7 +71,6 @@
   <ItemGroup>
     <Compile Include="Build.cs" />
     <Compile Include="Call.cs" />
-    <Compile Include="CBTestBase.cs" />
     <Compile Include="CpuAssertion.cs" />
     <Compile Include="CP_n.cs" />
     <Compile Include="INC_ss.cs" />
@@ -107,6 +106,7 @@
     <Compile Include="RegisterMapping.cs" />
     <Compile Include="RegisterPair.cs" />
     <Compile Include="RET.cs" />
+    <Compile Include="SRL_r.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="XOR_HL.cs" />
   </ItemGroup>

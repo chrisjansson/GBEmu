@@ -13,6 +13,7 @@ namespace Test
         private long _initialCycles;
         private ushort _initialProgramCounter;
         private List<Action> _assertions;
+        private byte _opCode;
 
         public CpuAssertion()
         {
@@ -33,14 +34,17 @@ namespace Test
 
         public CpuAssertion ExecutingCB(byte opCode)
         {
-            _fakeMmu.Memory[_cpu.ProgramCounter + 1] = opCode;
-            _cpu.Execute(0xCB);
+            _opCode = opCode;
+            
 
             return this;
         }
 
         public void End()
         {
+            _fakeMmu.Memory[_cpu.ProgramCounter + 1] = _opCode;
+            _cpu.Execute(0xCB);
+
             foreach (var assertion in _assertions)
             {
                 assertion();

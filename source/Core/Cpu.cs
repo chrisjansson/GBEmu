@@ -522,13 +522,15 @@ namespace Core
                     ProgramCounter = (ushort)((h << 8) | l);
                     break;
                 case 0xC5:
-                    //BC
                     _mmu.SetByte((ushort)(SP - 1), B);
                     _mmu.SetByte((ushort)(SP - 2), C);
                     SP -= 2;
                     break;
                 case 0xC9:
                     RET();
+                    break;
+                case 0xCB:
+                    CB();
                     break;
                 case 0xCD:
                     Call();
@@ -590,6 +592,19 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void CB()
+        {
+            ProgramCounter += 2;
+            Cycles += 2;
+
+            Carry = (byte) ((A & 0x01) == 0x01 ? 1 : 0);
+            A = (byte) (A >> 1);
+
+            Z = (byte) (A == 0 ? 1 : 0);
+            N = 0;
+            HC = 0;
         }
 
         private void XOR(byte value)
