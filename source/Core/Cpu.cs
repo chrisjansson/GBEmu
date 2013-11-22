@@ -24,7 +24,7 @@ namespace Core
             _index = index;
         }
 
-        
+
         private readonly int _index;
 
         public static implicit operator int(Register register)
@@ -307,8 +307,8 @@ namespace Core
                 case 0x32:
                     _mmu.SetByte(HL, A);
                     var nextHLD = HL - 1;
-                    H = (byte) (nextHLD >> 8);
-                    L = (byte) nextHLD;
+                    H = (byte)(nextHLD >> 8);
+                    L = (byte)nextHLD;
                     break;
                 case 0x3E:
                     LD_r_n(Register.A);
@@ -596,21 +596,40 @@ namespace Core
 
         private void CB()
         {
-            ProgramCounter += 2;
-            Cycles += 2;
+            var opCode = _mmu.GetByte((ushort)(ProgramCounter + 1));
+            switch (opCode)
+            {
+                case 0x38:
+                    SRL_B();
+                    break;
+                default:
+                    throw new IllegalOpcodeException(opCode, ProgramCounter);
+            }
 
-            Carry = (byte) ((A & 0x01) == 0x01 ? 1 : 0);
-            A = (byte) (A >> 1);
+            var instructionMetaData = _cbInstructions[opCode];
+            ProgramCounter += instructionMetaData.Size;
+            Cycles += instructionMetaData.Cycles;
+        }
 
-            Z = (byte) (A == 0 ? 1 : 0);
+        private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
+        {
+            {0x38, new InstructionMetaData(2, 2, "SRL B")}
+        };
+
+        private void SRL_B()
+        {
+            Carry = (byte)((A & 0x01) == 0x01 ? 1 : 0);
+            A = (byte)(A >> 1);
+
+            Z = (byte)(A == 0 ? 1 : 0);
             N = 0;
             HC = 0;
         }
 
         private void XOR(byte value)
         {
-            A = (byte) (A ^ value);
-            Z = (byte) (A == 0 ? 1 : 0);
+            A = (byte)(A ^ value);
+            Z = (byte)(A == 0 ? 1 : 0);
             N = 0;
             HC = 0;
             Carry = 0;
@@ -618,7 +637,7 @@ namespace Core
 
         private void OR_r(Register register)
         {
-            A = (byte) (A | _registers[register]);
+            A = (byte)(A | _registers[register]);
             HC = 0;
             N = 0;
             Carry = 0;

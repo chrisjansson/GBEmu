@@ -21,7 +21,7 @@ namespace Test
         public void Executes_instructions()
         {
             Sut.ProgramCounter = 0x100;
-
+                
             for (var i = 0; i < 1000000; i++)
             {
                 var instruction = FakeMmu.GetByte(Sut.ProgramCounter);
