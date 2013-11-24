@@ -618,10 +618,9 @@ namespace Core
 
         private void SRL_B()
         {
-            Carry = (byte)((A & 0x01) == 0x01 ? 1 : 0);
-            A = (byte)(A >> 1);
-
-            Z = (byte)(A == 0 ? 1 : 0);
+            Carry = (byte)((B & 0x01) == 0x01 ? 1 : 0);
+            B = (byte)(B >> 1);
+            Z = (byte)(B == 0 ? 1 : 0);
             N = 0;
             HC = 0;
         }

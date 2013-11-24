@@ -5,7 +5,7 @@ using Xunit.Extensions;
 
 namespace Test
 {
-    public class SRL_r : CpuTestBase
+    public abstract class CBRegisterTestBase : CpuTestBase
     {
         [Theory, PropertyData("Registers")]
         public void Advances_counters(RegisterMapping register)
@@ -16,8 +16,24 @@ namespace Test
             AdvancedClock(2);
         }
 
+        public static IEnumerable<object[]> Registers
+        {
+            get
+            {
+                return RegisterMapping
+                    .GetAll()
+                    .Select(x => new object[] { x })
+                    .ToList();
+            }
+        }
+
+        protected abstract byte CreateOpCode(RegisterMapping register);
+    }
+
+    public class SRL_r : CBRegisterTestBase
+    {
         [Theory, PropertyData("Registers")]
-        public void Shifts_contents_right_sets_carry_and_resets_zero(RegisterMapping register)
+        public void Shifts_contents_right_sets_carry_and_resets_zerno(RegisterMapping register)
         {
             Flags(x => x.Zero().ResetCarry());
             register.Set(Cpu, 0x8F);
@@ -49,20 +65,9 @@ namespace Test
             AssertFlags(x => x.ResetSubtract().ResetHalfCarry());
         }
 
-        private byte CreateOpCode(RegisterMapping register)
+        protected override byte CreateOpCode(RegisterMapping register)
         {
             return (byte)(0x38 | register);
-        }
-
-        public static IEnumerable<object[]> Registers
-        {
-            get
-            {
-                return RegisterMapping
-                    .GetAll()
-                    .Select(x => new object[] { x })
-                    .ToList();
-            }
         }
     }
 }
