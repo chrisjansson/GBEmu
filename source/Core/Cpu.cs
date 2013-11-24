@@ -599,6 +599,9 @@ namespace Core
             var opCode = _mmu.GetByte((ushort)(ProgramCounter + 1));
             switch (opCode)
             {
+                case 0x19:
+                    RR_C();
+                    break;
                 case 0x38:
                     SRL_B();
                     break;
@@ -611,9 +614,20 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void RR_C()
+        {
+            var old = C;
+            C = (byte) (C >> 1 | (Carry << 7));
+            Carry = (byte)((old & 0x01) == 0x01 ? 1 : 0);
+            Z = (byte) (C == 0 ? 1 : 0);
+            HC = 0;
+            N = 0;
+        }
+
         private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
         {
-            {0x38, new InstructionMetaData(2, 2, "SRL B")}
+            {0x19, new InstructionMetaData(2, 2, "RR C")},
+            {0x38, new InstructionMetaData(2, 2, "SRL B")},
         };
 
         private void SRL_B()
