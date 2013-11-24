@@ -600,7 +600,10 @@ namespace Core
             switch (opCode)
             {
                 case 0x19:
-                    RR_C();
+                    RR_r(Register.C);
+                    break;
+                case 0x1A:
+                    RR_r(Register.D);
                     break;
                 case 0x38:
                     SRL_B();
@@ -614,12 +617,12 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
-        private void RR_C()
+        private void RR_r(Register register)
         {
-            var old = C;
-            C = (byte) (C >> 1 | (Carry << 7));
+            var old = _registers[register];
+            _registers[register] = (byte) (old >> 1 | (Carry << 7));
             Carry = (byte)((old & 0x01) == 0x01 ? 1 : 0);
-            Z = (byte) (C == 0 ? 1 : 0);
+            Z = (byte) (_registers[register] == 0 ? 1 : 0);
             HC = 0;
             N = 0;
         }
@@ -627,6 +630,7 @@ namespace Core
         private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
         {
             {0x19, new InstructionMetaData(2, 2, "RR C")},
+            {0x1A, new InstructionMetaData(2, 2, "RR D")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
         };
 
