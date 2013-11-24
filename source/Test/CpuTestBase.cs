@@ -52,6 +52,11 @@ namespace Test
             Cpu.Execute(0xCB);
         }
 
+        protected void Execute(byte opCode)
+        {
+            Cpu.Execute(opCode);
+        }
+
         protected class FlagSetter
         {
             private readonly Cpu _cpu;

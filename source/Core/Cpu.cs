@@ -69,6 +69,7 @@ namespace Core
             { 0x1A, new InstructionMetaData(1, 2, "LD A, (DE)")},
             { 0x1C, new InstructionMetaData(1, 1, "INC E")},
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
+            { 0x1F, new InstructionMetaData(1, 1, "RRA")},
             { 0x21, new InstructionMetaData(3, 3, "LD HL, nn")},
             { 0x22, new InstructionMetaData(1, 2, "LD (HLI), A")},
             { 0x23, new InstructionMetaData(1, 2, "INC HL")},
@@ -250,6 +251,9 @@ namespace Core
                     break;
                 case 0x1E:
                     LD_r_n(Register.E);
+                    break;
+                case 0x1F:
+                    RR_r(Register.A);
                     break;
                 case 0x20:
                     var eMinusTwo = (sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1));
