@@ -112,6 +112,7 @@
     <Compile Include="SRL_r.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="XOR_HL.cs" />
+    <Compile Include="XOR_n.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

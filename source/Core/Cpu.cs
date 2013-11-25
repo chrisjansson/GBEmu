@@ -160,6 +160,7 @@ namespace Core
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
+            { 0xEE, new InstructionMetaData(2, 2, "XOR n")},
             { 0xF0, new InstructionMetaData(2, 3, "LD A, (n)")},
             { 0xF1, new InstructionMetaData(1, 3, "POP AF")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
@@ -561,10 +562,26 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 2), L);
                     SP -= 2;
                     break;
+                case 0xE6:
+                    A = (byte)(A & _mmu.GetByte((ushort)(ProgramCounter + 1)));
+                    Carry = 0;
+                    N = 0;
+                    HC = 1;
+                    Z = (byte)(A == 0 ? 1 : 0);
+                    ProgramCounter += 2;
+                    Cycles += 2;
+                    break;
                 case 0xEA:
                     _mmu.SetByte(
                         (ushort)((_mmu.GetByte((ushort)(ProgramCounter + 2)) << 8) | _mmu.GetByte((ushort)(ProgramCounter + 1))),
                         A);
+                    break;
+                case 0xEE:
+                    A = (byte) (A ^ _mmu.GetByte((ushort) (ProgramCounter + 1)));
+                    N = 0;
+                    HC = 0;
+                    Carry = 0;
+                    Z = (byte) (A == 0 ? 1 : 0);
                     break;
                 case 0xF0:
                     var offset = _mmu.GetByte((ushort)(ProgramCounter + 1));
