@@ -7,7 +7,7 @@ namespace Test
 {
     public class CpuTestBase
     {
-        private readonly FakeMmu _fakeMmu;
+        protected readonly FakeMmu _fakeMmu;
         protected readonly Cpu Cpu;
         private readonly ushort _initialProgramCounter;
         private readonly long _initialCycles;
@@ -52,8 +52,12 @@ namespace Test
             Cpu.Execute(0xCB);
         }
 
-        protected void Execute(byte opCode)
+        protected void Execute(byte opCode, params byte[] args)
         {
+            for (int i = 0; i < args.Length; i++)
+            {
+                _fakeMmu.Memory[_initialProgramCounter + 1 + i] = args[i];
+            }
             Cpu.Execute(opCode);
         }
 

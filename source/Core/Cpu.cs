@@ -80,6 +80,7 @@ namespace Core
             { 0x2C, new InstructionMetaData(1, 1, "INC L")},
             { 0x2D, new InstructionMetaData(1, 1, "DEC L")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
+            { 0x30, new InstructionMetaData(0, 0, "JR NC, $+e")},
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
@@ -302,6 +303,9 @@ namespace Core
                     break;
                 case 0x2E:
                     LD_r_n(Register.L);
+                    break;
+                case 0x30:
+                    JR_NC();
                     break;
                 case 0x31:
                     var low = _mmu.GetByte((ushort)(ProgramCounter + 1));
@@ -598,6 +602,13 @@ namespace Core
             }
         }
 
+        private void JR_NC()
+        {
+            var e = (sbyte)(_mmu.GetByte((ushort)(ProgramCounter + 1)) + 2);
+            ProgramCounter += (ushort)(Carry == 0 ? e : 2);
+            Cycles += Carry == 0 ? 3 : 2;
+        }
+
         private void CB()
         {
             var opCode = _mmu.GetByte((ushort)(ProgramCounter + 1));
@@ -624,9 +635,9 @@ namespace Core
         private void RR_r(Register register)
         {
             var old = _registers[register];
-            _registers[register] = (byte) (old >> 1 | (Carry << 7));
+            _registers[register] = (byte)(old >> 1 | (Carry << 7));
             Carry = (byte)((old & 0x01) == 0x01 ? 1 : 0);
-            Z = (byte) (_registers[register] == 0 ? 1 : 0);
+            Z = (byte)(_registers[register] == 0 ? 1 : 0);
             HC = 0;
             N = 0;
         }

@@ -1,74 +1,84 @@
-﻿using Core;
-using Xunit;
+﻿using Xunit;
 
 namespace Test
 {
-    public class JR_cc_e
+    public class JR_cc_e : CpuTestBase
     {
-        private Cpu _cpu;
-        private FakeMmu _fakeMmu;
-
-        public JR_cc_e()
-        {
-            var cpuFixture = new CpuFixture();
-            _cpu = cpuFixture.Cpu;
-            _fakeMmu = cpuFixture.FakeMmu;
-        }
-
         [Fact]
         public void Jumps_relative_to_program_counter_when_NZ()
         {
-            _cpu.ProgramCounter = 0x480;
-            _cpu.Z = 0;
-            _cpu.Cycles = 48401;
+            Cpu.ProgramCounter = 0x480;
+            Cpu.Z = 0;
+            Cpu.Cycles = 48401;
             _fakeMmu.SetByte(0x481, 0xFA);
 
-            _cpu.Execute(0x20);
+            Execute(0x20);
 
-            Assert.Equal(0x47C, _cpu.ProgramCounter);
-            Assert.Equal(48404, _cpu.Cycles);
+            Assert.Equal(0x47C, Cpu.ProgramCounter);
+            Assert.Equal(48404, Cpu.Cycles);
         }
 
         [Fact]
         public void Does_not_jump_when_not_NZ()
         {
-            _cpu.ProgramCounter = 0x480;
-            _cpu.Z = 1;
-            _cpu.Cycles = 2947;
+            Cpu.ProgramCounter = 0x480;
+            Cpu.Z = 1;
+            Cpu.Cycles = 2947;
             _fakeMmu.SetByte(0x481, 0xFA);
 
-            _cpu.Execute(0x20);
+            Execute(0x20);
 
-            Assert.Equal(0x482, _cpu.ProgramCounter);
-            Assert.Equal(2949, _cpu.Cycles);
+            Assert.Equal(0x482, Cpu.ProgramCounter);
+            Assert.Equal(2949, Cpu.Cycles);
         }
 
         [Fact]
         public void Jumps_relative_to_program_counter_when_Z()
         {
-            _cpu.ProgramCounter = 0x300;
-            _cpu.Z = 1;
-            _cpu.Cycles = 48401;
+            Cpu.ProgramCounter = 0x300;
+            Cpu.Z = 1;
+            Cpu.Cycles = 48401;
             _fakeMmu.SetByte(0x301, 0x03);
 
-            _cpu.Execute(0x28);
+            Execute(0x28);
 
-            Assert.Equal(0x305, _cpu.ProgramCounter);
-            Assert.Equal(48404, _cpu.Cycles);
+            Assert.Equal(0x305, Cpu.ProgramCounter);
+            Assert.Equal(48404, Cpu.Cycles);
         }
 
         [Fact]
         public void Does_not_jump_when_not_Z()
         {
-            _cpu.ProgramCounter = 0x480;
-            _cpu.Z = 0;
-            _cpu.Cycles = 2947;
-            _fakeMmu.SetByte(0x481, 0xFA);
+            Cpu.ProgramCounter = 0x480;
+            Cpu.Z = 0;
+            Cpu.Cycles = 2947;
+            
+            Execute(0x28);
 
-            _cpu.Execute(0x28);
+            Assert.Equal(0x482, Cpu.ProgramCounter);
+            Assert.Equal(2949, Cpu.Cycles);
+        }
 
-            Assert.Equal(0x482, _cpu.ProgramCounter);
-            Assert.Equal(2949, _cpu.Cycles);
+        [Fact]
+        public void Does_not_jump_when_carry()
+        {
+            Flags(x => x.Carry());
+
+            Execute(0x30);
+
+            AdvancedProgramCounter(2);
+            AdvancedClock(2);
+        }
+
+        [Fact]
+        public void Jumps_relative_to_program_counter_when_not_carry()
+        {
+            Flags(x => x.ResetCarry());
+
+            Execute(0x30, 0xFA);
+
+            AdvancedProgramCounter(-4);
+            AdvancedClock(3);
         }
     }
 }
