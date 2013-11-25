@@ -155,6 +155,7 @@ namespace Core
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
+            { 0xCE, new InstructionMetaData(2, 2, "ADC n")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
             { 0xD1, new InstructionMetaData(1, 3, "POP DE")},
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
@@ -546,6 +547,9 @@ namespace Core
                 case 0xCB:
                     CB();
                     break;
+                case 0xCE:
+                    ADC();
+                    break;
                 case 0xCD:
                     Call();
                     break;
@@ -587,11 +591,11 @@ namespace Core
                         A);
                     break;
                 case 0xEE:
-                    A = (byte) (A ^ _mmu.GetByte((ushort) (ProgramCounter + 1)));
+                    A = (byte)(A ^ _mmu.GetByte((ushort)(ProgramCounter + 1)));
                     N = 0;
                     HC = 0;
                     Carry = 0;
-                    Z = (byte) (A == 0 ? 1 : 0);
+                    Z = (byte)(A == 0 ? 1 : 0);
                     break;
                 case 0xF0:
                     var offset = _mmu.GetByte((ushort)(ProgramCounter + 1));
@@ -627,6 +631,16 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void ADC()
+        {
+            var arg = _mmu.GetByte((ushort)(ProgramCounter + 1));
+            HC = (byte)((((A & 0x0F) + (0x0F & arg)) & 0x10) == 0x10 ? 1 : 0);
+            A += (byte)(arg + Carry);
+            Carry = (byte)(A + arg > 255 ? 1 : 0);
+            N = 0;
+            Z = (byte)(A == 0 ? 1 : 0);
         }
 
         private void JR_NC()
