@@ -156,6 +156,7 @@ namespace Core
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
+            { 0xD1, new InstructionMetaData(1, 3, "POP DE")},
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
@@ -547,6 +548,11 @@ namespace Core
                     break;
                 case 0xCD:
                     Call();
+                    break;
+                case 0xD1:
+                    E = _mmu.GetByte(SP);
+                    D = _mmu.GetByte((ushort)(SP + 1));
+                    SP += 2;
                     break;
                 case 0xD5:
                     _mmu.SetByte((ushort)(SP - 1), D);
