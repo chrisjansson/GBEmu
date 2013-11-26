@@ -157,6 +157,7 @@ namespace Core
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCE, new InstructionMetaData(2, 2, "ADC n")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
+            { 0xD0, new InstructionMetaData(0, 0, "RET NC")},
             { 0xD1, new InstructionMetaData(1, 3, "POP DE")},
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
@@ -553,6 +554,9 @@ namespace Core
                 case 0xCD:
                     Call();
                     break;
+                case 0xD0:
+                    RET_NC();
+                    break;
                 case 0xD1:
                     E = _mmu.GetByte(SP);
                     D = _mmu.GetByte((ushort)(SP + 1));
@@ -630,6 +634,23 @@ namespace Core
             {
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
+            }
+        }
+
+        private void RET_NC()
+        {
+            if (Carry == 1)
+            {
+                var l = _mmu.GetByte(SP);
+                var h = _mmu.GetByte((ushort) (SP + 1));
+                ProgramCounter = (ushort) (h << 8 | l);
+                Cycles += 5;
+                SP += 2;
+            }
+            else
+            {
+                ProgramCounter += 1;
+                Cycles += 2;
             }
         }
 
