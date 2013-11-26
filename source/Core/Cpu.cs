@@ -84,6 +84,7 @@ namespace Core
             { 0x30, new InstructionMetaData(0, 0, "JR NC, $+e")},
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
+            { 0x3D, new InstructionMetaData(1, 1, "DEC A")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
             { 0x40, new InstructionMetaData(1, 1, "LD B, B")},
             { 0x41, new InstructionMetaData(1, 1, "LD B, C")},
@@ -326,6 +327,9 @@ namespace Core
                     var nextHLD = HL - 1;
                     H = (byte)(nextHLD >> 8);
                     L = (byte)nextHLD;
+                    break;
+                case 0x3D:
+                    DEC_r(Register.A);
                     break;
                 case 0x3E:
                     LD_r_n(Register.A);
