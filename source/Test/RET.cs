@@ -3,17 +3,17 @@ using Xunit;
 
 namespace Test
 {
-    public class RET_qq : CpuTestBase
+    public abstract class RETConditionalTestBase : CpuTestBase
     {
         [Fact]
         public void Loads_program_counter_with_memory_pointer_to_by_sp()
         {
-            Flags(x => x.Carry());
+            SetTrueFlag();
             Cpu.SP = 9481;
             _fakeMmu.Memory[9481] = 0x03;
             _fakeMmu.Memory[9482] = 0x80;
 
-            Cpu.Execute(0xD0);
+            Cpu.Execute(OpCode);
 
             Assert.Equal(0x8003, Cpu.ProgramCounter);
             Assert.Equal(9483, Cpu.SP);
@@ -23,14 +23,54 @@ namespace Test
         [Fact]
         public void Continues_after_instruction()
         {
-            Flags(x => x.ResetCarry());
+            SetFalseFlag();
             Cpu.SP = 9481;
 
-            Cpu.Execute(0xD0);
+            Cpu.Execute(OpCode);
 
             AdvancedProgramCounter(1);
             AdvancedClock(2);
             Assert.Equal(9481, Cpu.SP);
+        }
+
+        protected abstract byte OpCode { get; }
+        protected abstract void SetTrueFlag();
+        protected abstract void SetFalseFlag();
+    }
+
+    public class RET_NC : RETConditionalTestBase
+    {
+        protected override byte OpCode
+        {
+            get { return 0xD0; }
+        }
+
+        protected override void SetTrueFlag()
+        {
+            Flags(x => x.Carry());
+        }
+
+        protected override void SetFalseFlag()
+        {
+            Flags(x => x.ResetCarry());
+        }
+    }
+
+    public class RET_Z : RETConditionalTestBase
+    {
+        protected override byte OpCode
+        {
+            get { return 0xC8; }
+        }
+
+        protected override void SetTrueFlag()
+        {
+            Flags(x => x.Zero());
+        }
+
+        protected override void SetFalseFlag()
+        {
+            Flags(x => x.ResetZero());
         }
     }
 

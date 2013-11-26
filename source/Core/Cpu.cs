@@ -154,6 +154,7 @@ namespace Core
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
+            { 0xC8, new InstructionMetaData(0, 0, "RET Z")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCE, new InstructionMetaData(2, 2, "ADC n")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
@@ -542,6 +543,9 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 2), C);
                     SP -= 2;
                     break;
+                case 0xC8:
+                    RET_cc(Z);
+                    break;
                 case 0xC9:
                     RET();
                     break;
@@ -555,7 +559,7 @@ namespace Core
                     Call();
                     break;
                 case 0xD0:
-                    RET_NC();
+                    RET_cc(Carry);
                     break;
                 case 0xD1:
                     E = _mmu.GetByte(SP);
@@ -637,9 +641,9 @@ namespace Core
             }
         }
 
-        private void RET_NC()
+        private void RET_cc(byte flag)
         {
-            if (Carry == 1)
+            if (flag == 1)
             {
                 var l = _mmu.GetByte(SP);
                 var h = _mmu.GetByte((ushort) (SP + 1));
