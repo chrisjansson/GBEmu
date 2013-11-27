@@ -10,7 +10,7 @@ namespace Test
             Cpu.ProgramCounter = 0x480;
             Cpu.Z = 0;
             Cpu.Cycles = 48401;
-            _fakeMmu.SetByte(0x481, 0xFA);
+            FakeMmu.SetByte(0x481, 0xFA);
 
             Execute(0x20);
 
@@ -24,7 +24,7 @@ namespace Test
             Cpu.ProgramCounter = 0x480;
             Cpu.Z = 1;
             Cpu.Cycles = 2947;
-            _fakeMmu.SetByte(0x481, 0xFA);
+            FakeMmu.SetByte(0x481, 0xFA);
 
             Execute(0x20);
 
@@ -38,7 +38,7 @@ namespace Test
             Cpu.ProgramCounter = 0x300;
             Cpu.Z = 1;
             Cpu.Cycles = 48401;
-            _fakeMmu.SetByte(0x301, 0x03);
+            FakeMmu.SetByte(0x301, 0x03);
 
             Execute(0x28);
 

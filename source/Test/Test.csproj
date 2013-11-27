@@ -101,6 +101,7 @@
     <Compile Include="LD_r_n.cs" />
     <Compile Include="LD_r_r.cs" />
     <Compile Include="Nop.cs" />
+    <Compile Include="OR_HL.cs" />
     <Compile Include="OR_r.cs" />
     <Compile Include="POP_qq.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

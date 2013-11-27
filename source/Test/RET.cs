@@ -10,8 +10,8 @@ namespace Test
         {
             SetTrueFlag();
             Cpu.SP = 9481;
-            _fakeMmu.Memory[9481] = 0x03;
-            _fakeMmu.Memory[9482] = 0x80;
+            FakeMmu.Memory[9481] = 0x03;
+            FakeMmu.Memory[9482] = 0x80;
 
             Cpu.Execute(OpCode);
 

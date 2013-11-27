@@ -151,6 +151,7 @@ namespace Core
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0xAE, new InstructionMetaData(1, 2, "XOR (HL)")},
             { 0xB1, new InstructionMetaData(1, 1, "OR C")},
+            { 0xB6, new InstructionMetaData(1, 2, "OR (HL)")},
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
@@ -529,6 +530,9 @@ namespace Core
                 case 0xB1:
                     OR_r(Register.C);
                     break;
+                case 0xB6:
+                    OR_HL();
+                    break;
                 case 0xB7:
                     OR_r(Register.A);
                     break;
@@ -645,6 +649,12 @@ namespace Core
             }
         }
 
+        private void OR_HL()
+        {
+            var value = _mmu.GetByte(HL);
+            OR_A(value);
+        }
+
         private void RET_cc(byte flag)
         {
             if (flag == 1)
@@ -739,7 +749,12 @@ namespace Core
 
         private void OR_r(Register register)
         {
-            A = (byte)(A | _registers[register]);
+            OR_A(_registers[register]);
+        }
+
+        private void OR_A(byte value)
+        {
+            A = (byte)(A | value);
             HC = 0;
             N = 0;
             Carry = 0;

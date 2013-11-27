@@ -7,7 +7,7 @@ namespace Test
 {
     public class CpuTestBase
     {
-        protected readonly FakeMmu _fakeMmu;
+        protected readonly FakeMmu FakeMmu;
         protected readonly Cpu Cpu;
         private readonly ushort _initialProgramCounter;
         private readonly long _initialCycles;
@@ -15,8 +15,8 @@ namespace Test
         public CpuTestBase()
         {
             var fixture = new Fixture();
-            _fakeMmu = new FakeMmu();
-            fixture.Inject<IMmu>(_fakeMmu);
+            FakeMmu = new FakeMmu();
+            fixture.Inject<IMmu>(FakeMmu);
 
             Cpu = fixture.Create<Cpu>();
 
@@ -48,7 +48,7 @@ namespace Test
 
         protected void ExecutingCB(byte opCode)
         {
-            _fakeMmu.Memory[Cpu.ProgramCounter + 1] = opCode;
+            FakeMmu.Memory[Cpu.ProgramCounter + 1] = opCode;
             Cpu.Execute(0xCB);
         }
 
@@ -56,7 +56,7 @@ namespace Test
         {
             for (int i = 0; i < args.Length; i++)
             {
-                _fakeMmu.Memory[_initialProgramCounter + 1 + i] = args[i];
+                FakeMmu.Memory[_initialProgramCounter + 1 + i] = args[i];
             }
             Cpu.Execute(opCode);
         }
