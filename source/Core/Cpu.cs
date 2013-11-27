@@ -84,6 +84,7 @@ namespace Core
             { 0x30, new InstructionMetaData(0, 0, "JR NC, $+e")},
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
+            { 0x35, new InstructionMetaData(1, 3, "DEC (HL)")},
             { 0x3D, new InstructionMetaData(1, 1, "DEC A")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
             { 0x40, new InstructionMetaData(1, 1, "LD B, B")},
@@ -328,6 +329,9 @@ namespace Core
                     var nextHLD = HL - 1;
                     H = (byte)(nextHLD >> 8);
                     L = (byte)nextHLD;
+                    break;
+                case 0x35:
+                    DEC_HL();
                     break;
                 case 0x3D:
                     DEC_r(Register.A);
@@ -649,6 +653,7 @@ namespace Core
             }
         }
 
+
         private void OR_HL()
         {
             var value = _mmu.GetByte(HL);
@@ -767,6 +772,15 @@ namespace Core
             HC = (byte)((_registers[register] & 0x0F) == 0 ? 1 : 0);
             _registers[register] = (byte)(_registers[register] - 1);
             Z = (byte)(_registers[register] == 0 ? 1 : 0);
+        }
+
+        private void DEC_HL()
+        {
+            var value = _mmu.GetByte(HL);
+            _mmu.SetByte(HL, (byte) (value - 1));
+            Z = (byte) ((value - 1) == 0 ? 1 : 0);
+            N = 1;
+            HC = (byte)((value & 0x0F) == 0 ? 1 : 0);
         }
 
         private void RET()

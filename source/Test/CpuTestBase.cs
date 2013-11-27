@@ -111,6 +111,12 @@ namespace Test
                 _cpu.HC = 0;
                 return this;
             }
+
+            public FlagSetter ResetSubtract()
+            {
+                _cpu.N = 0;
+                return this;
+            }
         }
 
         protected class FlagAssertion
@@ -159,6 +165,18 @@ namespace Test
             }
 
             public FlagAssertion HalfCarry()
+            {
+                Assert.Equal(1, _cpu.HC);
+                return this;
+            }
+
+            public FlagAssertion SetSubtract()
+            {
+                Assert.Equal(1,_cpu.N);
+                return this;
+            }
+
+            public FlagAssertion SetHalfCarry()
             {
                 Assert.Equal(1, _cpu.HC);
                 return this;
