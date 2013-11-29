@@ -64,10 +64,12 @@ namespace Core
             { 0x12, new InstructionMetaData(1, 2, "LD (DE), A")},
             { 0x13, new InstructionMetaData(1, 2, "INC DE")},
             { 0x14, new InstructionMetaData(1, 1, "INC D")},
+            { 0x15, new InstructionMetaData(1, 1, "DEC D")},
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
             { 0x18, new InstructionMetaData(0, 3, "JR, $+e")},
             { 0x1A, new InstructionMetaData(1, 2, "LD A, (DE)")},
             { 0x1C, new InstructionMetaData(1, 1, "INC E")},
+            { 0x1D, new InstructionMetaData(1, 1, "DEC E")},
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
             { 0x1F, new InstructionMetaData(1, 1, "RRA")},
             { 0x21, new InstructionMetaData(3, 3, "LD HL, nn")},
@@ -248,6 +250,9 @@ namespace Core
                 case 0x14:
                     INC_r(Register.D);
                     break;
+                case 0x15:
+                    DEC_r(Register.D);
+                    break;
                 case 0x16:
                     LD_r_n(Register.D);
                     break;
@@ -259,6 +264,9 @@ namespace Core
                     break;
                 case 0x1C:
                     INC_r(Register.E);
+                    break;
+                case 0x1D:
+                    DEC_r(Register.E);
                     break;
                 case 0x1E:
                     LD_r_n(Register.E);
