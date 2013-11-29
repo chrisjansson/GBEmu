@@ -32,7 +32,7 @@ namespace Test
                 cpu.F = l;
             });
 
-        public static readonly RegisterPair SP = new RegisterPair(0x03, cpu => 0, (cpu, b, arg3) => {});
+        public static readonly RegisterPair SP = new RegisterPair(0x03, cpu => 0, (cpu, b, arg3) => { });
 
         public static implicit operator byte(RegisterPair registerPair)
         {
@@ -68,6 +68,17 @@ namespace Test
                 DE,
                 HL,
                 AF
+            };
+        }
+
+        public static IEnumerable<RegisterPair> GetArithmeticPairs()
+        {
+            return new List<RegisterPair>
+            {
+                BC,
+                DE,
+                HL,
+                SP
             };
         }
 

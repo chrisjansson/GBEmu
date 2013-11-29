@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ADC_n.cs" />
+    <Compile Include="ADD_HL_ss.cs" />
     <Compile Include="Build.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="CpuAssertion.cs" />

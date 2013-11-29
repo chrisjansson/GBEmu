@@ -77,6 +77,7 @@ namespace Core
             { 0x25, new InstructionMetaData(1, 1, "DEC H")},
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
             { 0x28, new InstructionMetaData(0, 0, "JR Z, $ + e")},
+            { 0x29, new InstructionMetaData(1, 2, "ADD HL, HL")},
             { 0x2A, new InstructionMetaData(1, 2, "LD A, (HLI)")},
             { 0x2C, new InstructionMetaData(1, 1, "INC L")},
             { 0x2D, new InstructionMetaData(1, 1, "DEC L")},
@@ -300,6 +301,9 @@ namespace Core
                     var n = ((sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1))) + 2;
                     ProgramCounter += (ushort)(Z == 1 ? n : 2);
                     Cycles += Z == 1 ? 3 : 2;
+                    break;
+                case 0x29:
+                    ADD_HL_HL();
                     break;
                 case 0x2A:
                     A = _mmu.GetByte(HL);
@@ -653,6 +657,17 @@ namespace Core
             }
         }
 
+        private void ADD_HL_HL()
+        {   
+            int result = HL + HL;
+            var a = HL;
+            var b = HL;
+            H = (byte) (result >> 8);
+            L = (byte) (result & 0xFF);
+            HC = (byte) ((((a & 0xFFF) + (b & 0xFFF)) & 0x1000) == 0x1000 ? 1 : 0);
+            Carry = (byte) (result > 0xFFFF  ? 1 : 0);
+            N = 0;
+        }
 
         private void OR_HL()
         {
