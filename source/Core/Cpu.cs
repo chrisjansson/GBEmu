@@ -170,6 +170,7 @@ namespace Core
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
+            { 0xE9, new InstructionMetaData(0, 1, "JP HL")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
             { 0xEE, new InstructionMetaData(2, 2, "XOR n")},
             { 0xF0, new InstructionMetaData(2, 3, "LD A, (n)")},
@@ -617,6 +618,9 @@ namespace Core
                     ProgramCounter += 2;
                     Cycles += 2;
                     break;
+                case 0xE9:
+                    JP_HL();
+                    break;
                 case 0xEA:
                     _mmu.SetByte(
                         (ushort)((_mmu.GetByte((ushort)(ProgramCounter + 2)) << 8) | _mmu.GetByte((ushort)(ProgramCounter + 1))),
@@ -663,6 +667,11 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void JP_HL()
+        {
+            ProgramCounter = HL;
         }
 
         private void ADD_HL_HL()
