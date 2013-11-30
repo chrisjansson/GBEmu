@@ -158,6 +158,7 @@ namespace Core
             { 0xAD, new InstructionMetaData(1, 1, "XOR L")},
             { 0xAE, new InstructionMetaData(1, 2, "XOR (HL)")},
             { 0xAF, new InstructionMetaData(1, 1, "XOR A")},
+            { 0xB0, new InstructionMetaData(1, 1, "OR B")},
             { 0xB1, new InstructionMetaData(1, 1, "OR C")},
             { 0xB6, new InstructionMetaData(1, 2, "OR (HL)")},
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
@@ -560,6 +561,9 @@ namespace Core
                     break;
                 case 0xAF:
                     XOR(Register.A);
+                    break;
+                case 0xB0:
+                    OR_r(Register.B);
                     break;
                 case 0xB1:
                     OR_r(Register.C);
