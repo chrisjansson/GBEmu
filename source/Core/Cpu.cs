@@ -746,6 +746,9 @@ namespace Core
                 case 0x1A:
                     RR_r(Register.D);
                     break;
+                case 0x1B:
+                    RR_r(Register.E);
+                    break;
                 case 0x38:
                     SRL_B();
                     break;
@@ -772,6 +775,7 @@ namespace Core
         {
             {0x19, new InstructionMetaData(2, 2, "RR C")},
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
+            {0x1B, new InstructionMetaData(2, 2, "RR E")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
         };
 

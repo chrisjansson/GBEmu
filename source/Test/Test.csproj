@@ -73,6 +73,7 @@
     <Compile Include="ADD_HL_ss.cs" />
     <Compile Include="Build.cs" />
     <Compile Include="Call.cs" />
+    <Compile Include="CBRegisterTestBase.cs" />
     <Compile Include="CpuAssertion.cs" />
     <Compile Include="CpuTestBase.cs" />
     <Compile Include="CP_n.cs" />
