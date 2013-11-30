@@ -165,6 +165,7 @@ namespace Core
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
+            { 0xC7, new InstructionMetaData(0, 4, "RST 00H")},
             { 0xC8, new InstructionMetaData(0, 0, "RET Z")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCE, new InstructionMetaData(2, 2, "ADC n")},
@@ -589,6 +590,9 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 2), C);
                     SP -= 2;
                     break;
+                case 0xC7:
+                    RST(0x00);
+                    break;
                 case 0xC8:
                     RET_cc(Z);
                     break;
@@ -691,6 +695,15 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void RST(byte p)
+        {
+            var programCounterToPush = ProgramCounter + 1;
+            _mmu.SetByte((ushort)(SP - 1), (byte)(programCounterToPush >> 8));
+            _mmu.SetByte((ushort)(SP - 2), (byte)programCounterToPush);
+            SP -= 2;
+            ProgramCounter = (ushort) (0x0000 | p);
         }
 
         private void LD_SP_HL()

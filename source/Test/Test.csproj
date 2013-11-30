@@ -118,6 +118,7 @@
     <Compile Include="RET.cs" />
     <Compile Include="RRA.cs" />
     <Compile Include="RR_r.cs" />
+    <Compile Include="RST.cs" />
     <Compile Include="SRL_r.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="XOR_HL.cs" />
