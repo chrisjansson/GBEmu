@@ -181,6 +181,7 @@ namespace Core
             { 0xF1, new InstructionMetaData(1, 3, "POP AF")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
             { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
+            { 0xF9, new InstructionMetaData(1, 2, "LD SP, HL")},
             { 0xFA, new InstructionMetaData(3, 4, "LD A, (nn)")},
             { 0xFE, new InstructionMetaData(2, 2, "CP n")},
         };
@@ -665,6 +666,9 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 2), F);
                     SP -= 2;
                     break;
+                case 0xF9:
+                    LD_SP_HL();
+                    break;
                 case 0xFA:
                     var address = _mmu.GetByte((ushort)(ProgramCounter + 1)) | (_mmu.GetByte((ushort)(ProgramCounter + 2)) << 8);
                     A = _mmu.GetByte((ushort)address);
@@ -683,6 +687,11 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void LD_SP_HL()
+        {
+            SP = HL;
         }
 
         private void LD_NN_SP()
