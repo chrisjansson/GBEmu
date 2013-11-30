@@ -155,6 +155,7 @@ namespace Core
             { 0x7D, new InstructionMetaData(1, 1, "LD A, L")},
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
+            { 0xAD, new InstructionMetaData(1, 1, "XOR L")},
             { 0xAE, new InstructionMetaData(1, 2, "XOR (HL)")},
             { 0xAF, new InstructionMetaData(1, 1, "XOR A")},
             { 0xB1, new InstructionMetaData(1, 1, "OR C")},
@@ -549,6 +550,9 @@ namespace Core
                     break;
                 case 0x7E:
                     LD_r_HL(Register.A);
+                    break;
+                case 0xAD:
+                    XOR(Register.L);
                     break;
                 case 0xAE:
                     XOR(_mmu.GetByte(HL));
