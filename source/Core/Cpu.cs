@@ -58,6 +58,7 @@ namespace Core
             { 0x03, new InstructionMetaData(1, 2, "INC BC")},
             { 0x05, new InstructionMetaData(1, 1, "DEC B")},
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
+            { 0x08, new InstructionMetaData(3, 5, "LD (nn), SP")},
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
             { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
@@ -229,6 +230,9 @@ namespace Core
                     break;
                 case 0x06:
                     LD_r_n(Register.B);
+                    break;
+                case 0x08:
+                    LD_NN_SP();
                     break;
                 case 0x0D:
                     DEC_r(Register.C);
@@ -671,6 +675,13 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void LD_NN_SP()
+        {
+            var target = _mmu.GetByte((ushort) (ProgramCounter + 2)) << 8 |  _mmu.GetByte((ushort) (ProgramCounter + 1));
+            _mmu.SetByte((ushort) target, (byte) (SP & 0xFF));
+            _mmu.SetByte((ushort) (target + 1), (byte) ((SP >> 8) & 0xFF));
         }
 
         private void XOR(Register register)
