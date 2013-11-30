@@ -89,6 +89,7 @@ namespace Core
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
             { 0x35, new InstructionMetaData(1, 3, "DEC (HL)")},
+            { 0x3C, new InstructionMetaData(1, 1, "INC A")},
             { 0x3D, new InstructionMetaData(1, 1, "DEC A")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
             { 0x40, new InstructionMetaData(1, 1, "LD B, B")},
@@ -350,6 +351,9 @@ namespace Core
                     break;
                 case 0x35:
                     DEC_HL();
+                    break;
+                case 0x3C:
+                    INC_r(Register.A);
                     break;
                 case 0x3D:
                     DEC_r(Register.A);
