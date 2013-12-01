@@ -9,7 +9,7 @@ namespace Test
         private Cpu _cpu;
 
         [Fact]
-        public void Disables_interrupts()
+        public void Advances_counters()
         {
             _cpu.Cycles = 93811;
             _cpu.ProgramCounter = 8248;
@@ -18,6 +18,16 @@ namespace Test
 
             Assert.Equal(93812, _cpu.Cycles);
             Assert.Equal(8249, _cpu.ProgramCounter);
+        }
+
+        [Fact]
+        public void Disables_interrups()
+        {
+            _cpu.EI = true;
+
+            _cpu.Execute(0xF3);
+
+            Assert.False(_cpu.EI);
         }
 
         [Fact]

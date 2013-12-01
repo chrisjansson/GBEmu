@@ -184,6 +184,7 @@ namespace Core
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
             { 0xD7, new InstructionMetaData(0, 4, "RST 10H")},
             { 0xD8, new InstructionMetaData(0, 0, "RET C")},
+            { 0xD9, new InstructionMetaData(0, 4, "RETI")},
             { 0xDA, new InstructionMetaData(0, 0, "JP C, nn")},
             { 0xDC, new InstructionMetaData(0, 0, "CALL C, nn")},
             { 0xDF, new InstructionMetaData(0, 4, "RST 18H")},
@@ -672,6 +673,9 @@ namespace Core
                 case 0xD8:
                     RET_cc(Carry == 1);
                     break;
+                case 0xD9:
+                    RETI();
+                    break;
                 case 0xDA:
                     JP_C();
                     break;
@@ -767,6 +771,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void RETI()
+        {
+            RET();
+            EI = true;
         }
 
         private void CALL_Z()
@@ -1103,6 +1113,7 @@ namespace Core
             set { _f = value; }
         }
 
+        public bool EI;
         public ushort SP { get; set; }
 
         public ushort ProgramCounter { get; set; }

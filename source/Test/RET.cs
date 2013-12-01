@@ -146,4 +146,21 @@ namespace Test
             get { return 0xC9; }
         }
     }
+
+    public class RETI : RETBase
+    {
+        protected override byte OpCode
+        {
+            get { return 0xD9; }
+        }
+
+        [Fact]
+        public void Enables_interrups()
+        {
+            Cpu.EI = false;
+
+            Execute(OpCode);
+            Assert.True(Cpu.EI);
+        }
+    }
 }
