@@ -171,8 +171,9 @@ namespace Core
             { 0xC8, new InstructionMetaData(0, 0, "RET Z")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCA, new InstructionMetaData(0, 0, "JP Z, nn")},
-            { 0xCE, new InstructionMetaData(2, 2, "ADC n")},
+            { 0xCC, new InstructionMetaData(0, 0, "CALL Z, nn")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
+            { 0xCE, new InstructionMetaData(2, 2, "ADC n")},
             { 0xCF, new InstructionMetaData(0, 4, "RST 08H")},
             { 0xD0, new InstructionMetaData(0, 0, "RET NC")},
             { 0xD1, new InstructionMetaData(1, 3, "POP DE")},
@@ -623,6 +624,9 @@ namespace Core
                 case 0xCB:
                     CB();
                     break;
+                case 0xCC:
+                    CALL_Z();
+                    break;
                 case 0xCE:
                     ADC();
                     break;
@@ -742,6 +746,25 @@ namespace Core
             {
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
+            }
+        }
+
+        private void CALL_Z()
+        {
+            Call_cc(Z == 1);
+        }
+
+        private void Call_cc(bool condition)
+        {
+            if (condition)
+            {
+                Call();
+                Cycles += 6;
+            }
+            else
+            {
+                ProgramCounter += 3;
+                Cycles += 3;
             }
         }
 
