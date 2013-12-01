@@ -166,6 +166,7 @@ namespace Core
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC2, new InstructionMetaData(0, 0, "JP NZ, nn")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
+            { 0xC4, new InstructionMetaData(0, 0, "CALL NZ, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
             { 0xC7, new InstructionMetaData(0, 4, "RST 00H")},
             { 0xC8, new InstructionMetaData(0, 0, "RET Z")},
@@ -178,9 +179,11 @@ namespace Core
             { 0xD0, new InstructionMetaData(0, 0, "RET NC")},
             { 0xD1, new InstructionMetaData(1, 3, "POP DE")},
             { 0xD2, new InstructionMetaData(0, 0, "JP NC, nn")},
+            { 0xD4, new InstructionMetaData(0, 0, "CALL NC, nn")},
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
             { 0xD7, new InstructionMetaData(0, 4, "RST 10H")},
             { 0xDA, new InstructionMetaData(0, 0, "JP C, nn")},
+            { 0xDC, new InstructionMetaData(0, 0, "CALL C, nn")},
             { 0xDF, new InstructionMetaData(0, 4, "RST 18H")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
@@ -604,6 +607,9 @@ namespace Core
                     var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     ProgramCounter = (ushort)((h << 8) | l);
                     break;
+                case 0xC4:
+                    Call_cc(Z == 0);
+                    break;
                 case 0xC5:
                     _mmu.SetByte((ushort)(SP - 1), B);
                     _mmu.SetByte((ushort)(SP - 2), C);
@@ -647,6 +653,9 @@ namespace Core
                 case 0xD2:
                     JP_NC();
                     break;
+                case 0xD4:
+                    Call_cc(Carry == 0);
+                    break;
                 case 0xD5:
                     _mmu.SetByte((ushort)(SP - 1), D);
                     _mmu.SetByte((ushort)(SP - 2), E);
@@ -657,6 +666,9 @@ namespace Core
                     break;
                 case 0xDA:
                     JP_C();
+                    break;
+                case 0xDC:
+                    Call_cc(Carry == 1);
                     break;
                 case 0xDF:
                     RST(0x18);
