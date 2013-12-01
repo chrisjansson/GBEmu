@@ -79,8 +79,10 @@
     <Compile Include="CP_n.cs" />
     <Compile Include="DEC_HL.cs" />
     <Compile Include="INC_ss.cs" />
+    <Compile Include="JP_cc_nn.cs" />
     <Compile Include="JP_HL.cs" />
     <Compile Include="JR.cs" />
+    <Compile Include="JumpCondition.cs" />
     <Compile Include="LD_A_DE.cs" />
     <Compile Include="LD_A_n.cs" />
     <Compile Include="LD_A_nn.cs" />

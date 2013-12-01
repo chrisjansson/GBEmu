@@ -56,7 +56,7 @@ namespace Test
         {
             for (int i = 0; i < args.Length; i++)
             {
-                FakeMmu.Memory[_initialProgramCounter + 1 + i] = args[i];
+                FakeMmu.Memory[Cpu.ProgramCounter + 1 + i] = args[i];
             }
             Cpu.Execute(opCode);
         }

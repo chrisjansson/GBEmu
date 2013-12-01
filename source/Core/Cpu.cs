@@ -164,6 +164,7 @@ namespace Core
             { 0xB6, new InstructionMetaData(1, 2, "OR (HL)")},
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
+            { 0xC2, new InstructionMetaData(0, 0, "JP NZ, nn")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
             { 0xC7, new InstructionMetaData(0, 4, "RST 00H")},
@@ -591,6 +592,9 @@ namespace Core
                     B = _mmu.GetByte((ushort)(SP + 1));
                     SP += 2;
                     break;
+                case 0xC2:
+                    JP_NZ();
+                    break;
                 case 0xC3:
                     var l = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
@@ -727,6 +731,15 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void JP_NZ()
+        {
+            var jump = Z == 0;
+            var h = _mmu.GetByte((ushort) (ProgramCounter + 2));
+            var l = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            ProgramCounter = (ushort) (jump ? (ushort) (h << 8 | l) : ProgramCounter + 3);
+            Cycles += jump ? 4 : 3;
         }
 
         private void JR_C()
