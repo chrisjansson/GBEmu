@@ -170,22 +170,29 @@ namespace Core
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
             { 0xCE, new InstructionMetaData(2, 2, "ADC n")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
+            { 0xCF, new InstructionMetaData(0, 4, "RST 08H")},
             { 0xD0, new InstructionMetaData(0, 0, "RET NC")},
             { 0xD1, new InstructionMetaData(1, 3, "POP DE")},
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
+            { 0xD7, new InstructionMetaData(0, 4, "RST 10H")},
+            { 0xDF, new InstructionMetaData(0, 4, "RST 18H")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
+            { 0xE7, new InstructionMetaData(0, 4, "RST 20H")},
             { 0xE9, new InstructionMetaData(0, 1, "JP HL")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
             { 0xEE, new InstructionMetaData(2, 2, "XOR n")},
+            { 0xEF, new InstructionMetaData(0, 4, "RST 28H")},
             { 0xF0, new InstructionMetaData(2, 3, "LD A, (n)")},
             { 0xF1, new InstructionMetaData(1, 3, "POP AF")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
             { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
+            { 0xF7, new InstructionMetaData(0, 4, "RST 30H")},
             { 0xF9, new InstructionMetaData(1, 2, "LD SP, HL")},
             { 0xFA, new InstructionMetaData(3, 4, "LD A, (nn)")},
             { 0xFE, new InstructionMetaData(2, 2, "CP n")},
+            { 0xFF, new InstructionMetaData(0, 4, "RST 38H")},
         };
 
         private readonly IMmu _mmu;
@@ -608,6 +615,9 @@ namespace Core
                 case 0xCD:
                     Call();
                     break;
+                case 0xCF:
+                    RST(0x08);
+                    break;
                 case 0xD0:
                     RET_cc(Carry);
                     break;
@@ -620,6 +630,12 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 1), D);
                     _mmu.SetByte((ushort)(SP - 2), E);
                     SP -= 2;
+                    break;
+                case 0xD7:
+                    RST(0x10);
+                    break;
+                case 0xDF:
+                    RST(0x18);
                     break;
                 case 0xE0:
                     _mmu.SetByte((ushort)(0xFF00 | _mmu.GetByte((ushort)(ProgramCounter + 1))), A);
@@ -643,6 +659,9 @@ namespace Core
                     ProgramCounter += 2;
                     Cycles += 2;
                     break;
+                case 0xE7:
+                    RST(0x20);
+                    break;
                 case 0xE9:
                     JP_HL();
                     break;
@@ -657,6 +676,9 @@ namespace Core
                     HC = 0;
                     Carry = 0;
                     Z = (byte)(A == 0 ? 1 : 0);
+                    break;
+                case 0xEF:
+                    RST(0x28);
                     break;
                 case 0xF0:
                     var offset = _mmu.GetByte((ushort)(ProgramCounter + 1));
@@ -674,6 +696,9 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 2), F);
                     SP -= 2;
                     break;
+                case 0xF7:
+                    RST(0x30);
+                    break;
                 case 0xF9:
                     LD_SP_HL();
                     break;
@@ -685,6 +710,9 @@ namespace Core
                     var res = A == _mmu.GetByte((ushort)(ProgramCounter + 1));
                     Z = (byte)(res ? 1 : 0);
                     N = 1;
+                    break;
+                case 0xFF:
+                    RST(0x38);
                     break;
                 default:
                     throw new IllegalOpcodeException(opcode, ProgramCounter);
@@ -703,7 +731,7 @@ namespace Core
             _mmu.SetByte((ushort)(SP - 1), (byte)(programCounterToPush >> 8));
             _mmu.SetByte((ushort)(SP - 2), (byte)programCounterToPush);
             SP -= 2;
-            ProgramCounter = (ushort) (0x0000 | p);
+            ProgramCounter = (ushort)(0x0000 | p);
         }
 
         private void LD_SP_HL()
@@ -713,9 +741,9 @@ namespace Core
 
         private void LD_NN_SP()
         {
-            var target = _mmu.GetByte((ushort) (ProgramCounter + 2)) << 8 |  _mmu.GetByte((ushort) (ProgramCounter + 1));
-            _mmu.SetByte((ushort) target, (byte) (SP & 0xFF));
-            _mmu.SetByte((ushort) (target + 1), (byte) ((SP >> 8) & 0xFF));
+            var target = _mmu.GetByte((ushort)(ProgramCounter + 2)) << 8 | _mmu.GetByte((ushort)(ProgramCounter + 1));
+            _mmu.SetByte((ushort)target, (byte)(SP & 0xFF));
+            _mmu.SetByte((ushort)(target + 1), (byte)((SP >> 8) & 0xFF));
         }
 
         private void XOR(Register register)
@@ -729,14 +757,14 @@ namespace Core
         }
 
         private void ADD_HL_HL()
-        {   
+        {
             int result = HL + HL;
             var a = HL;
             var b = HL;
-            H = (byte) (result >> 8);
-            L = (byte) (result & 0xFF);
-            HC = (byte) ((((a & 0xFFF) + (b & 0xFFF)) & 0x1000) == 0x1000 ? 1 : 0);
-            Carry = (byte) (result > 0xFFFF  ? 1 : 0);
+            H = (byte)(result >> 8);
+            L = (byte)(result & 0xFF);
+            HC = (byte)((((a & 0xFFF) + (b & 0xFFF)) & 0x1000) == 0x1000 ? 1 : 0);
+            Carry = (byte)(result > 0xFFFF ? 1 : 0);
             N = 0;
         }
 
@@ -751,8 +779,8 @@ namespace Core
             if (flag == 1)
             {
                 var l = _mmu.GetByte(SP);
-                var h = _mmu.GetByte((ushort) (SP + 1));
-                ProgramCounter = (ushort) (h << 8 | l);
+                var h = _mmu.GetByte((ushort)(SP + 1));
+                ProgramCounter = (ushort)(h << 8 | l);
                 Cycles += 5;
                 SP += 2;
             }
@@ -867,8 +895,8 @@ namespace Core
         private void DEC_HL()
         {
             var value = _mmu.GetByte(HL);
-            _mmu.SetByte(HL, (byte) (value - 1));
-            Z = (byte) ((value - 1) == 0 ? 1 : 0);
+            _mmu.SetByte(HL, (byte)(value - 1));
+            Z = (byte)((value - 1) == 0 ? 1 : 0);
             N = 1;
             HC = (byte)((value & 0x0F) == 0 ? 1 : 0);
         }
