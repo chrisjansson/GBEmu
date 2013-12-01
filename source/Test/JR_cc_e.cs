@@ -80,5 +80,28 @@ namespace Test
             AdvancedProgramCounter(-4);
             AdvancedClock(3);
         }
+
+
+        [Fact]
+        public void Does_not_jump_when_not_carry()
+        {
+            Flags(x => x.ResetCarry());
+
+            Execute(0x38);
+
+            AdvancedProgramCounter(2);
+            AdvancedClock(2);
+        }
+
+        [Fact]
+        public void Jumps_relative_to_program_counter_when_carry()
+        {
+            Flags(x => x.Carry());
+
+            Execute(0x38, 0xFA);
+
+            AdvancedProgramCounter(-4);
+            AdvancedClock(3);
+        }
     }
 }
