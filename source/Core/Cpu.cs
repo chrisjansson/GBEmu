@@ -170,13 +170,16 @@ namespace Core
             { 0xC7, new InstructionMetaData(0, 4, "RST 00H")},
             { 0xC8, new InstructionMetaData(0, 0, "RET Z")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
+            { 0xCA, new InstructionMetaData(0, 0, "JP Z, nn")},
             { 0xCE, new InstructionMetaData(2, 2, "ADC n")},
             { 0xCD, new InstructionMetaData(0, 6, "CALL, nn")},
             { 0xCF, new InstructionMetaData(0, 4, "RST 08H")},
             { 0xD0, new InstructionMetaData(0, 0, "RET NC")},
             { 0xD1, new InstructionMetaData(1, 3, "POP DE")},
+            { 0xD2, new InstructionMetaData(0, 0, "JP NC, nn")},
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
             { 0xD7, new InstructionMetaData(0, 4, "RST 10H")},
+            { 0xDA, new InstructionMetaData(0, 0, "JP C, nn")},
             { 0xDF, new InstructionMetaData(0, 4, "RST 18H")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
@@ -614,6 +617,9 @@ namespace Core
                 case 0xC9:
                     RET();
                     break;
+                case 0xCA:
+                    JP_Z();
+                    break;
                 case 0xCB:
                     CB();
                     break;
@@ -634,6 +640,9 @@ namespace Core
                     D = _mmu.GetByte((ushort)(SP + 1));
                     SP += 2;
                     break;
+                case 0xD2:
+                    JP_NC();
+                    break;
                 case 0xD5:
                     _mmu.SetByte((ushort)(SP - 1), D);
                     _mmu.SetByte((ushort)(SP - 2), E);
@@ -641,6 +650,9 @@ namespace Core
                     break;
                 case 0xD7:
                     RST(0x10);
+                    break;
+                case 0xDA:
+                    JP_C();
                     break;
                 case 0xDF:
                     RST(0x18);
@@ -733,12 +745,31 @@ namespace Core
             }
         }
 
+        private void JP_C()
+        {
+            JP_cc(Carry == 1);
+        }
+
+        private void JP_NC()
+        {
+            JP_cc(Carry == 0);
+        }
+
+        private void JP_Z()
+        {
+            JP_cc(Z == 1);
+        }
+
         private void JP_NZ()
         {
-            var jump = Z == 0;
-            var h = _mmu.GetByte((ushort) (ProgramCounter + 2));
-            var l = _mmu.GetByte((ushort) (ProgramCounter + 1));
-            ProgramCounter = (ushort) (jump ? (ushort) (h << 8 | l) : ProgramCounter + 3);
+            JP_cc(Z == 0);
+        }
+
+        public void JP_cc(bool jump)
+        {
+            var h = _mmu.GetByte((ushort)(ProgramCounter + 2));
+            var l = _mmu.GetByte((ushort)(ProgramCounter + 1));
+            ProgramCounter = (ushort)(jump ? (ushort)(h << 8 | l) : ProgramCounter + 3);
             Cycles += jump ? 4 : 3;
         }
 

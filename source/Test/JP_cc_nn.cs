@@ -33,7 +33,7 @@ namespace Test
 
         private byte CreateOpCode(JumpCondition condition)
         {
-            return (byte) (0xC2 << (byte)condition);
+            return (byte) (0xC2 | condition << 3);
         }
 
         public static IEnumerable<object[]> Conditions
