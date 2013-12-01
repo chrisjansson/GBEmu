@@ -110,39 +110,40 @@ namespace Test
         }
     }
 
-    public class RET : IUseFixture<CpuFixture>
+    public abstract class RETBase : CpuTestBase
     {
-        private Cpu _cpu;
-        private FakeMmu _fakeMmu;
-
         [Fact]
         public void Loads_program_counter_with_memory_pointed_to_by_SP()
         {
-            _cpu.Cycles = 12384;
-            _cpu.SP = 9481;
-            _fakeMmu.Memory[9481] = 0x03;
-            _fakeMmu.Memory[9482] = 0x80;
+            Cpu.Cycles = 12384;
+            Cpu.SP = 9481;
+            FakeMmu.Memory[9481] = 0x03;
+            FakeMmu.Memory[9482] = 0x80;
 
-            _cpu.Execute(0xC9);
+            Cpu.Execute(OpCode);
 
-            Assert.Equal(0x8003, _cpu.ProgramCounter);
-            Assert.Equal(12388, _cpu.Cycles);
+            Assert.Equal(0x8003, Cpu.ProgramCounter);
+            Assert.Equal(12388, Cpu.Cycles);
         }
 
         [Fact]
         public void Increases_sp()
         {
-            _cpu.SP = 9481;
+            Cpu.SP = 9481;
 
-            _cpu.Execute(0xC9);
+            Cpu.Execute(OpCode);
 
-            Assert.Equal(9483, _cpu.SP);
+            Assert.Equal(9483, Cpu.SP);
         }
 
-        public void SetFixture(CpuFixture data)
+        protected abstract byte OpCode { get; }
+    }
+
+    public class RET : RETBase
+    {
+        protected override byte OpCode
         {
-            _cpu = data.Cpu;
-            _fakeMmu = data.FakeMmu;
+            get { return 0xC9; }
         }
     }
 }
