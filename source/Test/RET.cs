@@ -74,6 +74,24 @@ namespace Test
         }
     }
 
+    public class RET_NZ : RETConditionalTestBase
+    {
+        protected override byte OpCode
+        {
+            get { return 0xC0; }
+        }
+
+        protected override void SetTrueFlag()
+        {
+            Flags(x => x.ResetZero());
+        }
+
+        protected override void SetFalseFlag()
+        {
+            Flags(x => x.Zero());
+        }
+    }
+
     public class RET : IUseFixture<CpuFixture>
     {
         private Cpu _cpu;

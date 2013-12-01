@@ -163,6 +163,7 @@ namespace Core
             { 0xB1, new InstructionMetaData(1, 1, "OR C")},
             { 0xB6, new InstructionMetaData(1, 2, "OR (HL)")},
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
+            { 0xC0, new InstructionMetaData(0, 0, "RET NZ")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC2, new InstructionMetaData(0, 0, "JP NZ, nn")},
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
@@ -593,6 +594,9 @@ namespace Core
                     break;
                 case 0xB7:
                     OR_r(Register.A);
+                    break;
+                case 0xC0:
+                    RET_cc((byte) (Z == 0 ? 1 : 0));
                     break;
                 case 0xC1:
                     C = _mmu.GetByte(SP);
