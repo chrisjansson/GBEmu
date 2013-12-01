@@ -183,6 +183,7 @@ namespace Core
             { 0xD4, new InstructionMetaData(0, 0, "CALL NC, nn")},
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
             { 0xD7, new InstructionMetaData(0, 4, "RST 10H")},
+            { 0xD8, new InstructionMetaData(0, 0, "RET C")},
             { 0xDA, new InstructionMetaData(0, 0, "JP C, nn")},
             { 0xDC, new InstructionMetaData(0, 0, "CALL C, nn")},
             { 0xDF, new InstructionMetaData(0, 4, "RST 18H")},
@@ -596,7 +597,7 @@ namespace Core
                     OR_r(Register.A);
                     break;
                 case 0xC0:
-                    RET_cc((byte) (Z == 0 ? 1 : 0));
+                    RET_cc(Z == 0);
                     break;
                 case 0xC1:
                     C = _mmu.GetByte(SP);
@@ -623,7 +624,7 @@ namespace Core
                     RST(0x00);
                     break;
                 case 0xC8:
-                    RET_cc(Z);
+                    RET_cc(Z == 1);
                     break;
                 case 0xC9:
                     RET();
@@ -647,7 +648,7 @@ namespace Core
                     RST(0x08);
                     break;
                 case 0xD0:
-                    RET_cc(Carry);
+                    RET_cc(Carry == 0);
                     break;
                 case 0xD1:
                     E = _mmu.GetByte(SP);
@@ -667,6 +668,9 @@ namespace Core
                     break;
                 case 0xD7:
                     RST(0x10);
+                    break;
+                case 0xD8:
+                    RET_cc(Carry == 1);
                     break;
                 case 0xDA:
                     JP_C();
@@ -878,9 +882,9 @@ namespace Core
             OR_A(value);
         }
 
-        private void RET_cc(byte flag)
+        private void RET_cc(bool condition)
         {
-            if (flag == 1)
+            if (condition)
             {
                 var l = _mmu.GetByte(SP);
                 var h = _mmu.GetByte((ushort)(SP + 1));

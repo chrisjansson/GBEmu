@@ -47,12 +47,12 @@ namespace Test
 
         protected override void SetTrueFlag()
         {
-            Flags(x => x.Carry());
+            Flags(x => x.ResetCarry());
         }
 
         protected override void SetFalseFlag()
         {
-            Flags(x => x.ResetCarry());
+            Flags(x => x.Carry());
         }
     }
 
@@ -89,6 +89,24 @@ namespace Test
         protected override void SetFalseFlag()
         {
             Flags(x => x.Zero());
+        }
+    }
+
+    public class RET_C : RETConditionalTestBase
+    {
+        protected override byte OpCode
+        {
+            get { return 0xD8; }
+        }
+
+        protected override void SetTrueFlag()
+        {
+            Flags(x => x.Carry());
+        }
+
+        protected override void SetFalseFlag()
+        {
+            Flags(x => x.ResetCarry());
         }
     }
 
