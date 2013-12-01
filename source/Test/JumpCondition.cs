@@ -18,7 +18,10 @@ namespace Test
         }
 
         public static readonly JumpCondition NZ = new JumpCondition(0x0, x => x.Z = 0, x => x.Z = 1);
-        
+        public static readonly JumpCondition Z = new JumpCondition(0x1, x => x.Z = 1, x => x.Z = 0);
+        public static readonly JumpCondition NC = new JumpCondition(0x2, x => x.Carry = 0, x => x.Carry = 1);
+        public static readonly JumpCondition C = new JumpCondition(0x3, x => x.Carry = 1, x => x.Carry = 0);
+
         public void Set(Cpu cpu)
         {
             _set(cpu);
@@ -39,6 +42,9 @@ namespace Test
             return new List<JumpCondition>
             {
                 NZ,
+                Z,
+                NC,
+                C
             };
         }
     }
