@@ -158,6 +158,7 @@ namespace Core
             { 0x7D, new InstructionMetaData(1, 1, "LD A, L")},
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
+            { 0x91, new InstructionMetaData(1, 1, "SUB C")},
             { 0xAD, new InstructionMetaData(1, 1, "XOR L")},
             { 0xAE, new InstructionMetaData(1, 2, "XOR (HL)")},
             { 0xAF, new InstructionMetaData(1, 1, "XOR A")},
@@ -586,6 +587,9 @@ namespace Core
                 case 0x7E:
                     LD_r_HL(Register.A);
                     break;
+                case 0x91:
+                    SUB(Register.C);
+                    break;
                 case 0xAD:
                     XOR(Register.L);
                     break;
@@ -787,6 +791,17 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void SUB(Register register)
+        {
+            var value = _registers[register];
+            HC = (byte)((A & 0xF) < (value & 0xF) ? 1 : 0);
+            var result = A - value;
+            A = (byte) result;
+            Z = (byte)(result == 0 ? 1 : 0);
+            Carry = (byte)(result < 0 ? 1 : 0);
+            N = 1;
         }
 
         private void CP_r(Register register)
