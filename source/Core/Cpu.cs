@@ -56,9 +56,11 @@ namespace Core
             { 0x00, new InstructionMetaData(1, 1, "NOP")},
             { 0x01, new InstructionMetaData(3, 3, "LD BC, nn")},
             { 0x03, new InstructionMetaData(1, 2, "INC BC")},
+            { 0x04, new InstructionMetaData(1, 1, "INC B")},
             { 0x05, new InstructionMetaData(1, 1, "DEC B")},
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
             { 0x08, new InstructionMetaData(3, 5, "LD (nn), SP")},
+            { 0x0C, new InstructionMetaData(1, 1, "INC C")},
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
             { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
@@ -251,6 +253,9 @@ namespace Core
                     B = (byte)((newValue >> 8) & 0xFF);
                     C = (byte)(newValue & 0xFF);
                     break;
+                case 0x04:
+                    INC_r(Register.B);
+                    break;
                 case 0x05:
                     DEC_r(Register.B);
                     break;
@@ -259,6 +264,9 @@ namespace Core
                     break;
                 case 0x08:
                     LD_NN_SP();
+                    break;
+                case 0x0c:
+                    INC_r(Register.C);
                     break;
                 case 0x0D:
                     DEC_r(Register.C);
