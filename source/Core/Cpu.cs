@@ -164,6 +164,7 @@ namespace Core
             { 0xB6, new InstructionMetaData(1, 2, "OR (HL)")},
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
             { 0xB8, new InstructionMetaData(1, 1, "CP B")},
+            { 0xB9, new InstructionMetaData(1, 1, "CP C")},
             { 0xC0, new InstructionMetaData(0, 0, "RET NZ")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC2, new InstructionMetaData(0, 0, "JP NZ, nn")},
@@ -600,6 +601,9 @@ namespace Core
                     break;
                 case 0xB8:
                     CP_r(Register.B);
+                    break;
+                case 0xB9:
+                    CP_r(Register.C);
                     break;
                 case 0xC0:
                     RET_cc(Z == 0);
