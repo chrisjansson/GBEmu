@@ -78,6 +78,7 @@
     <Compile Include="CpuAssertion.cs" />
     <Compile Include="CpuTestBase.cs" />
     <Compile Include="CP_n.cs" />
+    <Compile Include="CP_R.cs" />
     <Compile Include="DEC_HL.cs" />
     <Compile Include="INC_ss.cs" />
     <Compile Include="JP_cc_nn.cs" />

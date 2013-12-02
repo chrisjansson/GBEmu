@@ -163,6 +163,7 @@ namespace Core
             { 0xB1, new InstructionMetaData(1, 1, "OR C")},
             { 0xB6, new InstructionMetaData(1, 2, "OR (HL)")},
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
+            { 0xB8, new InstructionMetaData(1, 1, "CP B")},
             { 0xC0, new InstructionMetaData(0, 0, "RET NZ")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC2, new InstructionMetaData(0, 0, "JP NZ, nn")},
@@ -597,6 +598,9 @@ namespace Core
                 case 0xB7:
                     OR_r(Register.A);
                     break;
+                case 0xB8:
+                    CP_r(Register.B);
+                    break;
                 case 0xC0:
                     RET_cc(Z == 0);
                     break;
@@ -771,6 +775,16 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void CP_r(Register register)
+        {
+            var value = _registers[register];
+            var result = A - value;
+            Z = (byte) (result == 0 ? 1 : 0);
+            Carry = (byte) (result < 0 ? 1 : 0);
+            HC = (byte) ((A & 0xF) < (value & 0xF) ? 1 : 0);
+            N = 1;
         }
 
         private void RETI()
