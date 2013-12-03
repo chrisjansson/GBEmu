@@ -158,6 +158,7 @@ namespace Core
             { 0x7D, new InstructionMetaData(1, 1, "LD A, L")},
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
+            { 0x81, new InstructionMetaData(1, 1, "ADD A, C")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
             { 0xAD, new InstructionMetaData(1, 1, "XOR L")},
             { 0xAE, new InstructionMetaData(1, 2, "XOR (HL)")},
@@ -587,11 +588,23 @@ namespace Core
                 case 0x7E:
                     LD_r_HL(Register.A);
                     break;
+                case 0x81:
+                    ADD_r(Register.C);
+                    break;
                 case 0x91:
                     SUB(Register.C);
                     break;
                 case 0xAD:
                     XOR(Register.L);
+                    break;
+                case 0xA9:
+                    A = (byte)(A ^ C);
+                    N = 0;
+                    Carry = 0;
+                    HC = 0;
+                    Z = (byte)(A == 0 ? 1 : 0);
+                    ProgramCounter += 1;
+                    Cycles += 1;
                     break;
                 case 0xAE:
                     XOR(_mmu.GetByte(HL));
@@ -647,6 +660,13 @@ namespace Core
                 case 0xC8:
                     RET_cc(Z == 1);
                     break;
+                case 0xC6:
+                    A += _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    Z = (byte)(A == 0 ? 1 : 0);
+                    N = 0;
+                    Cycles += 2;
+                    ProgramCounter += 2;
+                    break;
                 case 0xC9:
                     RET();
                     break;
@@ -686,6 +706,14 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 1), D);
                     _mmu.SetByte((ushort)(SP - 2), E);
                     SP -= 2;
+                    break;
+                case 0xD6:
+                    Carry = (byte)(_mmu.GetByte((ushort)(ProgramCounter + 1)) > A ? 1 : 0);
+                    A -= _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    Z = (byte)(A == 0 ? 1 : 0);
+                    N = 1;
+                    ProgramCounter += 2;
+                    Cycles += 2;
                     break;
                 case 0xD7:
                     RST(0x10);
@@ -775,9 +803,12 @@ namespace Core
                     A = _mmu.GetByte((ushort)address);
                     break;
                 case 0xFE:
-                    var res = A == _mmu.GetByte((ushort)(ProgramCounter + 1));
-                    Z = (byte)(res ? 1 : 0);
+                    var value = _mmu.GetByte((ushort)(ProgramCounter + 1));
+                    var res = A - value;
+                    Z = (byte)(res == 0? 1 : 0);
                     N = 1;
+                    Carry = (byte) (A < value ? 1 : 0);
+                    HC = (byte)((A & 0xF) < (value & 0xF) ? 1 : 0);
                     break;
                 case 0xFF:
                     RST(0x38);
@@ -791,6 +822,17 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void ADD_r(Register register)
+        {
+            var value = _registers[register];
+            Carry = (byte) (A + value > 255 ? 1 : 0);
+            HC = (byte) ((value & 0x0F) + (A & 0x0F) > 15 ? 1 : 0);
+            A += value;
+            N = 0;
+            
+            Z = (byte) (A == 0 ? 1 : 0);
         }
 
         private void SUB(Register register)

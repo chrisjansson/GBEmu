@@ -14,10 +14,11 @@ namespace Test
 
         public void SetByte(ushort address, byte value)
         {
-            if (address == 0xFF01 || address == 0xFF02)
+            if (address == 0xFF01)
             {
-                Console.WriteLine(value);
+                Console.Write((char)value);
             }
+
             Memory[address] = value;
         }
     }

@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{72BA4424-6143-4B8E-B8CF-239E829AFEB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{0F4C9668-9811-4142-905F-3FB93758EEAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gui", "Gui\Gui.csproj", "{EED5BA1C-39A5-4D3A-AEDD-AE11FED1C4EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +33,12 @@ Global
 		{0F4C9668-9811-4142-905F-3FB93758EEAA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F4C9668-9811-4142-905F-3FB93758EEAA}.Release|x86.ActiveCfg = Release|x86
 		{0F4C9668-9811-4142-905F-3FB93758EEAA}.Release|x86.Build.0 = Release|x86
+		{EED5BA1C-39A5-4D3A-AEDD-AE11FED1C4EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EED5BA1C-39A5-4D3A-AEDD-AE11FED1C4EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EED5BA1C-39A5-4D3A-AEDD-AE11FED1C4EC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EED5BA1C-39A5-4D3A-AEDD-AE11FED1C4EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EED5BA1C-39A5-4D3A-AEDD-AE11FED1C4EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EED5BA1C-39A5-4D3A-AEDD-AE11FED1C4EC}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
