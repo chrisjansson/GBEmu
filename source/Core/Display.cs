@@ -11,9 +11,10 @@
     public class Display
     {
         private int _mode = 2;
-        private int _clock = 0;
+        private int _clock;
 
         public int Mode { get { return _mode; }}
+        public int Line { get; private set; }
 
         public void Tick()
         {
@@ -22,6 +23,7 @@
             if (_clock == 51 && Mode == 0)
             {
                 _clock = 0;
+                Line++;
                 _mode = 2;
             }
 
