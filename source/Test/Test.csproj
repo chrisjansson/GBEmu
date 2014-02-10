@@ -81,6 +81,7 @@
     <Compile Include="CP_n.cs" />
     <Compile Include="CP_R.cs" />
     <Compile Include="DEC_HL.cs" />
+    <Compile Include="Display\Mode_tests.cs" />
     <Compile Include="INC_ss.cs" />
     <Compile Include="JP_cc_nn.cs" />
     <Compile Include="JP_HL.cs" />
@@ -141,6 +142,7 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

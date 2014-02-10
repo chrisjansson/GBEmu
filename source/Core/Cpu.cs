@@ -3,12 +3,6 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public interface IMmu
-    {
-        byte GetByte(ushort address);
-        void SetByte(ushort address, byte value);
-    }
-
     public class Register
     {
         public static readonly Register A = new Register(0);
