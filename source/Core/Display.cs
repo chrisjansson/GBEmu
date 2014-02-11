@@ -16,16 +16,23 @@
         public int Mode { get { return _mode; } }
         public int Line { get; private set; }
 
+        private const int HorizontalBlankingTime = 51;
+        private const int VerticalBlankingTime = 114;
+        private const int OAMScanningTime = 20;
+        private const int TransferTime = 43;
+        private const int NumberOfLines = 144;
+        private const int NumberOfVerticalBlankingLines = 10;
+
         public void Tick()
         {
             _clock++;
 
-            if (Mode == 0 && _clock == 51)
+            if (Mode == 0 && _clock == HorizontalBlankingTime)
             {
                 _clock = 0;
                 Line++;
 
-                if (Line == 144)
+                if (Line == NumberOfLines)
                 {
                     _mode = 1;
                 }
@@ -34,23 +41,23 @@
                     _mode = 2;
                 }
             }
-            else if (Mode == 1 && _clock == 114)
+            else if (Mode == 1 && _clock == VerticalBlankingTime)
             {
                 Line++;
                 _clock = 0;
 
-                if (Line == 154)
+                if (Line == NumberOfLines + NumberOfVerticalBlankingLines)
                 {
                     Line = 0;
                     _mode = 2;
                 }
             }
-            else if (Mode == 2 && _clock == 20)
+            else if (Mode == 2 && _clock == OAMScanningTime)
             {
                 _mode = 3;
                 _clock = 0;
             }
-            else if (Mode == 3 && _clock == 43)
+            else if (Mode == 3 && _clock == TransferTime)
             {
                 _mode = 0;
                 _clock = 0;
