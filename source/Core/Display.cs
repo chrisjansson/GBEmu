@@ -13,7 +13,7 @@
         private int _mode = 2;
         private int _clock;
 
-        public int Mode { get { return _mode; }}
+        public int Mode { get { return _mode; } }
         public int Line { get; private set; }
 
         public void Tick()
@@ -31,14 +31,20 @@
                 }
                 else
                 {
-                    _mode = 2;    
+                    _mode = 2;
                 }
             }
 
-            if (Mode == 1 && _clock == 1140)
+            if (Mode == 1 && _clock == 114)
             {
+                Line++;
                 _clock = 0;
-                _mode = 2;
+
+                if (Line == 154)
+                {
+                    Line = 0;
+                    _mode = 2;
+                }
             }
 
             if (Mode == 2 && _clock == 20)
