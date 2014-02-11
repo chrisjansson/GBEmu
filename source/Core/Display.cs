@@ -34,8 +34,7 @@
                     _mode = 2;
                 }
             }
-
-            if (Mode == 1 && _clock == 114)
+            else if (Mode == 1 && _clock == 114)
             {
                 Line++;
                 _clock = 0;
@@ -46,14 +45,12 @@
                     _mode = 2;
                 }
             }
-
-            if (Mode == 2 && _clock == 20)
+            else if (Mode == 2 && _clock == 20)
             {
                 _mode = 3;
                 _clock = 0;
             }
-
-            if (Mode == 3 && _clock == 43)
+            else if (Mode == 3 && _clock == 43)
             {
                 _mode = 0;
                 _clock = 0;
