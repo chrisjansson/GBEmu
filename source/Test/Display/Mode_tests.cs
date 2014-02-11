@@ -87,6 +87,53 @@ namespace Test.Display
             Assert.Equal(3, _sut.Mode);
         }
 
+        [Fact]
+        public void Is_in_mode_2_after_143_scan_lines()
+        {
+            for (var i = 0; i < 143; i++)
+            {
+                _sut.AdvanceScanLine();    
+            }
+            
+            Assert.Equal(2, _sut.Mode);
+        }
+
+        [Fact]
+        public void Is_in_mode_1_after_144_scan_lines()
+        {
+            for (var i = 0; i < 144; i++)
+            {
+                _sut.AdvanceScanLine();
+            }
+
+            Assert.Equal(1, _sut.Mode);
+        }
+
+        [Fact]
+        public void Is_in_mode_1_for_1140_cycles()
+        {
+            for (var i = 0; i < 144; i++)
+            {
+                _sut.AdvanceScanLine();
+            }
+
+            for (var i = 0; i < 1139; i++)
+            {
+                Assert.Equal(1, _sut.Mode);
+            }
+        }
+
+        [Fact]
+        public void Is_in_mode_2_after_154_scan_lines()
+        {
+            for (int i = 0; i < 154; i++)
+            {
+                _sut.AdvanceScanLine();
+            }
+
+            Assert.Equal(2, _sut.Mode);
+        }
+
         private void Tick(int clocks)
         {
             for (var i = 0; i < clocks; i++)

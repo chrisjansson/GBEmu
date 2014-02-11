@@ -20,20 +20,34 @@
         {
             _clock++;
 
-            if (_clock == 51 && Mode == 0)
+            if (Mode == 0 && _clock == 51)
             {
                 _clock = 0;
                 Line++;
+
+                if (Line == 144)
+                {
+                    _mode = 1;
+                }
+                else
+                {
+                    _mode = 2;    
+                }
+            }
+
+            if (Mode == 1 && _clock == 1140)
+            {
+                _clock = 0;
                 _mode = 2;
             }
 
-            if (_clock == 20 && Mode == 2)
+            if (Mode == 2 && _clock == 20)
             {
                 _mode = 3;
                 _clock = 0;
             }
 
-            if (_clock == 43 && Mode == 3)
+            if (Mode == 3 && _clock == 43)
             {
                 _mode = 0;
                 _clock = 0;
