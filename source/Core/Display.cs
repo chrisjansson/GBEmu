@@ -12,6 +12,12 @@
     {
         private int _mode = 2;
         private int _clock;
+        private IDisplayDataTransferService _displayDataTransferService;
+
+        public Display(IDisplayDataTransferService displayDataTransferService)
+        {
+            _displayDataTransferService = displayDataTransferService;
+        }
 
         public int Mode { get { return _mode; } }
         public int Line { get; private set; }
@@ -61,7 +67,14 @@
             {
                 _mode = 0;
                 _clock = 0;
+                _displayDataTransferService.TransferScanLine(Line);
             }
         }
+    }
+
+    public interface IDisplayDataTransferService
+    {
+        void TransferScanLine(int line);
+        void FinishFrame();
     }
 }

@@ -4,11 +4,13 @@ namespace Test.Display
 {
     public class Scanline_tests
     {
+        private readonly FakeDisplayDataTransferService _fakeDisplayDataTransferService;
         private readonly Core.Display _sut;
 
         public Scanline_tests()
         {
-            _sut = new Core.Display();
+            _fakeDisplayDataTransferService = new FakeDisplayDataTransferService();
+            _sut = new Core.Display(_fakeDisplayDataTransferService);
         }
 
         [Fact]
@@ -30,9 +32,9 @@ namespace Test.Display
         {
             for (var i = 0; i < 153; i++)
             {
-                _sut.AdvanceScanLine();    
+                _sut.AdvanceScanLine();
             }
-            
+
             Assert.Equal(153, _sut.Line);
         }
 
@@ -45,6 +47,51 @@ namespace Test.Display
             }
 
             Assert.Equal(0, _sut.Line);
+        }
+
+        [Fact]
+        public void Transfers_a_scan_line_after_a_scan_line_cycle()
+        {
+            _sut.AdvanceScanLine();
+
+            Assert.Equal(1, _fakeDisplayDataTransferService.TransferedScanLines.Count);
+        }
+
+        [Fact]
+        public void Transfers_a_scan_line_for_every_scan_line_cycle()
+        {
+            _sut.AdvanceScanLine();
+            _sut.AdvanceScanLine();
+
+            Assert.Equal(2, _fakeDisplayDataTransferService.TransferedScanLines.Count);
+        }
+
+        [Fact]
+        public void Transfers_the_current_scan_line()
+        {
+            _sut.AdvanceScanLine();
+            _sut.AdvanceScanLine();
+
+            Assert.Equal(1, _fakeDisplayDataTransferService.LastTransferedScanLine);
+        }
+
+        [Fact]
+        public void Transfers_current_line_when_transitioning_from_mode_3_to_0()
+        {
+            _sut.AdvanceScanLine();
+            _sut.AdvanceScanLine();
+            _sut.AdvanceScanLine();
+            _sut.AdvanceScanLine();
+            //Advance to the last tick of mode 3 of line 4
+            for (var i = 0; i < 62; i++)
+            {
+                _sut.Tick();
+            }
+            Assert.Equal(3, _sut.Mode);
+
+            _sut.Tick();
+
+            Assert.Equal(4, _fakeDisplayDataTransferService.LastTransferedScanLine);
         }
     }
 }

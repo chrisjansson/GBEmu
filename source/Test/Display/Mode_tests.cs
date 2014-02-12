@@ -8,7 +8,7 @@ namespace Test.Display
 
         public Mode_tests()
         {
-            _sut = new Core.Display();
+            _sut = new Core.Display(new FakeDisplayDataTransferService());
         }
 
         [Fact]
