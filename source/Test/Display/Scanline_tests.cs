@@ -93,5 +93,27 @@ namespace Test.Display
 
             Assert.Equal(4, _fakeDisplayDataTransferService.LastTransferedScanLine);
         }
+
+        [Fact]
+        public void Finishes_a_frame_every_154_lines()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                _sut.AdvanceFrame();
+            }
+
+            Assert.Equal(5, _fakeDisplayDataTransferService.FinishedFrames);
+        }
+
+        [Fact]
+        public void Finishes_frame_at_the_end_of_scan_line_144()
+        {
+            for (int i = 0; i < 144; i++)
+            {
+                _sut.AdvanceScanLine();
+            }
+
+            Assert.Equal(1, _fakeDisplayDataTransferService.FinishedFrames);
+        }
     }
 }

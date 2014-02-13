@@ -18,9 +18,10 @@ namespace Test.Display
 
         public void FinishFrame()
         {
-            throw new System.NotImplementedException();
+            FinishedFrames++;
         }
 
+        public int FinishedFrames { get; private set; }
         public List<int> TransferedScanLines { get; private set; }
         public int LastTransferedScanLine { get { return TransferedScanLines.Last(); } }
     }

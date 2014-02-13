@@ -41,6 +41,7 @@
                 if (Line == NumberOfLines)
                 {
                     _mode = 1;
+                    _displayDataTransferService.FinishFrame();
                 }
                 else
                 {

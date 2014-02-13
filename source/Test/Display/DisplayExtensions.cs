@@ -9,5 +9,13 @@
                 display.Tick();
             }
         }
+
+        public static void AdvanceFrame(this Core.Display display)
+        {
+            for (int i = 0; i < 154; i++)
+            {
+                display.AdvanceScanLine();
+            }
+        }
     }
 }
