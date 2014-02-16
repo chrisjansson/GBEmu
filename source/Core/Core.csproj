@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Cpu.cs" />
     <Compile Include="Display.cs" />
+    <Compile Include="IDisplayDataTransferService.cs" />
     <Compile Include="IMmu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

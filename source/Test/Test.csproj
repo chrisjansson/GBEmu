@@ -81,6 +81,7 @@
     <Compile Include="CP_n.cs" />
     <Compile Include="CP_R.cs" />
     <Compile Include="DEC_HL.cs" />
+    <Compile Include="Display\DataTransfer_tests.cs" />
     <Compile Include="Display\DisplayExtensions.cs" />
     <Compile Include="Display\FakeDisplayDataTransferService.cs" />
     <Compile Include="Display\Mode_tests.cs" />

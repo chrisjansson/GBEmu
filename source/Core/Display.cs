@@ -73,9 +73,9 @@
         }
     }
 
-    public interface IDisplayDataTransferService
+    public class RegisterAddresses
     {
-        void TransferScanLine(int line);
-        void FinishFrame();
+        public const ushort ScrollX = 0xFF43;
+        public const ushort ScrollY = 0xFF42;
     }
 }
