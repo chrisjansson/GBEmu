@@ -190,6 +190,7 @@ namespace Core
             { 0xDF, new InstructionMetaData(0, 4, "RST 18H")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
+            { 0xE2, new InstructionMetaData(2, 2, "LD (C), A")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
             { 0xE7, new InstructionMetaData(0, 4, "RST 20H")},
             { 0xE9, new InstructionMetaData(0, 1, "JP HL")},
@@ -734,6 +735,9 @@ namespace Core
                     L = _mmu.GetByte(SP);
                     H = _mmu.GetByte((ushort)(SP + 1));
                     SP += 2;
+                    break;
+                case 0xE2:
+                    _mmu.SetByte((ushort) (0xFF00 + _registers[Register.C]), _registers[Register.A]);
                     break;
                 case 0xE5:
                     _mmu.SetByte((ushort)(SP - 1), H);
