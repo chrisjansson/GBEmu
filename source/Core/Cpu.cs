@@ -1013,6 +1013,9 @@ namespace Core
                 case 0x38:
                     SRL_B();
                     break;
+                case 0x7C:
+                    BIT(7, Register.H);
+                    break;
                 default:
                     throw new IllegalOpcodeException(opCode, ProgramCounter);
             }
@@ -1020,6 +1023,13 @@ namespace Core
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
+        }
+
+        private void BIT(int bit, Register register)
+        {
+            Z = (byte) ((~(_registers[register])) >> bit & 0x01);
+            N = 0;
+            HC = 1;
         }
 
         private void RR_r(Register register)
@@ -1038,6 +1048,7 @@ namespace Core
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
             {0x1B, new InstructionMetaData(2, 2, "RR E")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
+            {0x7C, new InstructionMetaData(2, 2, "BIT 7, H")},
         };
 
         private void SRL_B()

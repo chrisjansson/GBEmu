@@ -72,6 +72,7 @@
     <Compile Include="ADC_n.cs" />
     <Compile Include="ADD_HL_ss.cs" />
     <Compile Include="ADD_r.cs" />
+    <Compile Include="BIT_r.cs" />
     <Compile Include="Build.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="CALL_cc_nn.cs" />
