@@ -737,7 +737,7 @@ namespace Core
                     SP += 2;
                     break;
                 case 0xE2:
-                    _mmu.SetByte((ushort) (0xFF00 + _registers[Register.C]), _registers[Register.A]);
+                    _mmu.SetByte((ushort)(0xFF00 + _registers[Register.C]), _registers[Register.A]);
                     break;
                 case 0xE5:
                     _mmu.SetByte((ushort)(SP - 1), H);
@@ -803,9 +803,9 @@ namespace Core
                 case 0xFE:
                     var value = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     var res = A - value;
-                    Z = (byte)(res == 0? 1 : 0);
+                    Z = (byte)(res == 0 ? 1 : 0);
                     N = 1;
-                    Carry = (byte) (A < value ? 1 : 0);
+                    Carry = (byte)(A < value ? 1 : 0);
                     HC = (byte)((A & 0xF) < (value & 0xF) ? 1 : 0);
                     break;
                 case 0xFF:
@@ -825,12 +825,12 @@ namespace Core
         private void ADD_r(Register register)
         {
             var value = _registers[register];
-            Carry = (byte) (A + value > 255 ? 1 : 0);
-            HC = (byte) ((value & 0x0F) + (A & 0x0F) > 15 ? 1 : 0);
+            Carry = (byte)(A + value > 255 ? 1 : 0);
+            HC = (byte)((value & 0x0F) + (A & 0x0F) > 15 ? 1 : 0);
             A += value;
             N = 0;
-            
-            Z = (byte) (A == 0 ? 1 : 0);
+
+            Z = (byte)(A == 0 ? 1 : 0);
         }
 
         private void SUB(Register register)
@@ -838,7 +838,7 @@ namespace Core
             var value = _registers[register];
             HC = (byte)((A & 0xF) < (value & 0xF) ? 1 : 0);
             var result = A - value;
-            A = (byte) result;
+            A = (byte)result;
             Z = (byte)(result == 0 ? 1 : 0);
             Carry = (byte)(result < 0 ? 1 : 0);
             N = 1;
@@ -848,9 +848,9 @@ namespace Core
         {
             var value = _registers[register];
             var result = A - value;
-            Z = (byte) (result == 0 ? 1 : 0);
-            Carry = (byte) (result < 0 ? 1 : 0);
-            HC = (byte) ((A & 0xF) < (value & 0xF) ? 1 : 0);
+            Z = (byte)(result == 0 ? 1 : 0);
+            Carry = (byte)(result < 0 ? 1 : 0);
+            HC = (byte)((A & 0xF) < (value & 0xF) ? 1 : 0);
             N = 1;
         }
 
@@ -1005,6 +1005,9 @@ namespace Core
             var opCode = _mmu.GetByte((ushort)(ProgramCounter + 1));
             switch (opCode)
             {
+                case 0x11:
+                    RL_r(Register.C);
+                    break;
                 case 0x19:
                     RR_r(Register.C);
                     break;
@@ -1029,9 +1032,19 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void RL_r(Register register)
+        {
+            HC = 0;
+            N = 0;
+            var result = (byte)((_registers[register] << 1) | Carry);
+            Carry = (byte)((_registers[register] & 0x80) == 0 ? 0 : 1);
+            _registers[register] = result;
+            Z = (byte) (result == 0 ? 1 : 0);
+        }
+
         private void BIT(int bit, Register register)
         {
-            Z = (byte) ((~(_registers[register])) >> bit & 0x01);
+            Z = (byte)((~(_registers[register])) >> bit & 0x01);
             N = 0;
             HC = 1;
         }
@@ -1048,6 +1061,7 @@ namespace Core
 
         private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
         {
+            {0x11, new InstructionMetaData(2, 2, "RL C")},
             {0x19, new InstructionMetaData(2, 2, "RR C")},
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
             {0x1B, new InstructionMetaData(2, 2, "RR E")},
