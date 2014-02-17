@@ -63,6 +63,7 @@ namespace Core
             { 0x14, new InstructionMetaData(1, 1, "INC D")},
             { 0x15, new InstructionMetaData(1, 1, "DEC D")},
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
+            { 0x17, new InstructionMetaData(1, 1, "RLA")},
             { 0x18, new InstructionMetaData(0, 3, "JR, $+e")},
             { 0x1A, new InstructionMetaData(1, 2, "LD A, (DE)")},
             { 0x1C, new InstructionMetaData(1, 1, "INC E")},
@@ -292,6 +293,9 @@ namespace Core
                     break;
                 case 0x16:
                     LD_r_n(Register.D);
+                    break;
+                case 0x17:
+                    RL_r(Register.A);
                     break;
                 case 0x18:
                     JR_e();

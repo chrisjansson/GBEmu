@@ -7,7 +7,7 @@ namespace Test
     {
         protected override byte CreateOpCode(RegisterMapping register)
         {
-            return (byte) (0x10 | register);
+            return (byte)(0x10 | register);
         }
 
         [Theory, PropertyData("Registers")]
