@@ -77,6 +77,7 @@
     <Compile Include="Call.cs" />
     <Compile Include="CALL_cc_nn.cs" />
     <Compile Include="CBRegisterTestBase.cs" />
+    <Compile Include="CPTestBase.cs" />
     <Compile Include="CpuAssertion.cs" />
     <Compile Include="CpuTestBase.cs" />
     <Compile Include="CP_n.cs" />
