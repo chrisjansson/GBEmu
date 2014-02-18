@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System.Linq.Expressions;
+
+namespace Core
 {
     //0xFF40 - LCDC - LCD Control
     //0xFF41 - STAT - LCDC Status
@@ -77,5 +79,7 @@
     {
         public const ushort ScrollX = 0xFF43;
         public const ushort ScrollY = 0xFF42;
+        public const ushort LY = 0xFF44;
+        public const ushort BGP = 0xFF47;
     }
 }
