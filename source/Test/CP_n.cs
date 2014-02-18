@@ -1,6 +1,4 @@
-﻿    using System;
-using Core;
-using Xunit;
+﻿using Xunit;
 
 namespace Test
 {
@@ -41,10 +39,25 @@ namespace Test
         }
 
         [Fact]
-        public void C_and_half_carry()
+        public void Sets_carry()
         {
-            //A - n is the order of subtraction
-            throw new NotImplementedException();
+            Flags(x => x.ResetCarry());
+            Cpu.A = 0x3C;
+
+            Execute(CreateOpCode(), 0x40);
+
+            AssertFlags(x => x.SetCarry().ResetHalfCarry());
+        }
+
+        [Fact]
+        public void Sets_half_carry_when_borrowing_from_4th_to_3rd_bit()
+        {
+            Flags(x => x.ResetHalfCarry());
+            Cpu.A = 0x3C;
+
+            Execute(CreateOpCode(), 0x2F);
+
+            AssertFlags(x => x.SetHalfCarry().ResetCarry());
         }
 
         private byte CreateOpCode()

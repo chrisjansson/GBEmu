@@ -810,11 +810,8 @@ namespace Core
                     break;
                 case 0xFE:
                     var value = _mmu.GetByte((ushort)(ProgramCounter + 1));
-                    var res = A - value;
-                    Z = (byte)(res == 0 ? 1 : 0);
-                    N = 1;
-                    Carry = (byte)(A < value ? 1 : 0);
-                    HC = (byte)((A & 0xF) < (value & 0xF) ? 1 : 0);
+
+                    CP(value);
                     break;
                 case 0xFF:
                     RST(0x38);
@@ -855,6 +852,11 @@ namespace Core
         private void CP_r(Register register)
         {
             var value = _registers[register];
+            CP(value);
+        }
+
+        private void CP(byte value)
+        {
             var result = A - value;
             Z = (byte)(result == 0 ? 1 : 0);
             Carry = (byte)(result < 0 ? 1 : 0);
