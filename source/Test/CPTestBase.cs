@@ -1,10 +1,12 @@
-﻿using Xunit;
+﻿using Core;
+using Xunit;
 
 namespace Test
 {
     public abstract class CPTestBase : CpuTestBase
     {
         protected abstract void ExecuteCompareATo(byte value);
+        protected abstract int Length { get; }
 
         [Fact]
         public void Program_counter_cycles_sets_N()
@@ -15,7 +17,7 @@ namespace Test
 
             AssertFlags(x => x.SetSubtract());
             AdvancedClock(2);
-            AdvancedProgramCounter(2);
+            AdvancedProgramCounter(Length);
         }
 
         [Fact]
@@ -60,6 +62,22 @@ namespace Test
             ExecuteCompareATo(0x2F);
 
             AssertFlags(x => x.SetHalfCarry().ResetCarry());
+        }
+    }
+
+    public class CP_HL : CPTestBase
+    {
+        protected override void ExecuteCompareATo(byte value)
+        {
+            RegisterPair.HL.Set(Cpu, 0xAB, 0x34);
+            FakeMmu.SetByte(0xAB34, value);
+            
+            Execute(0xBE);
+        }
+
+        protected override int Length
+        {
+            get { return 1; }
         }
     }
 }

@@ -7,6 +7,11 @@
             Execute(CreateOpCode(), value);
         }
 
+        protected override int Length
+        {
+            get { return 2; }
+        }
+
         private byte CreateOpCode()
         {
             return 0xFE;

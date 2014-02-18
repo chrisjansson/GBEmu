@@ -165,6 +165,7 @@ namespace Core
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
             { 0xB8, new InstructionMetaData(1, 1, "CP B")},
             { 0xB9, new InstructionMetaData(1, 1, "CP C")},
+            { 0xBE, new InstructionMetaData(1, 2, "CP (HL)")},
             { 0xC0, new InstructionMetaData(0, 0, "RET NZ")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC2, new InstructionMetaData(0, 0, "JP NZ, nn")},
@@ -633,6 +634,9 @@ namespace Core
                 case 0xB9:
                     CP_r(Register.C);
                     break;
+                case 0xBE:
+                    CP_HL();
+                    break;
                 case 0xC0:
                     RET_cc(Z == 0);
                     break;
@@ -825,6 +829,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void CP_HL()
+        {
+            var value = _mmu.GetByte(HL);
+            CP(value);
         }
 
         private void ADD_r(Register register)
