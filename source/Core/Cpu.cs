@@ -154,6 +154,7 @@ namespace Core
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0x81, new InstructionMetaData(1, 1, "ADD A, C")},
+            { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
             { 0xAD, new InstructionMetaData(1, 1, "XOR L")},
             { 0xAE, new InstructionMetaData(1, 2, "XOR (HL)")},
@@ -589,6 +590,9 @@ namespace Core
                     break;
                 case 0x81:
                     ADD_r(Register.C);
+                    break;
+                case 0x90:
+                    SUB(Register.B);
                     break;
                 case 0x91:
                     SUB(Register.C);
