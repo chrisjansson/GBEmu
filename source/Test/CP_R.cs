@@ -18,7 +18,7 @@ namespace Test
 
             Execute(CreateOpCode(register));
 
-            AssertFlags(x => x.SetZero().ResetCarry().ResetCarry());
+            AssertFlags(x => x.SetZero().ResetCarry().ResetHalfCarry());
         }
 
         [Theory, PropertyData("RegistersExceptA")]
