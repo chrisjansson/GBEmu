@@ -154,6 +154,7 @@ namespace Core
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
             { 0x81, new InstructionMetaData(1, 1, "ADD A, C")},
+            { 0x86, new InstructionMetaData(1, 2, "ADD A, (HL)")},
             { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
             { 0xAD, new InstructionMetaData(1, 1, "XOR L")},
@@ -592,6 +593,9 @@ namespace Core
                 case 0x81:
                     ADD_r(Register.C);
                     break;
+                case 0x86:
+                    ADD_A_HL();
+                    break;
                 case 0x90:
                     SUB(Register.B);
                     break;
@@ -814,7 +818,6 @@ namespace Core
                     break;
                 case 0xFE:
                     var value = _mmu.GetByte((ushort)(ProgramCounter + 1));
-
                     CP(value);
                     break;
                 case 0xFF:
@@ -831,6 +834,12 @@ namespace Core
             }
         }
 
+        private void ADD_A_HL()
+        {
+            var value = _mmu.GetByte(HL);
+            Add(value);
+        }
+
         private void CP_HL()
         {
             var value = _mmu.GetByte(HL);
@@ -840,6 +849,11 @@ namespace Core
         private void ADD_r(Register register)
         {
             var value = _registers[register];
+            Add(value);
+        }
+
+        private void Add(byte value)
+        {
             Carry = (byte)(A + value > 255 ? 1 : 0);
             HC = (byte)((value & 0x0F) + (A & 0x0F) > 15 ? 1 : 0);
             A += value;
