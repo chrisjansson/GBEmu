@@ -6,10 +6,18 @@
         void SetByte(ushort address, byte value);
     }
 
+    public enum WindowTileMapDisplaySelect
+    {
+        _9800,
+        _9C00
+    }
+
     public interface IDisplay
     {
+
         byte BackgroundPaletteData { get; set; }
         byte Line { get; }
+        byte LCDC { get; set; }
     }
 
     public class MMU : IMmu
@@ -25,6 +33,9 @@
         {
             switch (address)
             {
+                case RegisterAddresses.LCDC:
+                    return Display.LCDC;
+                    break;
                 case RegisterAddresses.BGP:
                     return Display.BackgroundPaletteData;
                     break;
@@ -40,6 +51,9 @@
         {
             switch (address)
             {
+                case RegisterAddresses.LCDC:
+                    Display.LCDC = value;
+                    break;
                 case RegisterAddresses.BGP:
                     Display.BackgroundPaletteData = value;
                     break;

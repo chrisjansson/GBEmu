@@ -62,15 +62,15 @@ namespace Gui
         private static void EmulateCycle()
         {
             var next = _cpu.ProgramCounter;
-            var instruction = _mmu._memory[next];
+            //var instruction = _mmu._memory[next];
 
-            var old = _cpu.Cycles;
-            _cpu.Execute(instruction);
-            var delta = _cpu.Cycles - old;
-            for (var i = 0; i < delta; i++)
-            {
-                _display.Tick();
-            }
+            //var old = _cpu.Cycles;
+            //_cpu.Execute(instruction);
+            //var delta = _cpu.Cycles - old;
+            //for (var i = 0; i < delta; i++)
+            //{
+            //    _display.Tick();
+            //}
         }
 
         private static void Draw(IntPtr renderer)

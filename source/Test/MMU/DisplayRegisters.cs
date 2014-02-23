@@ -1,5 +1,7 @@
-﻿using Core;
+﻿using System.Runtime.Remoting;
+using Core;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Test.MMU
 {
@@ -73,11 +75,30 @@ namespace Test.MMU
 
             Assert.Equal(123, _display.Line);
         }
+
+        [Fact]
+        public void FF40_is_LCDC_on_display()
+        {
+            _sut.SetByte(RegisterAddresses.LCDC, 0x12);
+
+            Assert.Equal(0x12, _display.LCDC);
+        }
+
+        [Fact]
+        public void FF40_depends_on_display_LCDC()
+        {
+            _display.LCDC = 0xAB;
+
+            var actual = _sut.GetByte(RegisterAddresses.LCDC);
+
+            Assert.Equal(0xAB, actual);
+        }
     }
 
     public class FakeDisplay : IDisplay
     {
         public byte BackgroundPaletteData { get; set; }
         public byte Line { get; set; }
+        public byte LCDC { get; set; }
     }
 }

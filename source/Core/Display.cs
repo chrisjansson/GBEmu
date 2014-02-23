@@ -22,6 +22,7 @@
         public int Mode { get { return _mode; } }
         public byte BackgroundPaletteData { get; set; }
         public byte Line { get; set; }
+        public byte LCDC { get; set; }
 
         private const int HorizontalBlankingTime = 51;
         private const int VerticalBlankingTime = 114;
@@ -76,6 +77,7 @@
 
     public class RegisterAddresses
     {
+        public const ushort LCDC = 0xFF40;
         public const ushort ScrollX = 0xFF43;
         public const ushort ScrollY = 0xFF42;
         public const ushort LY = 0xFF44;
