@@ -9,7 +9,7 @@
     public interface IDisplay
     {
         byte BackgroundPaletteData { get; set; }
-        byte Line { get; set; }
+        byte Line { get; }
     }
 
     public class MMU : IMmu
