@@ -16,7 +16,7 @@ namespace Core
         private const int TileWidth = 8;
 
         private readonly IMmu _mmu;
-        public byte[] FrameBuffer = new Byte[WindowWidth*WindowHeight];
+        public byte[] FrameBuffer = new Byte[WindowWidth * WindowHeight];
 
         public DisplayDataTransferService(IMmu mmu)
         {
@@ -44,13 +44,10 @@ namespace Core
                 var higherPixel = (higher >> (6 - x)) & 0x02;
 
                 var color = higherPixel | lowerPixel;
-                FrameBuffer[line*WindowWidth + i] = (byte) color;
+                FrameBuffer[line * WindowWidth + i] = (byte)color;
             }
         }
 
-        public void FinishFrame()
-        {
-            throw new System.NotImplementedException();
-        }
+        public void FinishFrame() { }
     }
 }

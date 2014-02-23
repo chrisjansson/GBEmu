@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Core
+﻿namespace Core
 {
     //0xFF40 - LCDC - LCD Control
     //0xFF41 - STAT - LCDC Status
@@ -10,11 +8,11 @@ namespace Core
     //0xFF45 - LYC - LY Compare (R/W)
     //0xFF4A - WY - Window Y Position (R/W)
     //0xFF4B - WX - Window X Position minus 7 (R/W)
-    public class Display
+    public class Display : IDisplay
     {
         private int _mode = 2;
         private int _clock;
-        private IDisplayDataTransferService _displayDataTransferService;
+        private readonly IDisplayDataTransferService _displayDataTransferService;
 
         public Display(IDisplayDataTransferService displayDataTransferService)
         {
@@ -22,7 +20,8 @@ namespace Core
         }
 
         public int Mode { get { return _mode; } }
-        public int Line { get; private set; }
+        public byte BackgroundPaletteData { get; set; }
+        public byte Line { get; set; }
 
         private const int HorizontalBlankingTime = 51;
         private const int VerticalBlankingTime = 114;
