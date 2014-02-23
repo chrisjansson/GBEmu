@@ -1,5 +1,4 @@
-﻿using Core;
-using Xunit;
+﻿using Xunit;
 
 namespace Test
 {
