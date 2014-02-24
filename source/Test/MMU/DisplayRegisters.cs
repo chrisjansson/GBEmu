@@ -1,7 +1,5 @@
-﻿using System.Runtime.Remoting;
-using Core;
+﻿using Core;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Test.MMU
 {
