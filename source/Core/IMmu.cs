@@ -35,13 +35,10 @@
             {
                 case RegisterAddresses.LCDC:
                     return Display.LCDC;
-                    break;
                 case RegisterAddresses.BGP:
                     return Display.BackgroundPaletteData;
-                    break;
                 case RegisterAddresses.LY:
                     return Display.Line;
-                    break;
                 default:
                     return _memory[address];
             }
