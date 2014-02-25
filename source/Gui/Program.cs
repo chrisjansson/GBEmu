@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Core;
 using SDL2;
 
@@ -11,6 +13,7 @@ namespace Gui
         private static Cpu _cpu;
         private static DisplayDataTransferService _displayDataTransferService;
         private static Display _display;
+        private static MMUWithBootRom _mmuWithBootRom;
 
         static void Main(string[] args)
         {
@@ -20,10 +23,24 @@ namespace Gui
             var renderer = SDL.SDL_CreateRenderer(window, -1, 0);
 
             _mmu = new MMU();
-            _cpu = new Cpu(_mmu);
-            _displayDataTransferService = new DisplayDataTransferService(_mmu);
+
+            var fileStream = File.OpenRead(args[0]);
+            var rom = new byte[256];
+            fileStream.Read(rom, 0, 256);
+            _mmuWithBootRom = new MMUWithBootRom(rom, _mmu);
+            _cpu = new Cpu(_mmuWithBootRom);
+            _displayDataTransferService = new DisplayDataTransferService(_mmuWithBootRom);
             _display = new Display(_displayDataTransferService);
             _mmu.Display = _display;
+
+            var openRead = File.OpenRead(args[1]);
+            ushort inPosition = 0;
+            while (openRead.Position != openRead.Length)
+            {
+                byte readByte = (byte) openRead.ReadByte();
+                _mmu.SetByte(inPosition, readByte);
+                inPosition++;
+            }
 
             var running = true;
             while (running)
@@ -62,15 +79,15 @@ namespace Gui
         private static void EmulateCycle()
         {
             var next = _cpu.ProgramCounter;
-            //var instruction = _mmu._memory[next];
+            var instruction = _mmuWithBootRom.GetByte(next);
 
-            //var old = _cpu.Cycles;
-            //_cpu.Execute(instruction);
-            //var delta = _cpu.Cycles - old;
-            //for (var i = 0; i < delta; i++)
-            //{
-            //    _display.Tick();
-            //}
+            var old = _cpu.Cycles;
+            _cpu.Execute(instruction);
+            var delta = _cpu.Cycles - old;
+            for (var i = 0; i < delta; i++)
+            {
+                _display.Tick();
+            }
         }
 
         private static void Draw(IntPtr renderer)
