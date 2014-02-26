@@ -1026,12 +1026,13 @@ namespace Core
 
         private void ADC()
         {
-            var arg = _mmu.GetByte((ushort)(ProgramCounter + 1));
-            HC = (byte)((((A & 0x0F) + (0x0F & arg)) & 0x10) == 0x10 ? 1 : 0);
-            A += (byte)(arg + Carry);
-            Carry = (byte)(A + arg > 255 ? 1 : 0);
+            var arg = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            var result = A + arg + Carry;
+            HC = (byte) ((((A & 0x0F) + (arg & 0x0F) + Carry) & 0x10) == 0x10 ? 1 : 0);
+            A = (byte) result;
+            Carry = (byte)(result > 0xFF ? 1 : 0);
+            Z = (byte) (A == 0 ? 1 : 0);
             N = 0;
-            Z = (byte)(A == 0 ? 1 : 0);
         }
 
         private void CB()
