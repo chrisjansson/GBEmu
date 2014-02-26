@@ -7,6 +7,7 @@ namespace Gui
     {
         private readonly IMmu _mmu;
         private readonly byte[] _rom;
+        private bool _switched;
 
         public MMUWithBootRom(byte[] rom, IMmu mmu)
         {
@@ -21,7 +22,7 @@ namespace Gui
 
         public byte GetByte(ushort address)
         {
-            if (address < 256)
+            if (address < 256 && !_switched)
             {
                 return _rom[address];
             }
@@ -31,6 +32,11 @@ namespace Gui
 
         public void SetByte(ushort address, byte value)
         {
+            if (address == 0xFF50 && !_switched)
+            {
+                _switched = true;
+            }
+
             _mmu.SetByte(address, value);
         }
     }
