@@ -19,7 +19,7 @@ namespace Gui
         {
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO);
 
-            var window = SDL.SDL_CreateWindow("An SDL Window", 100, 100, 800, 600, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
+            var window = SDL.SDL_CreateWindow("An SDL Window", 100, 100, 640, 576, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
             var renderer = SDL.SDL_CreateRenderer(window, -1, 0);
 
             _mmu = new MMU();
@@ -95,14 +95,7 @@ namespace Gui
             var surface = CreateSurface();
             var texture = SDL.SDL_CreateTextureFromSurface(renderer, surface);
 
-            var dest = new SDL.SDL_Rect
-            {
-                w = 160 * 2,
-                h = 144 * 2,
-                x = 10,
-                y = 10
-            };
-            SDL.SDL_RenderCopy(renderer, texture, (IntPtr)null, ref dest);
+            SDL.SDL_RenderCopy(renderer, texture, (IntPtr)null, (IntPtr)null);
             SDL.SDL_RenderPresent(renderer);
             SDL.SDL_DestroyTexture(texture);
             SDL.SDL_FreeSurface(surface);
