@@ -1055,8 +1055,32 @@ namespace Core
                 case 0x38:
                     SRL_B();
                     break;
+                case 0x47:
+                    BIT(0, Register.A);
+                    break;
+                case 0x4F:
+                    BIT(1, Register.A);
+                    break;
+                case 0x57:
+                    BIT(2, Register.A);
+                    break;
+                case 0x5F:
+                    BIT(3, Register.A);
+                    break;
+                case 0x67:
+                    BIT(4, Register.A);
+                    break;
+                case 0x6F:
+                    BIT(5, Register.A);
+                    break;
+                case 0x77:
+                    BIT(6, Register.A);
+                    break;
                 case 0x7C:
                     BIT(7, Register.H);
+                    break;
+                case 0x7f:
+                    BIT(7, Register.A);
                     break;
                 default:
                     throw new IllegalOpcodeException(opCode, ProgramCounter);
@@ -1101,7 +1125,15 @@ namespace Core
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
             {0x1B, new InstructionMetaData(2, 2, "RR E")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
+            {0x47, new InstructionMetaData(2, 2, "BIT 0, A")},
+            {0x4F, new InstructionMetaData(2, 2, "BIT 1, A")},
+            {0x57, new InstructionMetaData(2, 2, "BIT 2, A")},
+            {0x5F, new InstructionMetaData(2, 2, "BIT 3, A")},
+            {0x67, new InstructionMetaData(2, 2, "BIT 4, A")},
+            {0x6F, new InstructionMetaData(2, 2, "BIT 5, A")},
+            {0x77, new InstructionMetaData(2, 2, "BIT 6, A")},
             {0x7C, new InstructionMetaData(2, 2, "BIT 7, H")},
+            {0x7F, new InstructionMetaData(2, 2, "BIT 7, A")}
         };
 
         private void SRL_B()
