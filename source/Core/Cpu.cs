@@ -1064,6 +1064,9 @@ namespace Core
                 case 0x42:
                     BIT(0, Register.D);
                     break;
+                case 0x43:
+                    BIT(0, Register.E);
+                    break;
                 case 0x47:
                     BIT(0, Register.A);
                     break;
@@ -1076,11 +1079,17 @@ namespace Core
                 case 0x4A:
                     BIT(1, Register.D);
                     break;
+                case 0x4B:
+                    BIT(1, Register.E);
+                    break;
                 case 0x50:
                     BIT(2, Register.B);
                     break;
                 case 0x51:
                     BIT(2, Register.C);
+                    break;
+                case 0x53:
+                    BIT(2, Register.E);
                     break;
                 case 0x58:
                     BIT(3, Register.B);
@@ -1100,6 +1109,9 @@ namespace Core
                 case 0x5A:
                     BIT(3, Register.D);
                     break;
+                case 0x5B:
+                    BIT(3, Register.E);
+                    break;
                 case 0x5F:
                     BIT(3, Register.A);
                     break;
@@ -1111,6 +1123,9 @@ namespace Core
                     break;
                 case 0x62:
                     BIT(4, Register.D);
+                    break;
+                case 0x63:
+                    BIT(4, Register.E);
                     break;
                 case 0x67:
                     BIT(4, Register.A);
@@ -1124,6 +1139,9 @@ namespace Core
                 case 0x6A:
                     BIT(5, Register.D);
                     break;
+                case 0x6B:
+                    BIT(5, Register.E);
+                    break;
                 case 0x6F:
                     BIT(5, Register.A);
                     break;
@@ -1136,6 +1154,9 @@ namespace Core
                 case 0x72:
                     BIT(6, Register.D);
                     break;
+                case 0x73:
+                    BIT(6, Register.E);
+                    break;
                 case 0x77:
                     BIT(6, Register.A);
                     break;
@@ -1147,6 +1168,9 @@ namespace Core
                     break;
                 case 0x7A:
                     BIT(7, Register.D);
+                    break;
+                case 0x7B:
+                    BIT(7, Register.E);
                     break;
                 case 0x7C:
                     BIT(7, Register.H);
@@ -1200,34 +1224,42 @@ namespace Core
             {0x40, new InstructionMetaData(2, 2, "BIT 0, B")},
             {0x41, new InstructionMetaData(2, 2, "BIT 0, C")},
             {0x42, new InstructionMetaData(2, 2, "BIT 0, D")},
+            {0x43, new InstructionMetaData(2, 2, "BIT 0, E")},
             {0x47, new InstructionMetaData(2, 2, "BIT 0, A")},
             {0x48, new InstructionMetaData(2, 2, "BIT 1, B")},
             {0x49, new InstructionMetaData(2, 2, "BIT 1, C")},
             {0x4A, new InstructionMetaData(2, 2, "BIT 1, D")},
+            {0x4B, new InstructionMetaData(2, 2, "BIT 1, E")},
             {0x50, new InstructionMetaData(2, 2, "BIT 2, B")},
             {0x4F, new InstructionMetaData(2, 2, "BIT 1, A")},
             {0x51, new InstructionMetaData(2, 2, "BIT 2, C")},
             {0x52, new InstructionMetaData(2, 2, "BIT 2, D")},
+            {0x53, new InstructionMetaData(2, 2, "BIT 2, E")},
             {0x57, new InstructionMetaData(2, 2, "BIT 2, A")},
             {0x58, new InstructionMetaData(2, 2, "BIT 3, B")},
             {0x59, new InstructionMetaData(2, 2, "BIT 3, C")},
             {0x5A, new InstructionMetaData(2, 2, "BIT 3, D")},
+            {0x5B, new InstructionMetaData(2, 2, "BIT 3, E")},
             {0x5F, new InstructionMetaData(2, 2, "BIT 3, A")},
             {0x60, new InstructionMetaData(2, 2, "BIT 4, B")},
             {0x61, new InstructionMetaData(2, 2, "BIT 4, C")},
             {0x62, new InstructionMetaData(2, 2, "BIT 4, D")},
+            {0x63, new InstructionMetaData(2, 2, "BIT 4, E")},
             {0x67, new InstructionMetaData(2, 2, "BIT 4, A")},
             {0x68, new InstructionMetaData(2, 2, "BIT 5, B")},
             {0x69, new InstructionMetaData(2, 2, "BIT 5, C")},
             {0x6A, new InstructionMetaData(2, 2, "BIT 5, D")},
+            {0x6B, new InstructionMetaData(2, 2, "BIT 5, E")},
             {0x6F, new InstructionMetaData(2, 2, "BIT 5, A")},
             {0x70, new InstructionMetaData(2, 2, "BIT 6, B")},
             {0x71, new InstructionMetaData(2, 2, "BIT 6, C")},
             {0x72, new InstructionMetaData(2, 2, "BIT 6, D")},
+            {0x73, new InstructionMetaData(2, 2, "BIT 6, E")},
             {0x77, new InstructionMetaData(2, 2, "BIT 6, A")},
             {0x78, new InstructionMetaData(2, 2, "BIT 7, B")},
             {0x79, new InstructionMetaData(2, 2, "BIT 7, C")},
             {0x7A, new InstructionMetaData(2, 2, "BIT 7, D")},
+            {0x7B, new InstructionMetaData(2, 2, "BIT 7, E")},
             {0x7C, new InstructionMetaData(2, 2, "BIT 7, H")},
             {0x7F, new InstructionMetaData(2, 2, "BIT 7, A")}
         };
