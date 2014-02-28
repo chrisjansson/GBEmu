@@ -157,6 +157,10 @@ namespace Core
             { 0x86, new InstructionMetaData(1, 2, "ADD A, (HL)")},
             { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
+            { 0xA8, new InstructionMetaData(1, 1, "XOR B")},
+            { 0xAA, new InstructionMetaData(1, 1, "XOR D")},
+            { 0xAB, new InstructionMetaData(1, 1, "XOR E")},
+            { 0xAC, new InstructionMetaData(1, 1, "XOR H")},
             { 0xAD, new InstructionMetaData(1, 1, "XOR L")},
             { 0xAE, new InstructionMetaData(1, 2, "XOR (HL)")},
             { 0xAF, new InstructionMetaData(1, 1, "XOR A")},
@@ -605,6 +609,9 @@ namespace Core
                 case 0xAD:
                     XOR(Register.L);
                     break;
+                case 0xA8:
+                    XOR(Register.B);
+                    break;
                 case 0xA9:
                     A = (byte)(A ^ C);
                     N = 0;
@@ -613,6 +620,15 @@ namespace Core
                     Z = (byte)(A == 0 ? 1 : 0);
                     ProgramCounter += 1;
                     Cycles += 1;
+                    break;
+                case 0xAA:
+                    XOR(Register.D);
+                    break;
+                case 0xAB:
+                    XOR(Register.E);
+                    break;
+                case 0xAC:
+                    XOR(Register.H);
                     break;
                 case 0xAE:
                     XOR(_mmu.GetByte(HL));
