@@ -153,7 +153,12 @@ namespace Core
             { 0x7D, new InstructionMetaData(1, 1, "LD A, L")},
             { 0x7E, new InstructionMetaData(1, 2, "LD A, (HL)")},
             { 0x7F, new InstructionMetaData(1, 1, "LD A, A")},
+            { 0x80, new InstructionMetaData(1, 1, "ADD A, B")},
             { 0x81, new InstructionMetaData(1, 1, "ADD A, C")},
+            { 0x82, new InstructionMetaData(1, 1, "ADD A, D")},
+            { 0x83, new InstructionMetaData(1, 1, "ADD A, E")},
+            { 0x84, new InstructionMetaData(1, 1, "ADD A, H")},
+            { 0x85, new InstructionMetaData(1, 1, "ADD A, L")},
             { 0x86, new InstructionMetaData(1, 2, "ADD A, (HL)")},
             { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
@@ -594,8 +599,23 @@ namespace Core
                 case 0x7E:
                     LD_r_HL(Register.A);
                     break;
+                case 0x80:
+                    ADD_r(Register.B);
+                    break;
                 case 0x81:
                     ADD_r(Register.C);
+                    break;
+                case 0x82:
+                    ADD_r(Register.D);
+                    break;
+                case 0x83:
+                    ADD_r(Register.E);
+                    break;
+                case 0x84:
+                    ADD_r(Register.H);
+                    break;
+                case 0x85:
+                    ADD_r(Register.L);
                     break;
                 case 0x86:
                     ADD_A_HL();
