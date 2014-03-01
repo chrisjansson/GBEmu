@@ -226,6 +226,7 @@ namespace Core
             { 0xEF, new InstructionMetaData(0, 4, "RST 28H")},
             { 0xF0, new InstructionMetaData(2, 3, "LD A, (n)")},
             { 0xF1, new InstructionMetaData(1, 3, "POP AF")},
+            { 0xF2, new InstructionMetaData(1, 2, "LD A, (C)")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
             { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
             { 0xF7, new InstructionMetaData(0, 4, "RST 30H")},
@@ -890,6 +891,9 @@ namespace Core
                     A = _mmu.GetByte((ushort)(SP + 1));
                     SP += 2;
                     break;
+                case 0xF2:
+                    LD_A_C();
+                    break;
                 case 0xF3:
                     break;
                 case 0xF5:
@@ -923,6 +927,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void LD_A_C()
+        {
+            var result = _mmu.GetByte((ushort) (0xFF00 + _registers[Register.C]));
+            A = result;
         }
 
         private void ADD_A_HL()
