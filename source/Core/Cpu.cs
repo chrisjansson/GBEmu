@@ -162,6 +162,11 @@ namespace Core
             { 0x86, new InstructionMetaData(1, 2, "ADD A, (HL)")},
             { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
+            { 0x92, new InstructionMetaData(1, 1, "SUB D")},
+            { 0x93, new InstructionMetaData(1, 1, "SUB E")},
+            { 0x94, new InstructionMetaData(1, 1, "SUB H")},
+            { 0x95, new InstructionMetaData(1, 1, "SUB L")},
+            { 0x97, new InstructionMetaData(1, 1, "SUB A")},
             { 0xA8, new InstructionMetaData(1, 1, "XOR B")},
             { 0xAA, new InstructionMetaData(1, 1, "XOR D")},
             { 0xAB, new InstructionMetaData(1, 1, "XOR E")},
@@ -634,6 +639,21 @@ namespace Core
                     break;
                 case 0x91:
                     SUB(Register.C);
+                    break;
+                case 0x92:
+                    SUB(Register.D);
+                    break;
+                case 0x93:
+                    SUB(Register.E);
+                    break;
+                case 0x94:
+                    SUB(Register.H);
+                    break;
+                case 0x95:
+                    SUB(Register.L);
+                    break;
+                case 0x97:
+                    SUB(Register.A);
                     break;
                 case 0xAD:
                     XOR(Register.L);
