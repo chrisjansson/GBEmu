@@ -179,7 +179,12 @@ namespace Core
             { 0xB7, new InstructionMetaData(1, 1, "OR A")},
             { 0xB8, new InstructionMetaData(1, 1, "CP B")},
             { 0xB9, new InstructionMetaData(1, 1, "CP C")},
+            { 0xBA, new InstructionMetaData(1, 1, "CP D")},
+            { 0xBB, new InstructionMetaData(1, 1, "CP E")},
+            { 0xBC, new InstructionMetaData(1, 1, "CP H")},
+            { 0xBD, new InstructionMetaData(1, 1, "CP L")},
             { 0xBE, new InstructionMetaData(1, 2, "CP (HL)")},
+            { 0xBF, new InstructionMetaData(1, 1, "CP A")},
             { 0xC0, new InstructionMetaData(0, 0, "RET NZ")},
             { 0xC1, new InstructionMetaData(1, 3, "POP BC")},
             { 0xC2, new InstructionMetaData(0, 0, "JP NZ, nn")},
@@ -690,8 +695,23 @@ namespace Core
                 case 0xB9:
                     CP_r(Register.C);
                     break;
+                case 0xBA:
+                    CP_r(Register.D);
+                    break;
+                case 0xBB:
+                    CP_r(Register.E);
+                    break;
+                case 0xBC:
+                    CP_r(Register.H);
+                    break;
+                case 0xBD:
+                    CP_r(Register.L);
+                    break;
                 case 0xBE:
                     CP_HL();
+                    break;
+                case 0xBF:
+                    CP_r(Register.A);
                     break;
                 case 0xC0:
                     RET_cc(Z == 0);
