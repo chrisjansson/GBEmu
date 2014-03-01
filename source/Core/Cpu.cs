@@ -266,7 +266,6 @@ namespace Core
             switch (opcode)
             {
                 case 0x00:
-                    //NOP
                     break;
                 case 0x01:
                     C = _mmu.GetByte((ushort)(ProgramCounter + 1));
