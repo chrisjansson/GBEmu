@@ -1164,6 +1164,9 @@ namespace Core
                 case 0x1B:
                     RR_r(Register.E);
                     break;
+                case 0x37:
+                    SWAP_r(Register.A);
+                    break;
                 case 0x38:
                     SRL_B();
                     break;
@@ -1344,6 +1347,17 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void SWAP_r(Register register)
+        {
+            var value = _registers[register];
+            _registers[register] = (byte) (((value >> 4) & 0x0F) | ((value << 4) & 0xF0));
+
+            Z = (byte) (value == 0 ? 1 : 0);
+            Carry = 0;
+            N = 0;
+            HC = 0;
+        }
+
         private void RL_r(Register register)
         {
             HC = 0;
@@ -1377,6 +1391,7 @@ namespace Core
             {0x19, new InstructionMetaData(2, 2, "RR C")},
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
             {0x1B, new InstructionMetaData(2, 2, "RR E")},
+            {0x37, new InstructionMetaData(2, 2, "SWAP A")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
             {0x40, new InstructionMetaData(2, 2, "BIT 0, B")},
             {0x41, new InstructionMetaData(2, 2, "BIT 0, C")},
