@@ -86,6 +86,7 @@ namespace Core
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
             { 0x35, new InstructionMetaData(1, 3, "DEC (HL)")},
+            { 0x37, new InstructionMetaData(1, 1, "SCF")},
             { 0x38, new InstructionMetaData(0, 0, "JR, C, $+e")},
             { 0x3C, new InstructionMetaData(1, 1, "INC A")},
             { 0x3D, new InstructionMetaData(1, 1, "DEC A")},
@@ -411,6 +412,9 @@ namespace Core
                     break;
                 case 0x35:
                     DEC_HL();
+                    break;
+                case 0x37:
+                    SCF();
                     break;
                 case 0x38:
                     JR_C();
@@ -927,6 +931,13 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void SCF()
+        {
+            N = 0;
+            HC = 0;
+            Carry = 1;
         }
 
         private void LD_A_C()

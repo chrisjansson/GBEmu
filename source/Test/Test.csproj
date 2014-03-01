@@ -80,6 +80,7 @@
     <Compile Include="CBRegisterTestBase.cs" />
     <Compile Include="CPTestBase.cs" />
     <Compile Include="CpuAssertion.cs" />
+    <Compile Include="CpuA\SCF.cs" />
     <Compile Include="CpuTestBase.cs" />
     <Compile Include="CpuA\LD_A_C.cs" />
     <Compile Include="CP_n.cs" />
