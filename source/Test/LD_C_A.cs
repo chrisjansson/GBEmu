@@ -9,7 +9,7 @@ namespace Test
         {
             Execute(CreateOpcode());
 
-            AdvancedProgramCounter(2);
+            AdvancedProgramCounter(1);
             AdvancedClock(2);
         }
 

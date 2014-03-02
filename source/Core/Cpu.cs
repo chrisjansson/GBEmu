@@ -223,7 +223,7 @@ namespace Core
             { 0xDF, new InstructionMetaData(0, 4, "RST 18H")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
-            { 0xE2, new InstructionMetaData(2, 2, "LD (C), A")},
+            { 0xE2, new InstructionMetaData(1, 2, "LD (C), A")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
             { 0xE7, new InstructionMetaData(0, 4, "RST 20H")},
             { 0xE9, new InstructionMetaData(0, 1, "JP HL")},
