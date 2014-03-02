@@ -211,6 +211,7 @@ namespace Core
             { 0xD2, new InstructionMetaData(0, 0, "JP NC, nn")},
             { 0xD4, new InstructionMetaData(0, 0, "CALL NC, nn")},
             { 0xD5, new InstructionMetaData(1, 4, "PUSH DE")},
+            { 0xD6, new InstructionMetaData(2, 2, "SUB n")},
             { 0xD7, new InstructionMetaData(0, 4, "RST 10H")},
             { 0xD8, new InstructionMetaData(0, 0, "RET C")},
             { 0xD9, new InstructionMetaData(0, 4, "RETI")},
@@ -812,12 +813,7 @@ namespace Core
                     SP -= 2;
                     break;
                 case 0xD6:
-                    Carry = (byte)(_mmu.GetByte((ushort)(ProgramCounter + 1)) > A ? 1 : 0);
-                    A -= _mmu.GetByte((ushort)(ProgramCounter + 1));
-                    Z = (byte)(A == 0 ? 1 : 0);
-                    N = 1;
-                    ProgramCounter += 2;
-                    Cycles += 2;
+                    SUB_n();
                     break;
                 case 0xD7:
                     RST(0x10);
@@ -930,6 +926,12 @@ namespace Core
             }
         }
 
+        private void SUB_n()
+        {
+            var arg = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            SUB(arg);
+        }
+
         private void ADD_n()
         {
             var arg = _mmu.GetByte((ushort) (ProgramCounter + 1));
@@ -980,11 +982,16 @@ namespace Core
         private void SUB(Register register)
         {
             var value = _registers[register];
-            HC = (byte)((A & 0xF) < (value & 0xF) ? 1 : 0);
+            SUB(value);
+        }
+
+        private void SUB(byte value)
+        {
+            HC = (byte) ((A & 0xF) < (value & 0xF) ? 1 : 0);
             var result = A - value;
-            A = (byte)result;
-            Z = (byte)(result == 0 ? 1 : 0);
-            Carry = (byte)(result < 0 ? 1 : 0);
+            A = (byte) result;
+            Z = (byte) (result == 0 ? 1 : 0);
+            Carry = (byte) (result < 0 ? 1 : 0);
             N = 1;
         }
 
