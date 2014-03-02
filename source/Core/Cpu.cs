@@ -92,6 +92,7 @@ namespace Core
             { 0x3C, new InstructionMetaData(1, 1, "INC A")},
             { 0x3D, new InstructionMetaData(1, 1, "DEC A")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
+            { 0x3F, new InstructionMetaData(1, 1, "CCF")},
             { 0x40, new InstructionMetaData(1, 1, "LD B, B")},
             { 0x41, new InstructionMetaData(1, 1, "LD B, C")},
             { 0x42, new InstructionMetaData(1, 1, "LD B, D")},
@@ -433,6 +434,9 @@ namespace Core
                     break;
                 case 0x3E:
                     LD_r_n(Register.A);
+                    break;
+                case 0x3F:
+                    CCF();
                     break;
                 case 0x40:
                     LD_r_r(Register.B, Register.B);
@@ -928,6 +932,13 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void CCF()
+        {
+            N = 0;
+            HC = 0;
+            Carry = (byte) ~Carry;
         }
 
         private void CPL()
