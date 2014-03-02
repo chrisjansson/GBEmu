@@ -81,6 +81,9 @@
     <Compile Include="CPTestBase.cs" />
     <Compile Include="CpuAssertion.cs" />
     <Compile Include="CpuA\Flags.cs" />
+    <Compile Include="CpuA\SCF.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="CpuA\SWAP_r.cs" />
     <Compile Include="CpuTestBase.cs" />
     <Compile Include="CP_n.cs" />
