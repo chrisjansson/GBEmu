@@ -33,6 +33,18 @@ namespace Test
             AssertFlags(x => x.SetCarry().SetZero().SetHalfCarry());
         }
 
+        [Fact]
+        public void Adds_a_to_a()
+        {
+            Flags(x => x.Carry().Zero().ResetHalfCarry());
+            Cpu.A = 0x3A;
+            
+            Execute(0x87);
+
+            Assert.Equal(0x74, Cpu.A);
+            AssertFlags(x => x.ResetCarry().ResetZero().SetHalfCarry());
+        }
+
         [Theory, PropertyData("Registers")]
         public void Sets_half_carry(RegisterMapping register)
         {
