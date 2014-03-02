@@ -87,5 +87,37 @@ namespace Test.CpuA
 
             Assert.Equal(0xF0, _sut.F);
         }
+
+        [Fact]
+        public void Carry_mask()
+        {
+            _sut.Carry = 0xFF;
+
+            Assert.Equal(0x10, _sut.F);
+        }
+
+        [Fact]
+        public void Zero_mask()
+        {
+            _sut.Z = 0xFF;
+
+            Assert.Equal(0x80, _sut.F);
+        }
+
+        [Fact]
+        public void Half_carry_mask()
+        {
+            _sut.HC = 0xFF;
+
+            Assert.Equal(0x20, _sut.F);
+        }
+
+        [Fact]
+        public void Subtract_mask()
+        {
+            _sut.N = 0xFF;
+
+            Assert.Equal(0x40, _sut.F);
+        }
     }
 }

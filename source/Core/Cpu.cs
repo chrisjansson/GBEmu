@@ -1639,20 +1639,20 @@ namespace Core
             get { return (byte)((0x40 & _f) == 0x40 ? 1 : 0); }
             set
             {
-                _f = (byte)((_f & 0xBF) | (value << 6));
+                _f = (byte)((_f & 0xBF) | ((value & 0x01) << 6));
             }
         }
 
         public byte HC
         {
             get { return (byte)((0x20 & _f) == 0x20 ? 1 : 0); }
-            set { _f = (byte)((_f & 0xDF) | (value << 5)); }
+            set { _f = (byte)((_f & 0xDF) | ((value & 0x01) << 5)); }
         }
 
         public byte Carry
         {
             get { return (byte)((0x10 & _f) == 0x10 ? 1 : 0); }
-            set { _f = (byte)((_f & 0xEF) | (value << 4)); }
+            set { _f = (byte)((_f & 0xEF) | ((value & 0x01) << 4)); }
         }
     }
 
