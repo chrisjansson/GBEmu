@@ -197,6 +197,7 @@ namespace Core
             { 0xC3, new InstructionMetaData(0, 4, "JP, nn")},
             { 0xC4, new InstructionMetaData(0, 0, "CALL NZ, nn")},
             { 0xC5, new InstructionMetaData(1, 4, "PUSH BC")},
+            { 0xC6, new InstructionMetaData(2, 2, "ADD A, n")},
             { 0xC7, new InstructionMetaData(0, 4, "RST 00H")},
             { 0xC8, new InstructionMetaData(0, 0, "RET Z")},
             { 0xC9, new InstructionMetaData(0, 4, "RET")},
@@ -768,11 +769,7 @@ namespace Core
                     RET_cc(Z == 1);
                     break;
                 case 0xC6:
-                    A += _mmu.GetByte((ushort)(ProgramCounter + 1));
-                    Z = (byte)(A == 0 ? 1 : 0);
-                    N = 0;
-                    Cycles += 2;
-                    ProgramCounter += 2;
+                    ADD_n();
                     break;
                 case 0xC9:
                     RET();
@@ -931,6 +928,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void ADD_n()
+        {
+            var arg = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            Add(arg);
         }
 
         private void SCF()
