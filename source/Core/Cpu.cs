@@ -82,6 +82,7 @@ namespace Core
             { 0x2C, new InstructionMetaData(1, 1, "INC L")},
             { 0x2D, new InstructionMetaData(1, 1, "DEC L")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
+            { 0x2F, new InstructionMetaData(1, 1, "CPL")},
             { 0x30, new InstructionMetaData(0, 0, "JR NC, $+e")},
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
@@ -397,6 +398,9 @@ namespace Core
                     break;
                 case 0x2E:
                     LD_r_n(Register.L);
+                    break;
+                case 0x2F:
+                    CPL();
                     break;
                 case 0x30:
                     JR_NC();
@@ -924,6 +928,13 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void CPL()
+        {
+            HC = 1;
+            N = 1;
+            A = (byte) ~A;
         }
 
         private void SUB_n()
