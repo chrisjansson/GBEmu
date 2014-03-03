@@ -164,6 +164,7 @@ namespace Core
             { 0x85, new InstructionMetaData(1, 1, "ADD A, L")},
             { 0x86, new InstructionMetaData(1, 2, "ADD A, (HL)")},
             { 0x87, new InstructionMetaData(1, 1, "ADD A, A")},
+            { 0x88, new InstructionMetaData(1, 1, "ADC A, B")},
             { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
             { 0x92, new InstructionMetaData(1, 1, "SUB D")},
@@ -652,6 +653,9 @@ namespace Core
                 case 0x87:
                     ADD_r(Register.A);
                     break;
+                case 0x88:
+                    ADC_r(Register.B);
+                    break;
                 case 0x90:
                     SUB(Register.B);
                     break;
@@ -936,6 +940,16 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void ADC_r(Register register)
+        {
+            var result = A + B + Carry;
+            HC = (byte)(((0x0F & A) + (0x0F & B) + Carry) > 0xF ? 1 : 0);
+            A = (byte) result;
+            N = 0;
+            Z = (byte) (A == 0 ? 1 : 0);
+            Carry = (byte) (result > 255 ? 1 : 0);
         }
 
         private void CCF()
