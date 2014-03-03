@@ -165,6 +165,11 @@ namespace Core
             { 0x86, new InstructionMetaData(1, 2, "ADD A, (HL)")},
             { 0x87, new InstructionMetaData(1, 1, "ADD A, A")},
             { 0x88, new InstructionMetaData(1, 1, "ADC A, B")},
+            { 0x89, new InstructionMetaData(1, 1, "ADC A, C")},
+            { 0x8A, new InstructionMetaData(1, 1, "ADC A, D")},
+            { 0x8B, new InstructionMetaData(1, 1, "ADC A, E")},
+            { 0x8C, new InstructionMetaData(1, 1, "ADC A, H")},
+            { 0x8D, new InstructionMetaData(1, 1, "ADC A, L")},
             { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
             { 0x92, new InstructionMetaData(1, 1, "SUB D")},
@@ -656,6 +661,21 @@ namespace Core
                 case 0x88:
                     ADC_r(Register.B);
                     break;
+                case 0x89:
+                    ADC_r(Register.C);
+                    break;
+                case 0x8A:
+                    ADC_r(Register.D);
+                    break;
+                case 0x8B:
+                    ADC_r(Register.E);
+                    break;
+                case 0x8C:
+                    ADC_r(Register.H);
+                    break;
+                case 0x8D:
+                    ADC_r(Register.L);
+                    break;
                 case 0x90:
                     SUB(Register.B);
                     break;
@@ -944,12 +964,18 @@ namespace Core
 
         private void ADC_r(Register register)
         {
-            var result = A + B + Carry;
-            HC = (byte)(((0x0F & A) + (0x0F & B) + Carry) > 0xF ? 1 : 0);
-            A = (byte) result;
+            var arg = _registers[register];
+            ADC(arg);
+        }
+
+        private void ADC(byte value)
+        {
+            var result = A + value + Carry;
+            HC = (byte)(((0x0F & A) + (0x0F & value) + Carry) > 0xF ? 1 : 0);
+            A = (byte)result;
             N = 0;
-            Z = (byte) (A == 0 ? 1 : 0);
-            Carry = (byte) (result > 255 ? 1 : 0);
+            Z = (byte)(A == 0 ? 1 : 0);
+            Carry = (byte)(result > 255 ? 1 : 0);
         }
 
         private void CCF()
