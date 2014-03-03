@@ -54,6 +54,17 @@ namespace Test.CpuA
             AssertFlags(x => x.SetZero().SetCarry().SetHalfCarry());
         }
 
+        [Fact]
+        public void Adds_a_to_a()
+        {
+            Flags(x => x.Carry());
+            Cpu.A = 0x12;
+
+            Execute(CreateOpCode(RegisterMapping.A));
+
+            Assert.Equal(0x25, Cpu.A);
+        }
+
         protected override byte CreateOpCode(RegisterMapping register)
         {
             return (byte) (0x88 | register);

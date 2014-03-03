@@ -170,6 +170,7 @@ namespace Core
             { 0x8B, new InstructionMetaData(1, 1, "ADC A, E")},
             { 0x8C, new InstructionMetaData(1, 1, "ADC A, H")},
             { 0x8D, new InstructionMetaData(1, 1, "ADC A, L")},
+            { 0x8F, new InstructionMetaData(1, 1, "ADC A, A")},
             { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
             { 0x92, new InstructionMetaData(1, 1, "SUB D")},
@@ -675,6 +676,9 @@ namespace Core
                     break;
                 case 0x8D:
                     ADC_r(Register.L);
+                    break;
+                case 0x8F:
+                    ADC_r(Register.A);
                     break;
                 case 0x90:
                     SUB(Register.B);
