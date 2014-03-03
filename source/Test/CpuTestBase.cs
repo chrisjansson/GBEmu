@@ -61,6 +61,11 @@ namespace Test
             Cpu.Execute(opCode);
         }
 
+        protected void Set(RegisterMapping register, byte value)
+        {
+            register.Set(Cpu, value);
+        }
+
         protected class FlagSetter
         {
             private readonly Cpu _cpu;

@@ -1,67 +1,62 @@
 ﻿using Xunit;
+using Xunit.Extensions;
 
 namespace Test.CpuA
 {
-    public class ADC_r : CpuTestBase
+    public class ADC_r : RegisterTestBase
     {
-        private static byte OpCode = 0x88;
-
-        [Fact]
-        public void Advances_counters()
-        {
-            Execute(OpCode);
-
-            AdvancedProgramCounter(1);
-            AdvancedClock(1);
-        }
-
-        [Fact]
-        public void Resets_subtract()
+        [Theory, PropertyData("Registers")]
+        public void Resets_subtract(RegisterMapping register)
         {
             Flags(x => x.Subtract());
             
-            Execute(OpCode);
+            Execute(CreateOpCode(register));
 
             AssertFlags(x => x.ResetSubtract());
         }
 
-        [Fact]
-        public void Adds_register_to_a_sets_half_carry()
+        [Theory, PropertyData("RegistersExceptA")]
+        public void Adds_register_to_a_sets_half_carry(RegisterMapping register)
         {
             Flags(x => x.Zero().Carry().ResetHalfCarry());
             Cpu.A = 0xE1;
-            Cpu.B = 0x0E;
+            Set(register, 0x0E);
 
-            Execute(OpCode);
+            Execute(CreateOpCode(register));
 
             Assert.Equal(0xF0, Cpu.A);
             AssertFlags(x => x.ResetZero().ResetCarry().SetHalfCarry());
         }
 
-        [Fact]
-        public void Adds_register_to_a_sets_carry()
+        [Theory, PropertyData("RegistersExceptA")]
+        public void Adds_register_to_a_sets_carry(RegisterMapping register)
         {
             Flags(x => x.Zero().Carry().ResetHalfCarry());
             Cpu.A = 0xE1;
-            Cpu.B = 0x3B;
+            Set(register, 0x3B);
 
-            Execute(OpCode);
+            Execute(CreateOpCode(register));
 
             Assert.Equal(0x1D, Cpu.A);
             AssertFlags(x => x.ResetZero().SetCarry().ResetHalfCarry());
         }
 
-        [Fact]
-        public void Adds_register_to_a_sets_zero()
+        [Theory, PropertyData("RegistersExceptA")]
+        public void Adds_register_to_a_sets_zero(RegisterMapping register)
         {
             Flags(x => x.ResetZero().Carry().ResetHalfCarry());
             Cpu.A = 0xE1;
-            Cpu.B = 0x1E;
+            Set(register, 0x1E);
 
-            Execute(OpCode);
+            Execute(CreateOpCode(register));
 
             Assert.Equal(0x00, Cpu.A);
             AssertFlags(x => x.SetZero().SetCarry().SetHalfCarry());
+        }
+
+        protected override byte CreateOpCode(RegisterMapping register)
+        {
+            return (byte) (0x88 | register);
         }
     }
 }
