@@ -58,5 +58,29 @@ namespace Test.CpuA
             Assert.Equal(0x0F, Cpu.A);
             AssertFlags(x => x.SetHalfCarry().ResetCarry().ResetZero());
         }
+        
+        [Fact]
+        public void Subtracts_a_from_a()
+        {
+            Flags(x => x.Carry().Zero().ResetHalfCarry());
+            Cpu.A = 0x15;
+
+            Execute(CreateOpCode(RegisterMapping.A));
+
+            Assert.Equal(0xFF, Cpu.A);
+            AssertFlags(x => x.SetHalfCarry().SetCarry().ResetZero());
+        }
+
+        [Fact]
+        public void Subtracts_a_from_a_2()
+        {
+            Flags(x => x.ResetCarry().ResetZero().HalfCarry());
+            Cpu.A = 0x15;
+
+            Execute(CreateOpCode(RegisterMapping.A));
+
+            Assert.Equal(0x00, Cpu.A);
+            AssertFlags(x => x.ResetHalfCarry().ResetCarry().SetZero());
+        }
     }
 }

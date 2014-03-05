@@ -184,6 +184,7 @@ namespace Core
             { 0x9B, new InstructionMetaData(1, 1, "SBC E")},
             { 0x9C, new InstructionMetaData(1, 1, "SBC H")},
             { 0x9D, new InstructionMetaData(1, 1, "SBC L")},
+            { 0x9F, new InstructionMetaData(1, 1, "SBC A")},
             { 0xA8, new InstructionMetaData(1, 1, "XOR B")},
             { 0xAA, new InstructionMetaData(1, 1, "XOR D")},
             { 0xAB, new InstructionMetaData(1, 1, "XOR E")},
@@ -724,6 +725,9 @@ namespace Core
                     break;
                 case 0x9D:
                     SBC_r(Register.L);
+                    break;
+                case 0x9F:
+                    SBC_r(Register.A);
                     break;
                 case 0xAD:
                     XOR(Register.L);
