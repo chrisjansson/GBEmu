@@ -82,6 +82,7 @@
     <Compile Include="CpuAssertion.cs" />
     <Compile Include="CpuA\ADC_r.cs" />
     <Compile Include="CpuA\ADD_n.cs" />
+    <Compile Include="CpuA\AND_r.cs" />
     <Compile Include="CpuA\CCF.cs" />
     <Compile Include="CpuA\CPL.cs" />
     <Compile Include="CpuA\Flags.cs" />

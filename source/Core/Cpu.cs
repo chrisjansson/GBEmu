@@ -185,6 +185,7 @@ namespace Core
             { 0x9C, new InstructionMetaData(1, 1, "SBC H")},
             { 0x9D, new InstructionMetaData(1, 1, "SBC L")},
             { 0x9F, new InstructionMetaData(1, 1, "SBC A")},
+            { 0xA0, new InstructionMetaData(1, 1, "AND B")},
             { 0xA8, new InstructionMetaData(1, 1, "XOR B")},
             { 0xAA, new InstructionMetaData(1, 1, "XOR D")},
             { 0xAB, new InstructionMetaData(1, 1, "XOR E")},
@@ -729,6 +730,9 @@ namespace Core
                 case 0x9F:
                     SBC_r(Register.A);
                     break;
+                case 0xA0:
+                    AND_r(Register.B);
+                    break;
                 case 0xAD:
                     XOR(Register.L);
                     break;
@@ -992,6 +996,16 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void AND_r(Register register)
+        {
+            var result = A & _registers[register];
+            A = (byte) result;
+            Z = (byte) (result == 0 ? 1 : 0);
+            N = 0;
+            HC = 1;
+            Carry = 0;
         }
 
         private void SBC_r(Register register)
