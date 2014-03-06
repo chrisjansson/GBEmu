@@ -186,6 +186,12 @@ namespace Core
             { 0x9D, new InstructionMetaData(1, 1, "SBC L")},
             { 0x9F, new InstructionMetaData(1, 1, "SBC A")},
             { 0xA0, new InstructionMetaData(1, 1, "AND B")},
+            { 0xA1, new InstructionMetaData(1, 1, "AND C")},
+            { 0xA2, new InstructionMetaData(1, 1, "AND D")},
+            { 0xA3, new InstructionMetaData(1, 1, "AND E")},
+            { 0xA4, new InstructionMetaData(1, 1, "AND H")},
+            { 0xA5, new InstructionMetaData(1, 1, "AND L")},
+            { 0xA7, new InstructionMetaData(1, 1, "AND A")},
             { 0xA8, new InstructionMetaData(1, 1, "XOR B")},
             { 0xAA, new InstructionMetaData(1, 1, "XOR D")},
             { 0xAB, new InstructionMetaData(1, 1, "XOR E")},
@@ -732,6 +738,24 @@ namespace Core
                     break;
                 case 0xA0:
                     AND_r(Register.B);
+                    break;
+                case 0xA1:
+                    AND_r(Register.C);
+                    break;
+                case 0xA2:
+                    AND_r(Register.D);
+                    break;
+                case 0xA3:
+                    AND_r(Register.E);
+                    break;
+                case 0xA4:
+                    AND_r(Register.H);
+                    break;
+                case 0xA5:
+                    AND_r(Register.L);
+                    break;
+                case 0xA7:
+                    AND_r(Register.A);
                     break;
                 case 0xAD:
                     XOR(Register.L);
