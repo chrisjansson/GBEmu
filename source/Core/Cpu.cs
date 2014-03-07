@@ -1041,8 +1041,8 @@ namespace Core
         {
             var result = A - value - Carry;
             HC = (byte)((A & 0x0F) < ((value & 0x0F) + Carry) ? 1 : 0);
-            A = (byte) result;
-            Z = (byte) (result == 0 ? 1 : 0);
+            A = (byte)result;
+            Z = (byte)(A == 0 ? 1 : 0);
             N = 1;
             Carry = (byte) (result < 0 ? 1 : 0);
         }
