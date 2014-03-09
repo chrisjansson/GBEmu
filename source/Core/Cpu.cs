@@ -53,6 +53,7 @@ namespace Core
             { 0x04, new InstructionMetaData(1, 1, "INC B")},
             { 0x05, new InstructionMetaData(1, 1, "DEC B")},
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
+            { 0x07, new InstructionMetaData(1, 1, "RLCA")},
             { 0x08, new InstructionMetaData(3, 5, "LD (nn), SP")},
             { 0x0C, new InstructionMetaData(1, 1, "INC C")},
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
@@ -312,6 +313,9 @@ namespace Core
                     break;
                 case 0x06:
                     LD_r_n(Register.B);
+                    break;
+                case 0x07:
+                    RLCA();
                     break;
                 case 0x08:
                     LD_NN_SP();
@@ -1020,6 +1024,16 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void RLCA()
+        {
+            var bit8 = (A & 0x80) >> 7;
+            A = (byte) ((A << 1)| bit8);
+            Carry = (byte) bit8;
+            N = 0;
+            Z = 0;
+            HC = 0;
         }
 
         private void AND_r(Register register)

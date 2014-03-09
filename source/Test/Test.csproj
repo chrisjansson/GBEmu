@@ -89,6 +89,7 @@
     <Compile Include="CpuA\LD_A_C.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CpuA\RLCA.cs" />
     <Compile Include="CpuA\SBC_r.cs" />
     <Compile Include="CpuA\SCF.cs">
       <SubType>Code</SubType>
