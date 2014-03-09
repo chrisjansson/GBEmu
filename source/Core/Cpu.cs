@@ -58,6 +58,7 @@ namespace Core
             { 0x0C, new InstructionMetaData(1, 1, "INC C")},
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
+            { 0x0F, new InstructionMetaData(1, 1, "RRCA")},
             { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
             { 0x12, new InstructionMetaData(1, 2, "LD (DE), A")},
             { 0x13, new InstructionMetaData(1, 2, "INC DE")},
@@ -328,6 +329,9 @@ namespace Core
                     break;
                 case 0x0E:
                     LD_r_n(Register.C);
+                    break;
+                case 0x0F:
+                    RRCA();
                     break;
                 case 0x11:
                     E = _mmu.GetByte((ushort)(ProgramCounter + 1));
@@ -1024,6 +1028,16 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void RRCA()
+        {
+            var bit0 = A & 0x01;
+            A = (byte) ((bit0 << 7) | (A >> 1));
+            Carry = (byte) bit0;
+            Z = 0;
+            HC = 0;
+            N = 0;
         }
 
         private void RLA()
