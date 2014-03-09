@@ -374,7 +374,7 @@ namespace Core
                     LD_r_n(Register.E);
                     break;
                 case 0x1F:
-                    RR_r(Register.A);
+                    RRA();
                     break;
                 case 0x20:
                     var eMinusTwo = (sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1));
@@ -1028,6 +1028,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void RRA()
+        {
+            RR_r(Register.A);
+            Z = 0;
         }
 
         private void RRCA()
