@@ -352,7 +352,7 @@ namespace Core
                     LD_r_n(Register.D);
                     break;
                 case 0x17:
-                    RL_r(Register.A);
+                    RLA();
                     break;
                 case 0x18:
                     JR_e();
@@ -1024,6 +1024,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void RLA()
+        {
+            RL_r(Register.A);
+            Z = 0;
         }
 
         private void RLCA()

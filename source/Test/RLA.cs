@@ -43,24 +43,14 @@ namespace Test
         }
 
         [Fact]
-        public void Sets_zero_when_result_is_zero()
+        public void Resets_half_carry_zero_and_subtract()
         {
-            Flags(x => x.ResetZero().ResetCarry());
-            Cpu.A = 0;
+            Flags(x => x.HalfCarry().Subtract().Zero().ResetCarry());
+            Cpu.A = 0x00;
 
             Execute(CreateOpCode());
 
-            AssertFlags(x => x.SetZero());
-        }
-
-        [Fact]
-        public void Resets_half_carry_and_subtract()
-        {
-            Flags(x => x.HalfCarry().Subtract());
-
-            Execute(CreateOpCode());
-
-            AssertFlags(x => x.ResetHalfCarry().ResetSubtract());
+            AssertFlags(x => x.ResetHalfCarry().ResetSubtract().ResetZero());
         }
     }
 }
