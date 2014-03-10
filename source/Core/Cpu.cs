@@ -1356,6 +1356,24 @@ namespace Core
                 case 0x00:
                     RLC_r(Register.B);
                     break;
+                case 0x01:
+                    RLC_r(Register.C);
+                    break;
+                case 0x02:
+                    RLC_r(Register.D);
+                    break;
+                case 0x03:
+                    RLC_r(Register.E);
+                    break;
+                case 0x04:
+                    RLC_r(Register.H);
+                    break;
+                case 0x05:
+                    RLC_r(Register.L);
+                    break;
+                case 0x07:
+                    RLC_r(Register.A);
+                    break;
                 case 0x11:
                     RL_r(Register.C);
                     break;
@@ -1604,6 +1622,12 @@ namespace Core
         private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
         {
             {0x00, new InstructionMetaData(2, 2, "RLC B")},
+            {0x01, new InstructionMetaData(2, 2, "RLC C")},
+            {0x02, new InstructionMetaData(2, 2, "RLC D")},
+            {0x03, new InstructionMetaData(2, 2, "RLC E")},
+            {0x04, new InstructionMetaData(2, 2, "RLC H")},
+            {0x05, new InstructionMetaData(2, 2, "RLC L")},
+            {0x07, new InstructionMetaData(2, 2, "RLC A")},
             {0x11, new InstructionMetaData(2, 2, "RL C")},
             {0x19, new InstructionMetaData(2, 2, "RR C")},
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
