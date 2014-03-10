@@ -1395,8 +1395,26 @@ namespace Core
                 case 0x0F:
                     RRC_r(Register.A);
                     break;
+                case 0x10:
+                    RL_r(Register.B);
+                    break;
                 case 0x11:
                     RL_r(Register.C);
+                    break;
+                case 0x12:
+                    RL_r(Register.D);
+                    break;
+                case 0x13:
+                    RL_r(Register.E);
+                    break;
+                case 0x14:
+                    RL_r(Register.H);
+                    break;
+                case 0x15:
+                    RL_r(Register.L);
+                    break;
+                case 0x17:
+                    RL_r(Register.A);
                     break;
                 case 0x19:
                     RR_r(Register.C);
@@ -1668,7 +1686,13 @@ namespace Core
             {0x0C, new InstructionMetaData(2, 2, "RRC H")},
             {0x0D, new InstructionMetaData(2, 2, "RRC L")},
             {0x0F, new InstructionMetaData(2, 2, "RRC A")},
+            {0x10, new InstructionMetaData(2, 2, "RL B")},
             {0x11, new InstructionMetaData(2, 2, "RL C")},
+            {0x12, new InstructionMetaData(2, 2, "RL D")},
+            {0x13, new InstructionMetaData(2, 2, "RL E")},
+            {0x14, new InstructionMetaData(2, 2, "RL H")},
+            {0x15, new InstructionMetaData(2, 2, "RL L")},
+            {0x17, new InstructionMetaData(2, 2, "RL A")},
             {0x19, new InstructionMetaData(2, 2, "RR C")},
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
             {0x1B, new InstructionMetaData(2, 2, "RR E")},
