@@ -1353,6 +1353,9 @@ namespace Core
             var opCode = _mmu.GetByte((ushort)(ProgramCounter + 1));
             switch (opCode)
             {
+                case 0x00:
+                    RLC_r(Register.B);
+                    break;
                 case 0x11:
                     RL_r(Register.C);
                     break;
@@ -1548,6 +1551,18 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void RLC_r(Register register)
+        {
+            var bit7 = (_registers[register] & 0x80) >> 7;
+            var result = (byte)((_registers[register] << 1) | bit7);
+            
+            _registers[register] = result;
+            Carry = (byte) bit7;
+            Z = (byte) (result == 0 ? 1 : 0);
+            N = 0;
+            HC = 0;
+        }
+
         private void SWAP_r(Register register)
         {
             var value = _registers[register];
@@ -1588,6 +1603,7 @@ namespace Core
 
         private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
         {
+            {0x00, new InstructionMetaData(2, 2, "RLC B")},
             {0x11, new InstructionMetaData(2, 2, "RL C")},
             {0x19, new InstructionMetaData(2, 2, "RR C")},
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
