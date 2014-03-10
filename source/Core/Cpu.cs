@@ -1374,6 +1374,27 @@ namespace Core
                 case 0x07:
                     RLC_r(Register.A);
                     break;
+                case 0x08:
+                    RRC_r(Register.B);
+                    break;
+                case 0x09:
+                    RRC_r(Register.C);
+                    break;
+                case 0x0A:
+                    RRC_r(Register.D);
+                    break;
+                case 0x0B:
+                    RRC_r(Register.E);
+                    break;
+                case 0x0C:
+                    RRC_r(Register.H);
+                    break;
+                case 0x0D:
+                    RRC_r(Register.L);
+                    break;
+                case 0x0F:
+                    RRC_r(Register.A);
+                    break;
                 case 0x11:
                     RL_r(Register.C);
                     break;
@@ -1569,6 +1590,18 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void RRC_r(Register register)
+        {
+            N = 0;
+            HC = 0;
+            var bit0 = (_registers[register] & 0x01);
+
+            var result = (byte) ((_registers[register] >> 1) | (bit0 << 7));
+            _registers[register] = result;
+            Carry = (byte) bit0;
+            Z = (byte) (result == 0 ? 1 : 0);
+        }
+
         private void RLC_r(Register register)
         {
             var bit7 = (_registers[register] & 0x80) >> 7;
@@ -1628,6 +1661,13 @@ namespace Core
             {0x04, new InstructionMetaData(2, 2, "RLC H")},
             {0x05, new InstructionMetaData(2, 2, "RLC L")},
             {0x07, new InstructionMetaData(2, 2, "RLC A")},
+            {0x08, new InstructionMetaData(2, 2, "RRC B")},
+            {0x09, new InstructionMetaData(2, 2, "RRC C")},
+            {0x0A, new InstructionMetaData(2, 2, "RRC D")},
+            {0x0B, new InstructionMetaData(2, 2, "RRC E")},
+            {0x0C, new InstructionMetaData(2, 2, "RRC H")},
+            {0x0D, new InstructionMetaData(2, 2, "RRC L")},
+            {0x0F, new InstructionMetaData(2, 2, "RRC A")},
             {0x11, new InstructionMetaData(2, 2, "RL C")},
             {0x19, new InstructionMetaData(2, 2, "RR C")},
             {0x1A, new InstructionMetaData(2, 2, "RR D")},
