@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core;
 
 namespace Test
@@ -6,6 +7,8 @@ namespace Test
     public class FakeMmu : IMmu
     {
         public readonly byte[] Memory = new byte[ushort.MaxValue + 1];
+        public readonly List<char> Output = new List<char>(); 
+        
 
         public byte GetByte(ushort address)
         {
@@ -16,7 +19,7 @@ namespace Test
         {
             if (address == 0xFF01)
             {
-                Console.Write((char)value);
+                Output.Add((char) value);
             }
 
             Memory[address] = value;
