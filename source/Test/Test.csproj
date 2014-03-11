@@ -98,6 +98,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CpuA\SLA_r.cs" />
+    <Compile Include="CpuA\SRA_r.cs" />
     <Compile Include="CpuA\SWAP_r.cs" />
     <Compile Include="CpuTestBase.cs" />
     <Compile Include="CP_n.cs" />

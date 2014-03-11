@@ -1458,6 +1458,27 @@ namespace Core
                 case 0x27:
                     SLA_r(Register.A);
                     break;
+                case 0x28:
+                    SRA_r(Register.B);
+                    break;
+                case 0x29:
+                    SRA_r(Register.C);
+                    break;
+                case 0x2A:
+                    SRA_r(Register.D);
+                    break;
+                case 0x2B:
+                    SRA_r(Register.E);
+                    break;
+                case 0x2C:
+                    SRA_r(Register.H);
+                    break;
+                case 0x2D:
+                    SRA_r(Register.L);
+                    break;
+                case 0x2F:
+                    SRA_r(Register.A);
+                    break;
                 case 0x37:
                     SWAP_r(Register.A);
                     break;
@@ -1678,6 +1699,13 @@ namespace Core
             {0x24, new InstructionMetaData(2, 2, "SLA H")},
             {0x25, new InstructionMetaData(2, 2, "SLA L")},
             {0x27, new InstructionMetaData(2, 2, "SLA A")},
+            {0x28, new InstructionMetaData(2, 2, "SRA B")},
+            {0x29, new InstructionMetaData(2, 2, "SRA C")},
+            {0x2A, new InstructionMetaData(2, 2, "SRA D")},
+            {0x2B, new InstructionMetaData(2, 2, "SRA E")},
+            {0x2C, new InstructionMetaData(2, 2, "SRA H")},
+            {0x2D, new InstructionMetaData(2, 2, "SRA L")},
+            {0x2F, new InstructionMetaData(2, 2, "SRA A")},
             {0x37, new InstructionMetaData(2, 2, "SWAP A")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
             {0x40, new InstructionMetaData(2, 2, "BIT 0, B")},
@@ -1746,6 +1774,17 @@ namespace Core
             var result = (byte)(_registers[register] << 1);
             _registers[register] = result;
             Z = (byte)(result == 0 ? 1 : 0);
+        }
+
+        private void SRA_r(Register register)
+        {
+            N = 0;
+            HC = 0;
+            var value = _registers[register];
+            var result = (byte)((value >> 1) | (value & 0x80));
+            _registers[register] = result;
+            Carry = (byte) (value & 0x01);
+            Z = (byte) (result == 0 ? 1 : 0);
         }
 
         private void RRC_r(Register register)
