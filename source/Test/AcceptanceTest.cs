@@ -20,7 +20,17 @@ namespace Test
         }
 
         [Theory]
+        [InlineData("01-special.gb")]
+        [InlineData("02-interrupts.gb")]
+        [InlineData("03-op sp,hl.gb")]
+        [InlineData("04-op r,imm.gb")]
+        [InlineData("05-op rp.gb")]
+        [InlineData("06-ld r,r.gb")]
+        [InlineData("07-jr,jp,call,ret,rst.gb")]
+        [InlineData("08-misc instrs.gb")]
         [InlineData("09-op r,r.gb")]
+        [InlineData("10-bit ops.gb")]
+        [InlineData("11-op a,(hl).gb")]
         public void Passes_cpu_instructions_tests(string rom)
         {
             LoadTest(rom);
