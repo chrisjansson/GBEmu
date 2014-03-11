@@ -1437,6 +1437,27 @@ namespace Core
                 case 0x1F:
                     RR_r(Register.A);
                     break;
+                case 0x20:
+                    SLA_r(Register.B);
+                    break;
+                case 0x21:
+                    SLA_r(Register.C);
+                    break;
+                case 0x22:
+                    SLA_r(Register.D);
+                    break;
+                case 0x23:
+                    SLA_r(Register.E);
+                    break;
+                case 0x24:
+                    SLA_r(Register.H);
+                    break;
+                case 0x25:
+                    SLA_r(Register.L);
+                    break;
+                case 0x27:
+                    SLA_r(Register.A);
+                    break;
                 case 0x37:
                     SWAP_r(Register.A);
                     break;
@@ -1620,6 +1641,16 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void SLA_r(Register register)
+        {
+            HC = 0;
+            N = 0;
+            Carry = (byte) ((_registers[register] & 0x80) >> 7);
+            var result = (byte)(_registers[register] << 1);
+            _registers[register] = result;
+            Z = (byte) (result == 0 ? 1 : 0);
+        }
+
         private void RRC_r(Register register)
         {
             N = 0;
@@ -1712,6 +1743,13 @@ namespace Core
             {0x1C, new InstructionMetaData(2, 2, "RR H")},
             {0x1D, new InstructionMetaData(2, 2, "RR L")},
             {0x1F, new InstructionMetaData(2, 2, "RR A")},
+            {0x20, new InstructionMetaData(2, 2, "SLA B")},
+            {0x21, new InstructionMetaData(2, 2, "SLA C")},
+            {0x22, new InstructionMetaData(2, 2, "SLA D")},
+            {0x23, new InstructionMetaData(2, 2, "SLA E")},
+            {0x24, new InstructionMetaData(2, 2, "SLA H")},
+            {0x25, new InstructionMetaData(2, 2, "SLA L")},
+            {0x27, new InstructionMetaData(2, 2, "SLA A")},
             {0x37, new InstructionMetaData(2, 2, "SWAP A")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
             {0x40, new InstructionMetaData(2, 2, "BIT 0, B")},
