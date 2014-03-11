@@ -1039,8 +1039,8 @@ namespace Core
         private void RRCA()
         {
             var bit0 = A & 0x01;
-            A = (byte) ((bit0 << 7) | (A >> 1));
-            Carry = (byte) bit0;
+            A = (byte)((bit0 << 7) | (A >> 1));
+            Carry = (byte)bit0;
             Z = 0;
             HC = 0;
             N = 0;
@@ -1055,8 +1055,8 @@ namespace Core
         private void RLCA()
         {
             var bit8 = (A & 0x80) >> 7;
-            A = (byte) ((A << 1)| bit8);
-            Carry = (byte) bit8;
+            A = (byte)((A << 1) | bit8);
+            Carry = (byte)bit8;
             N = 0;
             Z = 0;
             HC = 0;
@@ -1065,8 +1065,8 @@ namespace Core
         private void AND_r(Register register)
         {
             var result = A & _registers[register];
-            A = (byte) result;
-            Z = (byte) (result == 0 ? 1 : 0);
+            A = (byte)result;
+            Z = (byte)(result == 0 ? 1 : 0);
             N = 0;
             HC = 1;
             Carry = 0;
@@ -1084,7 +1084,7 @@ namespace Core
             A = (byte)result;
             Z = (byte)(A == 0 ? 1 : 0);
             N = 1;
-            Carry = (byte) (result < 0 ? 1 : 0);
+            Carry = (byte)(result < 0 ? 1 : 0);
         }
 
         private void ADC_r(Register register)
@@ -1107,25 +1107,25 @@ namespace Core
         {
             N = 0;
             HC = 0;
-            Carry = (byte) ~Carry;
+            Carry = (byte)~Carry;
         }
 
         private void CPL()
         {
             HC = 1;
             N = 1;
-            A = (byte) ~A;
+            A = (byte)~A;
         }
 
         private void SUB_n()
         {
-            var arg = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            var arg = _mmu.GetByte((ushort)(ProgramCounter + 1));
             SUB(arg);
         }
 
         private void ADD_n()
         {
-            var arg = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            var arg = _mmu.GetByte((ushort)(ProgramCounter + 1));
             Add(arg);
         }
 
@@ -1138,7 +1138,7 @@ namespace Core
 
         private void LD_A_C()
         {
-            var result = _mmu.GetByte((ushort) (0xFF00 + _registers[Register.C]));
+            var result = _mmu.GetByte((ushort)(0xFF00 + _registers[Register.C]));
             A = result;
         }
 
@@ -1178,11 +1178,11 @@ namespace Core
 
         private void SUB(byte value)
         {
-            HC = (byte) ((A & 0xF) < (value & 0xF) ? 1 : 0);
+            HC = (byte)((A & 0xF) < (value & 0xF) ? 1 : 0);
             var result = A - value;
-            A = (byte) result;
-            Z = (byte) (result == 0 ? 1 : 0);
-            Carry = (byte) (result < 0 ? 1 : 0);
+            A = (byte)result;
+            Z = (byte)(result == 0 ? 1 : 0);
+            Carry = (byte)(result < 0 ? 1 : 0);
             N = 1;
         }
 
@@ -1339,12 +1339,12 @@ namespace Core
 
         private void ADC()
         {
-            var arg = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            var arg = _mmu.GetByte((ushort)(ProgramCounter + 1));
             var result = A + arg + Carry;
-            HC = (byte) ((((A & 0x0F) + (arg & 0x0F) + Carry) & 0x10) == 0x10 ? 1 : 0);
-            A = (byte) result;
+            HC = (byte)((((A & 0x0F) + (arg & 0x0F) + Carry) & 0x10) == 0x10 ? 1 : 0);
+            A = (byte)result;
             Carry = (byte)(result > 0xFF ? 1 : 0);
-            Z = (byte) (A == 0 ? 1 : 0);
+            Z = (byte)(A == 0 ? 1 : 0);
             N = 0;
         }
 
@@ -1641,78 +1641,6 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
-        private void SLA_r(Register register)
-        {
-            HC = 0;
-            N = 0;
-            Carry = (byte) ((_registers[register] & 0x80) >> 7);
-            var result = (byte)(_registers[register] << 1);
-            _registers[register] = result;
-            Z = (byte) (result == 0 ? 1 : 0);
-        }
-
-        private void RRC_r(Register register)
-        {
-            N = 0;
-            HC = 0;
-            var bit0 = (_registers[register] & 0x01);
-
-            var result = (byte) ((_registers[register] >> 1) | (bit0 << 7));
-            _registers[register] = result;
-            Carry = (byte) bit0;
-            Z = (byte) (result == 0 ? 1 : 0);
-        }
-
-        private void RLC_r(Register register)
-        {
-            var bit7 = (_registers[register] & 0x80) >> 7;
-            var result = (byte)((_registers[register] << 1) | bit7);
-            
-            _registers[register] = result;
-            Carry = (byte) bit7;
-            Z = (byte) (result == 0 ? 1 : 0);
-            N = 0;
-            HC = 0;
-        }
-
-        private void SWAP_r(Register register)
-        {
-            var value = _registers[register];
-            _registers[register] = (byte) (((value >> 4) & 0x0F) | ((value << 4) & 0xF0));
-
-            Z = (byte) (value == 0 ? 1 : 0);
-            Carry = 0;
-            N = 0;
-            HC = 0;
-        }
-
-        private void RL_r(Register register)
-        {
-            HC = 0;
-            N = 0;
-            var result = (byte)((_registers[register] << 1) | Carry);
-            Carry = (byte)((_registers[register] & 0x80) == 0 ? 0 : 1);
-            _registers[register] = result;
-            Z = (byte) (result == 0 ? 1 : 0);
-        }
-
-        private void BIT(int bit, Register register)
-        {
-            Z = (byte)((~(_registers[register])) >> bit & 0x01);
-            N = 0;
-            HC = 1;
-        }
-
-        private void RR_r(Register register)
-        {
-            var old = _registers[register];
-            _registers[register] = (byte)(old >> 1 | (Carry << 7));
-            Carry = (byte)((old & 0x01) == 0x01 ? 1 : 0);
-            Z = (byte)(_registers[register] == 0 ? 1 : 0);
-            HC = 0;
-            N = 0;
-        }
-
         private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
         {
             {0x00, new InstructionMetaData(2, 2, "RLC B")},
@@ -1809,6 +1737,78 @@ namespace Core
             {0x7D, new InstructionMetaData(2, 2, "BIT 7, L")},
             {0x7F, new InstructionMetaData(2, 2, "BIT 7, A")}
         };
+
+        private void SLA_r(Register register)
+        {
+            HC = 0;
+            N = 0;
+            Carry = (byte)((_registers[register] & 0x80) >> 7);
+            var result = (byte)(_registers[register] << 1);
+            _registers[register] = result;
+            Z = (byte)(result == 0 ? 1 : 0);
+        }
+
+        private void RRC_r(Register register)
+        {
+            N = 0;
+            HC = 0;
+            var bit0 = (_registers[register] & 0x01);
+
+            var result = (byte)((_registers[register] >> 1) | (bit0 << 7));
+            _registers[register] = result;
+            Carry = (byte)bit0;
+            Z = (byte)(result == 0 ? 1 : 0);
+        }
+
+        private void RLC_r(Register register)
+        {
+            var bit7 = (_registers[register] & 0x80) >> 7;
+            var result = (byte)((_registers[register] << 1) | bit7);
+
+            _registers[register] = result;
+            Carry = (byte)bit7;
+            Z = (byte)(result == 0 ? 1 : 0);
+            N = 0;
+            HC = 0;
+        }
+
+        private void SWAP_r(Register register)
+        {
+            var value = _registers[register];
+            _registers[register] = (byte)(((value >> 4) & 0x0F) | ((value << 4) & 0xF0));
+
+            Z = (byte)(value == 0 ? 1 : 0);
+            Carry = 0;
+            N = 0;
+            HC = 0;
+        }
+
+        private void RL_r(Register register)
+        {
+            HC = 0;
+            N = 0;
+            var result = (byte)((_registers[register] << 1) | Carry);
+            Carry = (byte)((_registers[register] & 0x80) == 0 ? 0 : 1);
+            _registers[register] = result;
+            Z = (byte)(result == 0 ? 1 : 0);
+        }
+
+        private void BIT(int bit, Register register)
+        {
+            Z = (byte)((~(_registers[register])) >> bit & 0x01);
+            N = 0;
+            HC = 1;
+        }
+
+        private void RR_r(Register register)
+        {
+            var old = _registers[register];
+            _registers[register] = (byte)(old >> 1 | (Carry << 7));
+            Carry = (byte)((old & 0x01) == 0x01 ? 1 : 0);
+            Z = (byte)(_registers[register] == 0 ? 1 : 0);
+            HC = 0;
+            N = 0;
+        }
 
         private void SRL_B()
         {
