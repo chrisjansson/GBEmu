@@ -1479,6 +1479,24 @@ namespace Core
                 case 0x2F:
                     SRA_r(Register.A);
                     break;
+                case 0x30:
+                    SWAP_r(Register.B);
+                    break;
+                case 0x31:
+                    SWAP_r(Register.C);
+                    break;
+                case 0x32:
+                    SWAP_r(Register.D);
+                    break;
+                case 0x33:
+                    SWAP_r(Register.E);
+                    break;
+                case 0x34:
+                    SWAP_r(Register.H);
+                    break;
+                case 0x35:
+                    SWAP_r(Register.L);
+                    break;
                 case 0x37:
                     SWAP_r(Register.A);
                     break;
@@ -1706,6 +1724,12 @@ namespace Core
             {0x2C, new InstructionMetaData(2, 2, "SRA H")},
             {0x2D, new InstructionMetaData(2, 2, "SRA L")},
             {0x2F, new InstructionMetaData(2, 2, "SRA A")},
+            {0x30, new InstructionMetaData(2, 2, "SWAP B")},
+            {0x31, new InstructionMetaData(2, 2, "SWAP C")},
+            {0x32, new InstructionMetaData(2, 2, "SWAP D")},
+            {0x33, new InstructionMetaData(2, 2, "SWAP E")},
+            {0x34, new InstructionMetaData(2, 2, "SWAP H")},
+            {0x35, new InstructionMetaData(2, 2, "SWAP L")},
             {0x37, new InstructionMetaData(2, 2, "SWAP A")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
             {0x40, new InstructionMetaData(2, 2, "BIT 0, B")},
