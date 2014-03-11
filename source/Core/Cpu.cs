@@ -1501,7 +1501,25 @@ namespace Core
                     SWAP_r(Register.A);
                     break;
                 case 0x38:
-                    SRL_B();
+                    SRL_r(Register.B);
+                    break;
+                case 0x39:
+                    SRL_r(Register.C);
+                    break;
+                case 0x3A:
+                    SRL_r(Register.D);
+                    break;
+                case 0x3B:
+                    SRL_r(Register.E);
+                    break;
+                case 0x3C:
+                    SRL_r(Register.H);
+                    break;
+                case 0x3D:
+                    SRL_r(Register.L);
+                    break;
+                case 0x3F:
+                    SRL_r(Register.A);
                     break;
                 case 0x40:
                     BIT(0, Register.B);
@@ -1732,6 +1750,12 @@ namespace Core
             {0x35, new InstructionMetaData(2, 2, "SWAP L")},
             {0x37, new InstructionMetaData(2, 2, "SWAP A")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
+            {0x39, new InstructionMetaData(2, 2, "SRL C")},
+            {0x3A, new InstructionMetaData(2, 2, "SRL D")},
+            {0x3B, new InstructionMetaData(2, 2, "SRL E")},
+            {0x3C, new InstructionMetaData(2, 2, "SRL H")},
+            {0x3D, new InstructionMetaData(2, 2, "SRL L")},
+            {0x3F, new InstructionMetaData(2, 2, "SRL A")},
             {0x40, new InstructionMetaData(2, 2, "BIT 0, B")},
             {0x41, new InstructionMetaData(2, 2, "BIT 0, C")},
             {0x42, new InstructionMetaData(2, 2, "BIT 0, D")},
@@ -1873,11 +1897,11 @@ namespace Core
             N = 0;
         }
 
-        private void SRL_B()
+        private void SRL_r(Register register)
         {
-            Carry = (byte)((B & 0x01) == 0x01 ? 1 : 0);
-            B = (byte)(B >> 1);
-            Z = (byte)(B == 0 ? 1 : 0);
+            Carry = (byte)((_registers[register] & 0x01) == 0x01 ? 1 : 0);
+            _registers[register] = (byte)(_registers[register] >> 1);
+            Z = (byte)(_registers[register] == 0 ? 1 : 0);
             N = 0;
             HC = 0;
         }
