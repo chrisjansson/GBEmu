@@ -36,9 +36,9 @@ namespace Test
             LoadTest(rom);
             Sut.ProgramCounter = 0x00;
 
-            var previousInstruction = 0x00;
-            var previousInstructionCount = 0;
-            for (var i = 0; i < 100000000 && previousInstructionCount < 1000; i++)
+            var previewsProgramCounter = 0x00;
+            var previousProgramCounterCount = 0;
+            for (var i = 0; i < 100000000 && previousProgramCounterCount < 1000; i++)
             {
                 var instruction = FakeMmu.GetByte(Sut.ProgramCounter);
                 Sut.Execute(instruction);
@@ -48,14 +48,14 @@ namespace Test
                     FakeMmu.Memory[0xFF02] = 0;
                 }
 
-                if (instruction == previousInstruction)
+                if (Sut.ProgramCounter == previewsProgramCounter)
                 {
-                    previousInstructionCount++;
+                    previousProgramCounterCount++;
                 }
                 else
                 {
-                    previousInstruction = instruction;
-                    previousInstructionCount = 0;
+                    previewsProgramCounter = Sut.ProgramCounter;
+                    previousProgramCounterCount = 0;
                 }
             }
 
