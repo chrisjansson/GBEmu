@@ -17,8 +17,8 @@ namespace Test
             _fakeMmu = cpuFixture.FakeMmu;
         }
 
-        [Theory, PropertyData("RegiserPairs")]
-        public void Pops_qq_from_the_stack(RegisterPair registerPair)
+        [Theory, PropertyData("RegisterPairs")]
+        public void Pops_qq_from_the_stack(RegisterPair registerPair, int expectedResult)
         {
             _cpu.ProgramCounter = 9381;
             _cpu.Cycles = 2912349;
@@ -28,13 +28,13 @@ namespace Test
 
             _cpu.Execute(CreateOpCode(registerPair));
 
-            Assert.Equal(0xAEBC, registerPair.Get(_cpu));
+            Assert.Equal(expectedResult, registerPair.Get(_cpu));
             Assert.Equal(9382, _cpu.ProgramCounter);
             Assert.Equal(2912352, _cpu.Cycles);
         }
 
-        [Theory, PropertyData("RegiserPairs")]
-        public void Increments_sp(RegisterPair registerPair)
+        [Theory, PropertyData("RegisterPairs")]
+        public void Increments_sp(RegisterPair registerPair, int _)
         {
             _cpu.SP = 33812;
 
@@ -48,16 +48,16 @@ namespace Test
             return (byte)(0xC1 | registerPair << 4);
         }
 
-        public static IEnumerable<object[]> RegiserPairs
+        public static IEnumerable<object[]> RegisterPairs
         {
             get
             {
                 return new List<object[]>
                 {
-                    new object[] {RegisterPair.HL},
-                    new object[] {RegisterPair.AF},
-                    new object[] {RegisterPair.BC},
-                    new object[] {RegisterPair.DE}
+                    new object[] {RegisterPair.HL, 0xAEBC},
+                    new object[] {RegisterPair.AF, 0xAEB0},
+                    new object[] {RegisterPair.BC, 0xAEBC},
+                    new object[] {RegisterPair.DE, 0xAEBC}
                 };
             }
         }

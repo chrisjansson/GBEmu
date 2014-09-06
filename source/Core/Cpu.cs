@@ -988,7 +988,7 @@ namespace Core
                     A = _mmu.GetByte((ushort)(0xFF00 + offset));
                     break;
                 case 0xF1:
-                    F = _mmu.GetByte(SP);
+                    F = (byte) (_mmu.GetByte(SP) & 0xF0);
                     A = _mmu.GetByte((ushort)(SP + 1));
                     SP += 2;
                     break;
@@ -1831,8 +1831,8 @@ namespace Core
             var value = _registers[register];
             var result = (byte)((value >> 1) | (value & 0x80));
             _registers[register] = result;
-            Carry = (byte) (value & 0x01);
-            Z = (byte) (result == 0 ? 1 : 0);
+            Carry = (byte)(value & 0x01);
+            Z = (byte)(result == 0 ? 1 : 0);
         }
 
         private void RRC_r(Register register)
