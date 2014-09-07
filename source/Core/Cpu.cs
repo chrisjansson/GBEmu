@@ -1689,6 +1689,27 @@ namespace Core
                 case 0x7f:
                     BIT(7, Register.A);
                     break;
+                case 0x80:
+                    RES(0, Register.B);
+                    break;
+                case 0x81:
+                    RES(0, Register.C);
+                    break;
+                case 0x82:
+                    RES(0, Register.D);
+                    break;
+                case 0x83:
+                    RES(0, Register.E);
+                    break;
+                case 0x84:
+                    RES(0, Register.H);
+                    break;
+                case 0x85:
+                    RES(0, Register.L);
+                    break;
+                case 0x87:
+                    RES(0, Register.A);
+                    break;
                 default:
                     throw new IllegalOpcodeException(opCode, ProgramCounter);
             }
@@ -1696,6 +1717,11 @@ namespace Core
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
+        }
+
+        private void RES(byte bit, Register register)
+        {
+            _registers[register] = (byte) (_registers[register] & ~(1 << bit));
         }
 
         private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
@@ -1811,7 +1837,14 @@ namespace Core
             {0x7B, new InstructionMetaData(2, 2, "BIT 7, E")},
             {0x7C, new InstructionMetaData(2, 2, "BIT 7, H")},
             {0x7D, new InstructionMetaData(2, 2, "BIT 7, L")},
-            {0x7F, new InstructionMetaData(2, 2, "BIT 7, A")}
+            {0x7F, new InstructionMetaData(2, 2, "BIT 7, A")},
+            {0x80, new InstructionMetaData(2, 2, "RES 0, B")},
+            {0x81, new InstructionMetaData(2, 2, "RES 0, C")},
+            {0x82, new InstructionMetaData(2, 2, "RES 0, D")},
+            {0x83, new InstructionMetaData(2, 2, "RES 0, E")},
+            {0x84, new InstructionMetaData(2, 2, "RES 0, H")},
+            {0x85, new InstructionMetaData(2, 2, "RES 0, L")},
+            {0x87, new InstructionMetaData(2, 2, "RES 0, A")},
         };
 
         private void SLA_r(Register register)
