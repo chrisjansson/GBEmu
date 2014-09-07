@@ -18,7 +18,6 @@ namespace Core
             _index = index;
         }
 
-
         private readonly int _index;
 
         public static implicit operator int(Register register)
@@ -261,6 +260,7 @@ namespace Core
             { 0xF7, new InstructionMetaData(0, 4, "RST 30H")},
             { 0xF9, new InstructionMetaData(1, 2, "LD SP, HL")},
             { 0xFA, new InstructionMetaData(3, 4, "LD A, (nn)")},
+            { 0xFB, new InstructionMetaData(1, 1, "EI")},
             { 0xFE, new InstructionMetaData(2, 2, "CP n")},
             { 0xFF, new InstructionMetaData(0, 4, "RST 38H")},
         };
@@ -1012,6 +1012,9 @@ namespace Core
                     var address = _mmu.GetByte((ushort)(ProgramCounter + 1)) | (_mmu.GetByte((ushort)(ProgramCounter + 2)) << 8);
                     A = _mmu.GetByte((ushort)address);
                     break;
+                case 0xFB:
+                    EI();
+                    break;
                 case 0xFE:
                     var value = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     CP(value);
@@ -1028,6 +1031,11 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void EI()
+        {
+            IME = true;
         }
 
         private void RRA()
@@ -1204,7 +1212,7 @@ namespace Core
         private void RETI()
         {
             RET();
-            EI = true;
+            IME = true;
         }
 
         private void CALL_Z()
@@ -2080,7 +2088,7 @@ namespace Core
             set { _f = value; }
         }
 
-        public bool EI;
+        public bool IME;
         public ushort SP { get; set; }
 
         public ushort ProgramCounter { get; set; }

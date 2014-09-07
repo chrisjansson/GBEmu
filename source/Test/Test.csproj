@@ -85,6 +85,7 @@
     <Compile Include="CpuA\AND_r.cs" />
     <Compile Include="CpuA\CCF.cs" />
     <Compile Include="CpuA\CPL.cs" />
+    <Compile Include="CpuA\EI.cs" />
     <Compile Include="CpuA\Flags.cs" />
     <Compile Include="CpuA\LD_A_C.cs">
       <SubType>Code</SubType>

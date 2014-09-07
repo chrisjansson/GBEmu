@@ -157,10 +157,10 @@ namespace Test
         [Fact]
         public void Enables_interrups()
         {
-            Cpu.EI = false;
+            Cpu.IME = false;
 
             Execute(OpCode);
-            Assert.True(Cpu.EI);
+            Assert.True(Cpu.IME);
         }
     }
 }

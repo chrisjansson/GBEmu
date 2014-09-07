@@ -23,11 +23,11 @@ namespace Test
         [Fact]
         public void Disables_interrups()
         {
-            _cpu.EI = true;
+            _cpu.IME = true;
 
             _cpu.Execute(0xF3);
 
-            Assert.False(_cpu.EI);
+            Assert.False(_cpu.IME);
         }
 
         [Fact]
