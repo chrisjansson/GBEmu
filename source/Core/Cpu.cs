@@ -258,6 +258,7 @@ namespace Core
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
             { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
             { 0xF7, new InstructionMetaData(0, 4, "RST 30H")},
+            { 0xF8, new InstructionMetaData(2, 3, "LD HL, SP+e")},
             { 0xF9, new InstructionMetaData(1, 2, "LD SP, HL")},
             { 0xFA, new InstructionMetaData(3, 4, "LD A, (nn)")},
             { 0xFB, new InstructionMetaData(1, 1, "EI")},
@@ -1005,6 +1006,9 @@ namespace Core
                 case 0xF7:
                     RST(0x30);
                     break;
+                case 0xF8:
+                    LD_HL_SP_e();
+                    break;
                 case 0xF9:
                     LD_SP_HL();
                     break;
@@ -1031,6 +1035,18 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void LD_HL_SP_e()
+        {
+            Z = 0;
+            N = 0;
+            var e = (sbyte)_mmu.GetByte((ushort) (ProgramCounter + 1));
+            var result = SP + e;
+            H = (byte) ((result >> 8) & 0xFF);
+            L = (byte) (result & 0xFF);
+            Carry = (byte) ((result & 0x10000) == 0x10000 ? 1 : 0);
+            HC = (byte) ((((SP & 0xFFF) + e) & 0x1000) == 0x1000 ? 1 : 0);
         }
 
         private void EI()
