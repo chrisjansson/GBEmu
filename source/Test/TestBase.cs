@@ -7,12 +7,12 @@ namespace Test
     {
         protected Cpu Sut;
         protected Fixture Fixture;
-        protected FakeMmu FakeMmu;
+        protected Core.MMU FakeMmu;
 
         public TestBase()
         {
             Fixture = new Fixture();
-            FakeMmu = new FakeMmu();
+            FakeMmu = new Core.MMU();
             Sut = new Cpu(FakeMmu);
         }
     }

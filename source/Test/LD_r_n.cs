@@ -17,7 +17,7 @@ namespace Test
             var initialCyles = Fixture.Create<long>();
             Sut.ProgramCounter = programCounter;
             Sut.Cycles = initialCyles;
-            FakeMmu.Memory[programCounter + 1] = expectedConstant;
+            FakeMmu.SetByte((ushort) (programCounter + 1), expectedConstant);
 
             var opcode = CreateOpcode(target);
             Sut.Execute(opcode);

@@ -1,13 +1,29 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Core;
+using Ploeh.AutoFixture;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Test
 {
-    public class AcceptanceTest : TestBase
+    public class AcceptanceTest
     {
+        protected Cpu Sut;
+        protected Fixture Fixture;
+        protected MMuSpy Mmu;
+
+        public AcceptanceTest()
+        {
+            Fixture = new Fixture();
+            Mmu = new MMuSpy(new Core.MMU
+            {
+                Display = new NullDisplay()
+            });
+            Sut = new Cpu(Mmu);
+        }
+
         private void LoadTest(string rom)
         {
             var ldAcceptanceTestRom = File.ReadAllBytes(rom);
@@ -15,7 +31,7 @@ namespace Test
             for (var i = 0; i < ldAcceptanceTestRom.Length; i++)
             {
                 var n = ldAcceptanceTestRom[i];
-                FakeMmu.SetByte((ushort) i, n);
+                Mmu.SetByte((ushort)i, n);
             }
         }
 
@@ -40,12 +56,12 @@ namespace Test
             var previousProgramCounterCount = 0;
             for (var i = 0; i < 100000000 && previousProgramCounterCount < 1000; i++)
             {
-                var instruction = FakeMmu.GetByte(Sut.ProgramCounter);
+                var instruction = Mmu.GetByte(Sut.ProgramCounter);
                 Sut.Execute(instruction);
 
-                if ((FakeMmu.Memory[0xFF02] & 0x80) == 0x80)
+                if ((Mmu.GetByte(0xFF02) & 0x80) == 0x80)
                 {
-                    FakeMmu.Memory[0xFF02] = 0;
+                    Mmu.SetByte(0xFF02, 0);
                 }
 
                 if (Sut.ProgramCounter == previewsProgramCounter)
@@ -59,7 +75,7 @@ namespace Test
                 }
             }
 
-            var output = FakeMmu.Output.Aggregate("", (x, y) => x + y);
+            var output = Mmu.Output.Aggregate("", (x, y) => x + y);
             Console.WriteLine(output);
             Assert.Contains("passed", output.ToLower());
         }

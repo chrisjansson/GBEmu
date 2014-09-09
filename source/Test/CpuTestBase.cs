@@ -11,17 +11,20 @@ namespace Test
         protected readonly Cpu Cpu;
         private readonly ushort _initialProgramCounter;
         private readonly long _initialCycles;
+        protected Fixture Fixture;
+        private ushort _initialStackPointer;
 
         public CpuTestBase()
         {
-            var fixture = new Fixture();
+            Fixture = new Fixture();
             FakeMmu = new FakeMmu();
-            fixture.Inject<IMmu>(FakeMmu);
+            Fixture.Inject<IMmu>(FakeMmu);
 
-            Cpu = fixture.Create<Cpu>();
+            Cpu = Fixture.Create<Cpu>();
 
             _initialProgramCounter = Cpu.ProgramCounter;
             _initialCycles = Cpu.Cycles;
+            _initialStackPointer = Cpu.SP;
         }
 
         protected void AssertFlags(Action<FlagAssertion> assertion)
@@ -44,6 +47,11 @@ namespace Test
         protected void AdvancedProgramCounter(int expectedIncrement)
         {
             Assert.Equal(_initialProgramCounter + expectedIncrement, Cpu.ProgramCounter);
+        }
+
+        protected void DecrementedStackPointer(int expectedIncrement)
+        {
+            Assert.Equal(_initialStackPointer - 2, Cpu.SP);
         }
 
         protected void ExecutingCB(byte opCode)

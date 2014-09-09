@@ -6,7 +6,7 @@ using Xunit.Extensions;
 
 namespace Test
 {
-    public class LD_r_HL : TestBase
+    public class LD_r_HL : CpuTestBase
     {
         [Theory, PropertyData("CreateTestCases")]
         public void LD_r_HL_loads_memory_pointed_to_by_HL_into_r(RegisterMapping register)
@@ -16,17 +16,17 @@ namespace Test
             var initialProgramCounter = Fixture.Create<ushort>();
             var initialCycles = Fixture.Create<long>();
             FakeMmu.Memory[memoryLocation] = expectedLoadedValue;
-            Sut.H = (byte)(memoryLocation >> 8);
-            Sut.L = (byte)(memoryLocation & 0xFF);
-            Sut.ProgramCounter = initialProgramCounter;
-            Sut.Cycles = initialCycles;
+            Cpu.H = (byte)(memoryLocation >> 8);
+            Cpu.L = (byte)(memoryLocation & 0xFF);
+            Cpu.ProgramCounter = initialProgramCounter;
+            Cpu.Cycles = initialCycles;
             var opcode = CreateOpcode(register);
 
-            Sut.Execute(opcode);
+            Cpu.Execute(opcode);
 
-            Assert.Equal(expectedLoadedValue, register.Get(Sut));
-            Assert.Equal(initialProgramCounter + 1, Sut.ProgramCounter);
-            Assert.Equal(initialCycles + 2, Sut.Cycles);
+            Assert.Equal(expectedLoadedValue, register.Get(Cpu));
+            Assert.Equal(initialProgramCounter + 1, Cpu.ProgramCounter);
+            Assert.Equal(initialCycles + 2, Cpu.Cycles);
         }
 
         public static IEnumerable<object[]> CreateTestCases
