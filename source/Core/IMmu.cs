@@ -39,6 +39,8 @@
                     return Display.BackgroundPaletteData;
                 case RegisterAddresses.LY:
                     return Display.Line;
+                case RegisterAddresses.IE:
+                    return Cpu.IE;
                 default:
                     return _memory[address];
             }
@@ -56,12 +58,16 @@
                     break;
                 case RegisterAddresses.LY:
                     break;
+                case RegisterAddresses.IE:
+                    Cpu.IE = value;
+                    break;
                 default:
                     _memory[address] = value;
                     break;
             }
         }
 
-        public IDisplay Display { get; set; }
+        public IDisplay Display;
+        public Cpu Cpu;
     }
 }
