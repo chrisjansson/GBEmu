@@ -82,5 +82,7 @@
         public const ushort ScrollY = 0xFF42;
         public const ushort LY = 0xFF44;
         public const ushort BGP = 0xFF47;
+        public const ushort IE = 0xFFFF; //Interrupt enable
+        public const ushort IF = 0xFF0F; //Interrupt request
     }
 }
