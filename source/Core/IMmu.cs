@@ -41,6 +41,8 @@
                     return Display.Line;
                 case RegisterAddresses.IE:
                     return Cpu.IE;
+                case RegisterAddresses.IF:
+                    return Cpu.IF;
                 default:
                     return _memory[address];
             }
@@ -60,6 +62,9 @@
                     break;
                 case RegisterAddresses.IE:
                     Cpu.IE = value;
+                    break;
+                case RegisterAddresses.IF:
+                    Cpu.IF = value;
                     break;
                 default:
                     _memory[address] = value;
