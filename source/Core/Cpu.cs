@@ -294,6 +294,15 @@ namespace Core
 
         public void Execute(byte opcode)
         {
+            if (IME)
+            {
+                _mmu.SetByte((ushort) (SP - 1), (byte) (ProgramCounter >> 8));
+                _mmu.SetByte((ushort) (SP - 2), (byte) ProgramCounter);
+                SP -= 2;
+                ProgramCounter = 0x50;
+                return;
+            }
+
             switch (opcode)
             {
                 case 0x00:
@@ -989,7 +998,7 @@ namespace Core
                     A = _mmu.GetByte((ushort)(0xFF00 + offset));
                     break;
                 case 0xF1:
-                    F = (byte) (_mmu.GetByte(SP) & 0xF0);
+                    F = (byte)(_mmu.GetByte(SP) & 0xF0);
                     A = _mmu.GetByte((ushort)(SP + 1));
                     SP += 2;
                     break;
@@ -1041,12 +1050,12 @@ namespace Core
         {
             Z = 0;
             N = 0;
-            var e = (sbyte)_mmu.GetByte((ushort) (ProgramCounter + 1));
+            var e = (sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1));
             var result = SP + e;
-            H = (byte) ((result >> 8) & 0xFF);
-            L = (byte) (result & 0xFF);
-            Carry = (byte) ((result & 0x10000) == 0x10000 ? 1 : 0);
-            HC = (byte) ((((SP & 0xFFF) + e) & 0x1000) == 0x1000 ? 1 : 0);
+            H = (byte)((result >> 8) & 0xFF);
+            L = (byte)(result & 0xFF);
+            Carry = (byte)((result & 0x10000) == 0x10000 ? 1 : 0);
+            HC = (byte)((((SP & 0xFFF) + e) & 0x1000) == 0x1000 ? 1 : 0);
         }
 
         private void EI()
@@ -1745,7 +1754,7 @@ namespace Core
 
         private void RES(byte bit, Register register)
         {
-            _registers[register] = (byte) (_registers[register] & ~(1 << bit));
+            _registers[register] = (byte)(_registers[register] & ~(1 << bit));
         }
 
         private readonly Dictionary<byte, InstructionMetaData> _cbInstructions = new Dictionary<byte, InstructionMetaData>
@@ -2105,6 +2114,8 @@ namespace Core
         }
 
         public bool IME;
+        public byte IE;
+        public byte IF;
         public ushort SP { get; set; }
 
         public ushort ProgramCounter { get; set; }
