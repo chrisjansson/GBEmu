@@ -296,11 +296,18 @@ namespace Core
         {
             if (IME)
             {
-                _mmu.SetByte((ushort) (SP - 1), (byte) (ProgramCounter >> 8));
-                _mmu.SetByte((ushort) (SP - 2), (byte) ProgramCounter);
-                SP -= 2;
-                ProgramCounter = 0x50;
-                return;
+                if ((IE & 0x04) == 0x04 && (IF & 0x04) == 0x04)
+                {
+                    //Push program counter to stack
+                    _mmu.SetByte((ushort)(SP - 1), (byte)(ProgramCounter >> 8));
+                    _mmu.SetByte((ushort)(SP - 2), (byte)ProgramCounter);
+                    SP -= 2;
+
+                    //Jump to interrupt vector
+                    ProgramCounter = 0x50;
+                    IF = 0;
+                    return;
+                }
             }
 
             switch (opcode)

@@ -51,7 +51,7 @@ namespace Test
 
         protected void DecrementedStackPointer(int expectedIncrement)
         {
-            Assert.Equal(_initialStackPointer - 2, Cpu.SP);
+            Assert.Equal(_initialStackPointer - expectedIncrement, Cpu.SP);
         }
 
         protected void ExecutingCB(byte opCode)
