@@ -77,6 +77,9 @@
 
     public class RegisterAddresses
     {
+        public const ushort TAC = 0xFF07; //Timer control
+        public const ushort TMA = 0xFF06; //Timer modulo
+        public const ushort TIMA = 0xFF05; //Timer counter
         public const ushort LCDC = 0xFF40;
         public const ushort ScrollX = 0xFF43;
         public const ushort ScrollY = 0xFF42;

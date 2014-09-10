@@ -43,6 +43,12 @@
                     return Cpu.IE;
                 case RegisterAddresses.IF:
                     return Cpu.IF;
+                case RegisterAddresses.TIMA:
+                    return Timer.TIMA;
+                case RegisterAddresses.TMA:
+                    return Timer.TMA;
+                case RegisterAddresses.TAC:
+                    return Timer.TAC;
                 default:
                     return _memory[address];
             }
@@ -66,12 +72,22 @@
                 case RegisterAddresses.IF:
                     Cpu.IF = value;
                     break;
+                case RegisterAddresses.TIMA:
+                    Timer.TIMA = value;
+                    break;
+                case RegisterAddresses.TMA:
+                    Timer.TMA = value;
+                    break;
+                case RegisterAddresses.TAC:
+                    Timer.TAC = value;
+                    break;
                 default:
                     _memory[address] = value;
                     break;
             }
         }
 
+        public Timer Timer;
         public IDisplay Display;
         public Cpu Cpu;
     }
