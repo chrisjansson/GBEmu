@@ -12,7 +12,7 @@ namespace Test
         private readonly ushort _initialProgramCounter;
         private readonly long _initialCycles;
         protected Fixture Fixture;
-        private ushort _initialStackPointer;
+        private readonly ushort _initialStackPointer;
 
         public CpuTestBase()
         {
@@ -20,7 +20,11 @@ namespace Test
             FakeMmu = new FakeMmu();
             Fixture.Inject<IMmu>(FakeMmu);
 
-            Cpu = Fixture.Create<Cpu>();
+            Cpu = Fixture.Build<Cpu>()
+                .Without(x => x.IE)
+                .Without(x => x.IF)
+                .Without(x => x.IME)
+                .Create();
 
             _initialProgramCounter = Cpu.ProgramCounter;
             _initialCycles = Cpu.Cycles;

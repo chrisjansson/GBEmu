@@ -17,11 +17,13 @@ namespace Test
         public AcceptanceTest()
         {
             Fixture = new Fixture();
-            Mmu = new MMuSpy(new Core.MMU
+            var mmu = new Core.MMU
             {
                 Display = new NullDisplay()
-            });
+            };
+            Mmu = new MMuSpy(mmu);
             Sut = new Cpu(Mmu);
+            mmu.Cpu = Sut;
         }
 
         private void LoadTest(string rom)

@@ -305,7 +305,7 @@ namespace Core
 
                     //Jump to interrupt vector
                     ProgramCounter = 0x50;
-                    IF = 0;
+                    IF = (byte) (IF &   ~0x04);
                     return;
                 }
             }
@@ -1013,6 +1013,7 @@ namespace Core
                     LD_A_C();
                     break;
                 case 0xF3:
+                    DI();
                     break;
                 case 0xF5:
                     _mmu.SetByte((ushort)(SP - 1), A);
@@ -1068,6 +1069,11 @@ namespace Core
         private void EI()
         {
             IME = true;
+        }
+
+        private void DI()
+        {
+            IME = false;
         }
 
         private void RRA()
