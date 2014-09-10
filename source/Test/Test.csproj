@@ -87,6 +87,7 @@
     <Compile Include="CpuA\CPL.cs" />
     <Compile Include="CpuA\EI.cs" />
     <Compile Include="CpuA\Flags.cs" />
+    <Compile Include="CpuA\Interrupts\InterruptPriorityTests.cs" />
     <Compile Include="CpuA\Interrupts\TimerInterruptTests.cs" />
     <Compile Include="CpuA\LD_A_C.cs">
       <SubType>Code</SubType>
