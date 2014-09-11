@@ -13,7 +13,7 @@ namespace Test.MMU
         public TimerRegisters()
         {
             _sut = new Core.MMU();
-            _timer = new Timer();
+            _timer = new Timer(_sut);
             _sut.Timer = _timer;
         }
 
