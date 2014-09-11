@@ -13,6 +13,7 @@ namespace Test
         protected Cpu Sut;
         protected Fixture Fixture;
         protected MMuSpy Mmu;
+        protected Timer Timer;
 
         public AcceptanceTest()
         {
@@ -23,7 +24,9 @@ namespace Test
             };
             Mmu = new MMuSpy(mmu);
             Sut = new Cpu(Mmu);
+            Timer = new Timer(Mmu);
             mmu.Cpu = Sut;
+            mmu.Timer = Timer;
         }
 
         private void LoadTest(string rom)
@@ -59,7 +62,12 @@ namespace Test
             for (var i = 0; i < 100000000 && previousProgramCounterCount < 1000; i++)
             {
                 var instruction = Mmu.GetByte(Sut.ProgramCounter);
+                var prevCycles = Sut.Cycles;
                 Sut.Execute(instruction);
+                for (var j = 0; j < Sut.Cycles - prevCycles; j++)
+                {
+                    Timer.Tick();
+                }
 
                 if ((Mmu.GetByte(0xFF02) & 0x80) == 0x80)
                 {
