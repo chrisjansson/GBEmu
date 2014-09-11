@@ -88,4 +88,9 @@
         public const ushort IE = 0xFFFF; //Interrupt enable
         public const ushort IF = 0xFF0F; //Interrupt request
     }
+
+    public class InterruptMasks
+    {
+        
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Core;
+using Xunit;
 
 namespace Test.TimerA
 {
@@ -47,6 +48,27 @@ namespace Test.TimerA
             _timer.Tick(TicksPerTimerCycle * 256);
 
             Assert.Equal(123, _timer.TIMA);
+        }
+
+        [Fact]
+        public void Request_interrupt_when_TIMA_overflows()
+        {
+            _timer.TIMA = 200;
+
+            _timer.Tick(TicksPerTimerCycle * 56);
+
+            Assert.Equal(0x04, _fakeMmu.Memory[RegisterAddresses.IF]);
+        }
+
+        [Fact]
+        public void Masks_interrupt_request()
+        {
+            _timer.TIMA = 123;
+            _fakeMmu.Memory[RegisterAddresses.IF] = 0x0B;
+
+            _timer.Tick(TicksPerTimerCycle * 133);
+
+            Assert.Equal(0x0F, _fakeMmu.Memory[RegisterAddresses.IF]);
         }
     }
 }
