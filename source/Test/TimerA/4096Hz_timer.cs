@@ -4,7 +4,7 @@ namespace Test.TimerA
 {
     public class Timer_4096Tests
     {
-        private Core.Timer _timer;
+        private readonly Core.Timer _timer;
         private FakeMmu _fakeMmu;
 
         public Timer_4096Tests()
@@ -37,6 +37,16 @@ namespace Test.TimerA
             _timer.Tick(TicksPerTimerCycle * 3);
 
             Assert.Equal(3, _timer.TIMA);
+        }
+
+        [Fact]
+        public void Loads_TMA_into_TIMA_when_TIMA_overflows()
+        {
+            _timer.TMA = 123;
+
+            _timer.Tick(TicksPerTimerCycle * 256);
+
+            Assert.Equal(123, _timer.TIMA);
         }
     }
 }

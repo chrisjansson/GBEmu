@@ -17,6 +17,10 @@
             if (_ticks == 256)
             {
                 TIMA++;
+                if (TIMA == 0)
+                {
+                    TIMA = TMA;
+                }
                 _ticks = 0;
             }
         }
