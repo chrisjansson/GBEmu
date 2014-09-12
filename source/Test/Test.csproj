@@ -168,7 +168,7 @@
     <Compile Include="SUB_n.cs" />
     <Compile Include="SUB_r.cs" />
     <Compile Include="TestBase.cs" />
-    <Compile Include="TimerA\4096Hz_timer.cs" />
+    <Compile Include="TimerA\Timer_4096Tests.cs" />
     <Compile Include="TimerA\TimerExtensions.cs" />
     <Compile Include="TimerA\TimerTestBase.cs" />
     <Compile Include="TimerA\Timer_262144Hz.cs" />
