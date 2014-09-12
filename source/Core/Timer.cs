@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System;
+
+namespace Core
 {
     public class Timer
     {
@@ -19,7 +21,21 @@
             if ((TAC & 0x04) == 0)
                 return;
             _ticks++;
-            if (_ticks == 256)
+
+            int ticksPerCycle;
+            switch (TAC & 0x01)
+            {
+                case 0:
+                    ticksPerCycle = 256;
+                    break;
+                case 1:
+                    ticksPerCycle = 4;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+
+            if (_ticks == ticksPerCycle)
             {
                 TIMA++;
                 if (TIMA == 0) //overflorw

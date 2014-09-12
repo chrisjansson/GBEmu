@@ -170,6 +170,8 @@
     <Compile Include="TestBase.cs" />
     <Compile Include="TimerA\4096Hz_timer.cs" />
     <Compile Include="TimerA\TimerExtensions.cs" />
+    <Compile Include="TimerA\TimerTestBase.cs" />
+    <Compile Include="TimerA\Timer_262144Hz.cs" />
     <Compile Include="XOR_HL.cs" />
     <Compile Include="XOR_n.cs" />
     <Compile Include="XOR_r.cs" />
