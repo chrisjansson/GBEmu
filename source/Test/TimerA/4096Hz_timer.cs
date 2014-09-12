@@ -12,6 +12,7 @@ namespace Test.TimerA
         {
             _fakeMmu = new FakeMmu();
             _timer = new Core.Timer(_fakeMmu);
+            _timer.TAC = 0x04;
         }
 
         private const int TicksPerTimerCycle = 256;
@@ -69,6 +70,16 @@ namespace Test.TimerA
             _timer.Tick(TicksPerTimerCycle * 133);
 
             Assert.Equal(0x0F, _fakeMmu.Memory[RegisterAddresses.IF]);
+        }
+
+        [Fact]
+        public void Does_not_increment_TIMA_when_disabled_in_TAC()
+        {
+            _timer.TAC = 0;
+
+            _timer.Tick(TicksPerTimerCycle * 3);
+
+            Assert.Equal(0, _timer.TIMA);
         }
     }
 }

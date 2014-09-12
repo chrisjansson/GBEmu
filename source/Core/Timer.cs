@@ -16,6 +16,8 @@
 
         public void Tick()
         {
+            if ((TAC & 0x04) == 0)
+                return;
             _ticks++;
             if (_ticks == 256)
             {
@@ -23,7 +25,7 @@
                 if (TIMA == 0) //overflorw
                 {
                     var result = _mmu.GetByte(RegisterAddresses.IF) | 0x04;
-                    _mmu.SetByte(RegisterAddresses.IF, (byte) result);
+                    _mmu.SetByte(RegisterAddresses.IF, (byte)result);
                     TIMA = TMA;
                 }
                 _ticks = 0;
