@@ -1,15 +1,15 @@
 namespace Test.TimerA
 {
-    public class Timer_262144Hz : TimerTestBase
+    public class Timer_65536Hz : TimerTestBase
     {
         protected override byte TimerSelect
         {
-            get { return 0x01; }
+            get { return 0x02; }
         }
 
         protected override int TicksPerTimerCycle
         {
-            get { return 4; }
+            get { return 16; }
         }
     }
 }

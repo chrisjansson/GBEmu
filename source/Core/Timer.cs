@@ -4,17 +4,17 @@ namespace Core
 {
     public class Timer
     {
-        public byte TIMA; //timer counter
-        public byte TMA; //timer modulo
-        public byte TAC;
+        private readonly IMmu _mmu;
+        private int _ticks;
 
         public Timer(IMmu mmu)
         {
             _mmu = mmu;
         }
 
-        private int _ticks;
-        private IMmu _mmu;
+        public byte TIMA; //timer counter
+        public byte TMA; //timer modulo
+        public byte TAC; //timer control
 
         public void Tick()
         {
@@ -23,13 +23,19 @@ namespace Core
             _ticks++;
 
             int ticksPerCycle;
-            switch (TAC & 0x01)
+            switch (TAC & 0x03)
             {
                 case 0:
                     ticksPerCycle = 256;
                     break;
                 case 1:
                     ticksPerCycle = 4;
+                    break;
+                case 2:
+                    ticksPerCycle = 16;
+                    break;
+                case 3:
+                    ticksPerCycle = 64;
                     break;
                 default:
                     throw new InvalidOperationException();
