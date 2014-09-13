@@ -59,7 +59,7 @@ namespace Test
 
             var previewsProgramCounter = 0x00;
             var previousProgramCounterCount = 0;
-            for (var i = 0; i < 100000000 && previousProgramCounterCount < 1000; i++)
+            for (var i = 0; i < 100000000 && previousProgramCounterCount < 10000; i++)
             {
                 var instruction = Mmu.GetByte(Sut.ProgramCounter);
                 var prevCycles = Sut.Cycles;
