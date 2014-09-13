@@ -1,24 +1,10 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace Test.CpuA
 {
     public class Halt : CpuTestBase
     {
-        public Halt()
-        {
-            Cpu.IME = false;
-        }
-
         private const byte OpCode = 0x76;
-
-        [Fact]
-        public void Halt_with_interrupt_disabled_are_not_allowed()
-        {
-            Action act = () => Execute(OpCode);
-
-            Assert.Throws<InvalidOperationException>(new Assert.ThrowsDelegate(act));
-        }
 
         [Fact]
         public void Advances_program_counter_when_interupts_are_enabled()

@@ -295,15 +295,21 @@ namespace Core
 
         public void Execute(byte opcode)
         {
-            if (Halted && ((IE & 0x04) == 0x00 && (IF & 0x04) == 0x00))
+            var interrupted = (IE & 0x04) == 0x04 && (IF & 0x04) == 0x04;
+            if (Halted && !interrupted)
             {
                 Cycles += 1;
                 return;
             }
 
+            if (Halted)
+            {
+                Halted = false;
+            }
+
             if (IME)
             {
-                if ((IE & 0x04) == 0x04 && (IF & 0x04) == 0x04)
+                if (interrupted)
                 {
                     //Push program counter to stack
                     _mmu.SetByte((ushort)(SP - 1), (byte)(ProgramCounter >> 8));
@@ -313,7 +319,6 @@ namespace Core
                     //Jump to interrupt vector
                     ProgramCounter = 0x50;
                     IF = (byte)(IF & ~0x04);
-                    Halted = false;
                     return;
                 }
             }
@@ -1067,9 +1072,6 @@ namespace Core
 
         private void Halt()
         {
-            if (!IME)
-                throw new InvalidOperationException();
-
             Halted = true;
         }
 
