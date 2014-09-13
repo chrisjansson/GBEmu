@@ -24,6 +24,7 @@ namespace Test
                 .Without(x => x.IE)
                 .Without(x => x.IF)
                 .Without(x => x.IME)
+                .Without(x => x.Halted)
                 .Create();
 
             _initialProgramCounter = Cpu.ProgramCounter;

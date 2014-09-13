@@ -148,6 +148,7 @@ namespace Core
             { 0x73, new InstructionMetaData(1, 2, "LD (HL), E")},
             { 0x74, new InstructionMetaData(1, 2, "LD (HL), H")},
             { 0x75, new InstructionMetaData(1, 2, "LD (HL), L")},
+            { 0x76, new InstructionMetaData(1, 1, "HALT")},
             { 0x77, new InstructionMetaData(1, 2, "LD (HL), A")},
             { 0x78, new InstructionMetaData(1, 1, "LD A, B")},
             { 0x79, new InstructionMetaData(1, 1, "LD A, C")},
@@ -294,6 +295,12 @@ namespace Core
 
         public void Execute(byte opcode)
         {
+            if (Halted && ((IE & 0x04) == 0x00 && (IF & 0x04) == 0x00))
+            {
+                Cycles += 1;
+                return;
+            }
+
             if (IME)
             {
                 if ((IE & 0x04) == 0x04 && (IF & 0x04) == 0x04)
@@ -305,7 +312,8 @@ namespace Core
 
                     //Jump to interrupt vector
                     ProgramCounter = 0x50;
-                    IF = (byte) (IF &   ~0x04);
+                    IF = (byte)(IF & ~0x04);
+                    Halted = false;
                     return;
                 }
             }
@@ -526,6 +534,9 @@ namespace Core
                     break;
                 case 0x75:
                     LD_HL_r(Register.L);
+                    break;
+                case 0x76:
+                    Halt();
                     break;
                 case 0x77:
                     LD_HL_r(Register.A);
@@ -1052,6 +1063,14 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void Halt()
+        {
+            if (!IME)
+                throw new InvalidOperationException();
+
+            Halted = true;
         }
 
         private void LD_HL_SP_e()
@@ -2129,6 +2148,7 @@ namespace Core
         public bool IME;
         public byte IE;
         public byte IF;
+        public bool Halted;
         public ushort SP { get; set; }
 
         public ushort ProgramCounter { get; set; }
