@@ -87,6 +87,7 @@ namespace Core
             { 0x30, new InstructionMetaData(0, 0, "JR NC, $+e")},
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
+            { 0x33, new InstructionMetaData(1, 2, "INC SP")},
             { 0x35, new InstructionMetaData(1, 3, "DEC (HL)")},
             { 0x37, new InstructionMetaData(1, 1, "SCF")},
             { 0x38, new InstructionMetaData(0, 0, "JR, C, $+e")},
@@ -476,6 +477,9 @@ namespace Core
                     var nextHLD = HL - 1;
                     H = (byte)(nextHLD >> 8);
                     L = (byte)nextHLD;
+                    break;
+                case 0x33:
+                    INC_SP();
                     break;
                 case 0x35:
                     DEC_HL();
@@ -1068,6 +1072,11 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void INC_SP()
+        {
+            SP += 1;
         }
 
         private void Halt()

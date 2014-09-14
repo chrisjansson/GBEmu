@@ -32,7 +32,7 @@ namespace Test
                 cpu.F = l;
             });
 
-        public static readonly RegisterPair SP = new RegisterPair(0x03, cpu => 0, (cpu, b, arg3) => { });
+        public static readonly RegisterPair SP = new RegisterPair(0x03, cpu => cpu.SP, (cpu, b, arg3) => cpu.SP = (ushort) ((b << 8) | arg3));
 
         public static implicit operator byte(RegisterPair registerPair)
         {
