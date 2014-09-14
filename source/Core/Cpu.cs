@@ -54,6 +54,7 @@ namespace Core
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
             { 0x07, new InstructionMetaData(1, 1, "RLCA")},
             { 0x08, new InstructionMetaData(3, 5, "LD (nn), SP")},
+            { 0x0B, new InstructionMetaData(1, 2, "DEC BC")},
             { 0x0C, new InstructionMetaData(1, 1, "INC C")},
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
@@ -67,6 +68,7 @@ namespace Core
             { 0x17, new InstructionMetaData(1, 1, "RLA")},
             { 0x18, new InstructionMetaData(0, 3, "JR, $+e")},
             { 0x1A, new InstructionMetaData(1, 2, "LD A, (DE)")},
+            { 0x1B, new InstructionMetaData(1, 2, "DEC DE")},
             { 0x1C, new InstructionMetaData(1, 1, "INC E")},
             { 0x1D, new InstructionMetaData(1, 1, "DEC E")},
             { 0x1E, new InstructionMetaData(2, 2, "LD E, n")},
@@ -80,6 +82,7 @@ namespace Core
             { 0x28, new InstructionMetaData(0, 0, "JR Z, $ + e")},
             { 0x29, new InstructionMetaData(1, 2, "ADD HL, HL")},
             { 0x2A, new InstructionMetaData(1, 2, "LD A, (HLI)")},
+            { 0x2B, new InstructionMetaData(1, 2, "DEC HL")},
             { 0x2C, new InstructionMetaData(1, 1, "INC L")},
             { 0x2D, new InstructionMetaData(1, 1, "DEC L")},
             { 0x2E, new InstructionMetaData(2, 2, "LD L, n")},
@@ -91,6 +94,7 @@ namespace Core
             { 0x35, new InstructionMetaData(1, 3, "DEC (HL)")},
             { 0x37, new InstructionMetaData(1, 1, "SCF")},
             { 0x38, new InstructionMetaData(0, 0, "JR, C, $+e")},
+            { 0x3B, new InstructionMetaData(1, 2, "DEC SP")},
             { 0x3C, new InstructionMetaData(1, 1, "INC A")},
             { 0x3D, new InstructionMetaData(1, 1, "DEC A")},
             { 0x3E, new InstructionMetaData(2, 2, "LD A, n")},
@@ -352,6 +356,9 @@ namespace Core
                 case 0x08:
                     LD_NN_SP();
                     break;
+                case 0x0B:
+                    DEC_ss(Register.B, Register.C);
+                    break;
                 case 0x0c:
                     INC_r(Register.C);
                     break;
@@ -394,6 +401,9 @@ namespace Core
                     break;
                 case 0x1A:
                     A = _mmu.GetByte((ushort)(D << 8 | E));
+                    break;
+                case 0x1B:
+                    DEC_ss(Register.D, Register.E);
                     break;
                 case 0x1C:
                     INC_r(Register.E);
@@ -452,6 +462,9 @@ namespace Core
                     L = (byte)(increment & 0xFF);
                     H = (byte)((increment >> 8) & 0xFF);
                     break;
+                case 0x2B:
+                    DEC_ss(Register.H, Register.L);
+                    break;
                 case 0x2C:
                     INC_r(Register.L);
                     break;
@@ -489,6 +502,9 @@ namespace Core
                     break;
                 case 0x38:
                     JR_C();
+                    break;
+                case 0x3B:
+                    DEC_SP();
                     break;
                 case 0x3C:
                     INC_r(Register.A);
@@ -1072,6 +1088,18 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void DEC_ss(Register h, Register l)
+        {
+            var result = ((_registers[h] << 8) | _registers[l]) - 1;
+            _registers[h] = (byte)(result >> 8);
+            _registers[l] = (byte)(result & 0xFF);
+        }
+
+        private void DEC_SP()
+        {
+            SP -= 1;
         }
 
         private void INC_SP()
