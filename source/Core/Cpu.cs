@@ -257,6 +257,7 @@ namespace Core
             { 0xE2, new InstructionMetaData(1, 2, "LD (C), A")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
             { 0xE7, new InstructionMetaData(0, 4, "RST 20H")},
+            { 0xE8, new InstructionMetaData(2, 4, "ADD SP, n")},
             { 0xE9, new InstructionMetaData(0, 1, "JP HL")},
             { 0xEA, new InstructionMetaData(3, 4, "LD (nn), A")},
             { 0xEE, new InstructionMetaData(2, 2, "XOR n")},
@@ -1030,6 +1031,9 @@ namespace Core
                 case 0xE7:
                     RST(0x20);
                     break;
+                case 0xE8:
+                    ADD_SP_n();
+                    break;
                 case 0xE9:
                     JP_HL();
                     break;
@@ -1100,6 +1104,17 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void ADD_SP_n()
+        {
+            N = 0;
+            Z = 0;
+            var n = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            var result = SP + n;
+            HC = (byte) ((((SP & 0xFFF) + n) & 0x1000) == 0x1000 ? 1 : 0);
+            SP = (ushort) result;
+            Carry = (byte) (result > 0xFFFF ? 1 : 0);
         }
 
         private void ADD_HL_ss(ushort value)
