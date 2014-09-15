@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Core;
 using SDL2;
+using Timer = Core.Timer;
 
 namespace Gui
 {
@@ -14,6 +15,7 @@ namespace Gui
         private static DisplayDataTransferService _displayDataTransferService;
         private static Display _display;
         private static MMUWithBootRom _mmuWithBootRom;
+        private static Timer _timer;
 
         static void Main(string[] args)
         {
@@ -32,6 +34,9 @@ namespace Gui
             _displayDataTransferService = new DisplayDataTransferService(_mmuWithBootRom);
             _display = new Display(_displayDataTransferService);
             _mmu.Display = _display;
+            _mmu.Cpu = _cpu;
+            _timer = new Timer(_mmu);
+            _mmu.Timer = _timer;
 
             var openRead = File.OpenRead(args[1]);
             ushort inPosition = 0;
@@ -87,6 +92,7 @@ namespace Gui
             for (var i = 0; i < delta; i++)
             {
                 _display.Tick();
+                _timer.Tick();
             }
         }
 
