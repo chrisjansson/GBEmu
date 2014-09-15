@@ -1,23 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Test
 {
-    public class Arithmetic16BitTestBase : CpuTestBase
-    {
-        public static IEnumerable<object[]> ArithmeticRegisterPairs
-        {
-            get
-            {
-                return RegisterPair.GetArithmeticPairs()
-                    .Select(x => new[] {x})
-                    .ToList();
-            }
-        }
-    }
-
     public class ADD_HL_ss : Arithmetic16BitTestBase
     {
         [Theory, PropertyData("ArithmeticRegisterPairs")]
@@ -27,6 +13,34 @@ namespace Test
 
             AdvancedProgramCounter(1);
             AdvancedClock(2);
+        }
+
+        [Theory, PropertyData("RegisterPairsExceptHL")]
+        public void Adds_ss_to_HL(RegisterPair registerPair)
+        {
+            Flags(x => x.ResetCarry().ResetHalfCarry().Subtract());
+            Cpu.H = 0x8A;
+            Cpu.L = 0x23;
+            registerPair.Set(Cpu, 0x8B, 0x22);
+
+            Execute(CreateOpCode(registerPair));
+
+            Assert.Equal(0x1545, RegisterPair.HL.Get(Cpu));
+            AssertFlags(x => x.ResetSubtract().SetCarry().SetHalfCarry());
+        }
+
+        [Theory, PropertyData("RegisterPairsExceptHL")]
+        public void Resets_C_HC(RegisterPair registerPair)
+        {
+            Flags(x => x.Carry().HalfCarry());
+            Cpu.H = 0x20;
+            Cpu.L = 0x10;
+            registerPair.Set(Cpu, 0x21, 0x11);
+
+            Execute(CreateOpCode(registerPair));
+
+            Assert.Equal(0x4121, RegisterPair.HL.Get(Cpu));
+            AssertFlags(x => x.ResetCarry().ResetHalfCarry());
         }
 
         [Fact]
@@ -44,7 +58,7 @@ namespace Test
         }
 
         [Fact]
-        public void FactMethodName()
+        public void Adds_HL_to_HL_and_resets_C_HC()
         {
             Cpu.H = 0x20;
             Cpu.L = 0x10;
@@ -60,6 +74,19 @@ namespace Test
         private byte CreateOpCode(RegisterPair registerPair)
         {
             return (byte) (0x09 | registerPair << 4);
+        }
+
+        public static IEnumerable<object[]> RegisterPairsExceptHL
+        {
+            get
+            {
+                return new[]
+                {
+                    new[] {RegisterPair.SP},
+                    new[] {RegisterPair.BC},
+                    new[] {RegisterPair.DE}
+                };
+            }
         }
     }
 }

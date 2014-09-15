@@ -73,6 +73,7 @@
     <Compile Include="ADD_HL.cs" />
     <Compile Include="ADD_HL_ss.cs" />
     <Compile Include="ADD_r.cs" />
+    <Compile Include="Arithmetic16BitTestBase.cs" />
     <Compile Include="BIT_r.cs" />
     <Compile Include="Build.cs" />
     <Compile Include="Call.cs" />

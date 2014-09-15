@@ -54,6 +54,7 @@ namespace Core
             { 0x06, new InstructionMetaData(2, 2, "LD B, n")},
             { 0x07, new InstructionMetaData(1, 1, "RLCA")},
             { 0x08, new InstructionMetaData(3, 5, "LD (nn), SP")},
+            { 0x09, new InstructionMetaData(1, 2, "ADD HL, BC")},
             { 0x0B, new InstructionMetaData(1, 2, "DEC BC")},
             { 0x0C, new InstructionMetaData(1, 1, "INC C")},
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
@@ -67,6 +68,7 @@ namespace Core
             { 0x16, new InstructionMetaData(2, 2, "LD D, n")},
             { 0x17, new InstructionMetaData(1, 1, "RLA")},
             { 0x18, new InstructionMetaData(0, 3, "JR, $+e")},
+            { 0x19, new InstructionMetaData(1, 2, "ADD HL, DE")},
             { 0x1A, new InstructionMetaData(1, 2, "LD A, (DE)")},
             { 0x1B, new InstructionMetaData(1, 2, "DEC DE")},
             { 0x1C, new InstructionMetaData(1, 1, "INC E")},
@@ -94,6 +96,7 @@ namespace Core
             { 0x35, new InstructionMetaData(1, 3, "DEC (HL)")},
             { 0x37, new InstructionMetaData(1, 1, "SCF")},
             { 0x38, new InstructionMetaData(0, 0, "JR, C, $+e")},
+            { 0x39, new InstructionMetaData(1, 2, "ADD HL, SP")},
             { 0x3B, new InstructionMetaData(1, 2, "DEC SP")},
             { 0x3C, new InstructionMetaData(1, 1, "INC A")},
             { 0x3D, new InstructionMetaData(1, 1, "DEC A")},
@@ -356,6 +359,9 @@ namespace Core
                 case 0x08:
                     LD_NN_SP();
                     break;
+                case 0x09:
+                    ADD_HL_ss((ushort) (_registers[Register.B] << 8 | _registers[Register.C]));
+                    break;
                 case 0x0B:
                     DEC_ss(Register.B, Register.C);
                     break;
@@ -398,6 +404,9 @@ namespace Core
                     break;
                 case 0x18:
                     JR_e();
+                    break;
+                case 0x19:
+                    ADD_HL_ss((ushort) (_registers[Register.D] << 8 | _registers[Register.E]));
                     break;
                 case 0x1A:
                     A = _mmu.GetByte((ushort)(D << 8 | E));
@@ -454,7 +463,7 @@ namespace Core
                     Cycles += Z == 1 ? 3 : 2;
                     break;
                 case 0x29:
-                    ADD_HL_HL();
+                    ADD_HL_ss(HL);
                     break;
                 case 0x2A:
                     A = _mmu.GetByte(HL);
@@ -502,6 +511,9 @@ namespace Core
                     break;
                 case 0x38:
                     JR_C();
+                    break;
+                case 0x39:
+                    ADD_HL_ss(SP);
                     break;
                 case 0x3B:
                     DEC_SP();
@@ -1090,6 +1102,16 @@ namespace Core
             }
         }
 
+        private void ADD_HL_ss(ushort value)
+        {
+            N = 0;
+            var result = HL + value;
+            HC = (byte)((((HL & 0xFFF) + (value & 0xFFF)) & 0x1000) == 0x1000 ? 1 : 0);
+            Carry = (byte)(result > 0xFFFF ? 1 : 0);
+            H = (byte) (result >> 8);
+            L = (byte) (result & 0xFF);
+        }
+
         private void DEC_ss(Register h, Register l)
         {
             var result = ((_registers[h] << 8) | _registers[l]) - 1;
@@ -1404,18 +1426,6 @@ namespace Core
         private void JP_HL()
         {
             ProgramCounter = HL;
-        }
-
-        private void ADD_HL_HL()
-        {
-            int result = HL + HL;
-            var a = HL;
-            var b = HL;
-            H = (byte)(result >> 8);
-            L = (byte)(result & 0xFF);
-            HC = (byte)((((a & 0xFFF) + (b & 0xFFF)) & 0x1000) == 0x1000 ? 1 : 0);
-            Carry = (byte)(result > 0xFFFF ? 1 : 0);
-            N = 0;
         }
 
         private void OR_HL()
