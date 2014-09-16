@@ -361,7 +361,7 @@ namespace Core
                     LD_NN_SP();
                     break;
                 case 0x09:
-                    ADD_HL_ss((ushort) (_registers[Register.B] << 8 | _registers[Register.C]));
+                    ADD_HL_ss((ushort)(_registers[Register.B] << 8 | _registers[Register.C]));
                     break;
                 case 0x0B:
                     DEC_ss(Register.B, Register.C);
@@ -407,7 +407,7 @@ namespace Core
                     JR_e();
                     break;
                 case 0x19:
-                    ADD_HL_ss((ushort) (_registers[Register.D] << 8 | _registers[Register.E]));
+                    ADD_HL_ss((ushort)(_registers[Register.D] << 8 | _registers[Register.E]));
                     break;
                 case 0x1A:
                     A = _mmu.GetByte((ushort)(D << 8 | E));
@@ -1110,11 +1110,29 @@ namespace Core
         {
             N = 0;
             Z = 0;
-            var n = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            var n = (sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1));
+
             var result = SP + n;
-            HC = (byte) ((((SP & 0xFFF) + n) & 0x1000) == 0x1000 ? 1 : 0);
-            SP = (ushort) result;
-            Carry = (byte) (result > 0xFFFF ? 1 : 0);
+
+            if (n >= 0)
+            {
+                //               self.Cf = ( (self.SP & 0xFF) + ( S8 ) ) > 0xFF
+                //self.Hf = ( (self.SP & 0xF) + ( S8 & 0xF ) ) > 0xF
+                Carry = (byte) ((SP & 0xFF) + n > 0xFF ? 1 : 0);
+                HC = (byte) ((SP & 0xF) + (n & 0xF) > 0xF ? 1 : 0);
+
+            }
+            else
+            {
+    //               self.Cf = (SP & 0xFF) <= (self.SP & 0xFF)
+    //self.Hf = (SP & 0xF) <= (self.SP & 0xF) 
+                Carry = (byte) ((result & 0xFF) <= (SP & 0xFF) ? 1 : 0);
+                HC = (byte) ((byte) (result & 0xF) <= (SP & 0xF) ? 1 : 0);
+            }
+            //HC = (byte)((((SP & 0xFFF) + n) & 0x1000) == 0x1000 ? 1 : 0);
+            //Carry = (byte)(result > 0xFFFF ? 1 : 0);
+
+            SP = (ushort)result;
         }
 
         private void ADD_HL_ss(ushort value)
@@ -1123,8 +1141,8 @@ namespace Core
             var result = HL + value;
             HC = (byte)((((HL & 0xFFF) + (value & 0xFFF)) & 0x1000) == 0x1000 ? 1 : 0);
             Carry = (byte)(result > 0xFFFF ? 1 : 0);
-            H = (byte) (result >> 8);
-            L = (byte) (result & 0xFF);
+            H = (byte)(result >> 8);
+            L = (byte)(result & 0xFF);
         }
 
         private void DEC_ss(Register h, Register l)
