@@ -2,7 +2,7 @@
 
 namespace Test.CpuA
 {
-    public class ADD_SP_n : CpuTestBase
+    public class ADD_SP_e : CpuTestBase
     {
         private const byte OpCode = 0xE8;
 
@@ -28,24 +28,24 @@ namespace Test.CpuA
         [Fact]
         public void Sets_carry_when_overflowing()
         {
-            Flags(x => x.ResetCarry().ResetHalfCarry());
-            Cpu.SP = 0xFFFF;
+            Flags(x => x.ResetCarry().HalfCarry());
+            Cpu.SP = 0xF0;
 
-            Execute(OpCode, 0x01);
+            Execute(OpCode, 0x10);
 
-            Assert.Equal(0, Cpu.SP);
-            AssertFlags(x => x.SetCarry().SetHalfCarry());
+            Assert.Equal(0x100, Cpu.SP);
+            AssertFlags(x => x.SetCarry().ResetHalfCarry());
         }
 
         [Fact]
         public void Sets_half_carry()
         {
             Flags(x => x.ResetHalfCarry().Carry());
-            Cpu.SP = 0xFFF;
+            Cpu.SP = 0xF;
 
             Execute(OpCode, 0x01);
 
-            Assert.Equal(0x1000, Cpu.SP);
+            Assert.Equal(0x10, Cpu.SP);
             AssertFlags(x => x.SetHalfCarry().ResetCarry());
         }
 
@@ -58,6 +58,16 @@ namespace Test.CpuA
             Execute(OpCode, 0);
 
             AssertFlags(x => x.ResetHalfCarry());
+        }
+
+        [Fact]
+        public void Adds_signed_e_to_sp()
+        {
+            Cpu.SP = 0xFF;
+
+            Execute(OpCode, 0x80); //-128
+
+            Assert.Equal(0x7F, Cpu.SP);
         }
     }
 }
