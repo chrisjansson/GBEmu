@@ -1115,30 +1115,10 @@ namespace Core
 
             var result = SP + e;
             var check = ((SP & 0xFF) + n) & 0x100;
-            Carry = (byte) (check == 0x100 ? 1 : 0);
+            Carry = (byte)(check == 0x100 ? 1 : 0);
 
             check = ((SP & 0xF) + (n & 0xF)) & 0x10;
-            HC = (byte) (check == 0x10 ? 1 : 0);
-
-            //if (n >= 0)
-            //{
-            //    //               self.Cf = ( (self.SP & 0xFF) + ( S8 ) ) > 0xFF
-            //    //self.Hf = ( (self.SP & 0xF) + ( S8 & 0xF ) ) > 0xF
-            //    Carry = (byte)((SP & 0xFF) + n > 0xFF ? 1 : 0);
-            //    HC = (byte)((SP & 0xF) + (n & 0xF) > 0xF ? 1 : 0);
-
-            //}
-            //else
-            //{
-            //    //               self.Cf = (SP & 0xFF) <= (self.SP & 0xFF)
-            //    //self.Hf = (SP & 0xF) <= (self.SP & 0xF) 
-
-            //    Carry = (byte) ((SP & 0xFF) >= n ? 1 : 0);
-            //    //Carry = (byte)((result & 0xFF) <= (SP & 0xFF) ? 1 : 0);
-            //    HC = (byte)((byte)(result & 0xF) <= (SP & 0xF) ? 1 : 0);
-            //}
-            //HC = (byte)((((SP & 0xFFF) + n) & 0x1000) == 0x1000 ? 1 : 0);
-            //Carry = (byte)(result > 0xFFFF ? 1 : 0);
+            HC = (byte)(check == 0x10 ? 1 : 0);
 
             SP = (ushort)result;
         }
