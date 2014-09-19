@@ -27,37 +27,37 @@ namespace Test.CpuA
         public void Adds_e_to_sp_and_stores_in_HL()
         {
             Flags(x => x.Carry().HalfCarry());
-            Cpu.SP = 0xFFF8;
+            Cpu.SP = 0xFF01;
 
             Execute(OpCode, 254); //-2, twos complement
 
 
-            Assert.Equal(0xFFF6, RegisterPair.HL.Get(Cpu));
+            Assert.Equal(0xFEFF, RegisterPair.HL.Get(Cpu));
             AssertFlags(x => x.ResetCarry().ResetHalfCarry());
         }
 
         [Fact]
-        public void Sets_carry_when_carrying_from_bit_15()
+        public void Sets_carry_when_carrying_from_bit_7()
         {
             Flags(x => x.ResetCarry().ResetHalfCarry());
-            Cpu.SP = 0xFFFF;
+            Cpu.SP = 0x00FF;
 
             Execute(OpCode, 1);
 
-            Assert.Equal(0, RegisterPair.HL.Get(Cpu));
+            Assert.Equal(0x100, RegisterPair.HL.Get(Cpu));
             AssertFlags(x => x.SetCarry().SetHalfCarry());
         }
 
         [Fact]
-        public void Sets_half_carry_when_carrying_from_bit_11()
+        public void Sets_half_carry_when_carrying_from_bit_e()
         {
             Flags(x => x.Carry().ResetHalfCarry());
-            Cpu.SP = 0x2FFF;
+            Cpu.SP = 0x2F0F;
 
             Execute(OpCode, 1);
 
 
-            Assert.Equal(0x3000, RegisterPair.HL.Get(Cpu));
+            Assert.Equal(0x2F10, RegisterPair.HL.Get(Cpu));
             AssertFlags(x => x.ResetCarry().SetHalfCarry());
             
         }

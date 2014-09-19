@@ -1159,12 +1159,13 @@ namespace Core
         {
             Z = 0;
             N = 0;
-            var e = (sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1));
+            var n = _mmu.GetByte((ushort)(ProgramCounter + 1));
+            var e = (sbyte) n;
             var result = SP + e;
             H = (byte)((result >> 8) & 0xFF);
             L = (byte)(result & 0xFF);
-            Carry = (byte)((result & 0x10000) == 0x10000 ? 1 : 0);
-            HC = (byte)((((SP & 0xFFF) + e) & 0x1000) == 0x1000 ? 1 : 0);
+            Carry = (byte) ((SP & 0xFF) + n > 0xFF ? 1 : 0);
+            HC = (byte) ((SP & 0xF) + (n & 0xF) > 0xF ? 1 : 0);
         }
 
         private void EI()
