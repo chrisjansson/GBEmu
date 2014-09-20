@@ -50,6 +50,18 @@ namespace Test.CpuA.Interrupts
                 Assert.Equal(0, Cpu.IF);
             }
 
+            [Theory, PropertyData("Interrupts")]
+            public void Only_resets_own_interrupt_request(Interrupt interrupt)
+            {
+                Enable(interrupt);
+                Cpu.IF = 0x1F;
+
+                Cpu.Execute(0x00);
+
+                var expectedRequest = ~interrupt.InterruptMask & 0x1F;
+                Assert.Equal(expectedRequest, Cpu.IF);
+            }
+
             [Fact]
             public void Interrupt_routine_takes_five_cycles()
             {
