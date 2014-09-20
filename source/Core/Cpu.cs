@@ -327,18 +327,19 @@ namespace Core
                 _mmu.SetByte((ushort)(SP - 2), (byte)ProgramCounter);
                 SP -= 2;
 
-                if ((interrupted & 0x01) == 0x01)
+                const int vblank = 0x01;
+                if ((interrupted & vblank) == vblank)
                 {
-                    //Jump to interrupt vector
                     ProgramCounter = 0x40;
-                    IF = (byte)(IF & ~0x01);
+                    IF = (byte)(IF & ~vblank);
                     return;
                 }
-                if ((interrupted & 0x04) == 0x04)
+
+                const int timer = 0x04;
+                if ((interrupted & timer) == timer)
                 {
-                    //Jump to interrupt vector
                     ProgramCounter = 0x50;
-                    IF = (byte)(IF & ~0x04);
+                    IF = (byte)(IF & ~timer);
                     return;
                 }
             }
