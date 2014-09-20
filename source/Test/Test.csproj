@@ -92,6 +92,7 @@
     <Compile Include="CpuA\Flags.cs" />
     <Compile Include="CpuA\Halt.cs" />
     <Compile Include="CpuA\Halt_IME_disabled.cs" />
+    <Compile Include="CpuA\INC_HLm.cs" />
     <Compile Include="CpuA\Interrupts\Interrupt.cs" />
     <Compile Include="CpuA\Interrupts\InterruptPriorityTests.cs" />
     <Compile Include="CpuA\Interrupts\InterruptTestBase.cs" />

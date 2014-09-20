@@ -93,6 +93,7 @@ namespace Core
             { 0x31, new InstructionMetaData(3, 3, "LD SP, nn")},
             { 0x32, new InstructionMetaData(1, 2, "LD (HLD), A")},
             { 0x33, new InstructionMetaData(1, 2, "INC SP")},
+            { 0x34, new InstructionMetaData(1, 3, "INC (HL)")},
             { 0x35, new InstructionMetaData(1, 3, "DEC (HL)")},
             { 0x36, new InstructionMetaData(2, 3, "LD (HL), n")},
             { 0x37, new InstructionMetaData(1, 1, "SCF")},
@@ -515,6 +516,9 @@ namespace Core
                     break;
                 case 0x33:
                     INC_SP();
+                    break;
+                case 0x34:
+                    INC_HLm();
                     break;
                 case 0x35:
                     DEC_HL();
@@ -1119,6 +1123,16 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void INC_HLm()
+        {
+            var value = _mmu.GetByte(HL);
+            var result = (byte) (value + 1);
+            _mmu.SetByte(HL, result);
+            N = 0;
+            HC = (byte) ((value & 0xF) == 0xF ? 1 : 0);
+            Z = (byte) (result == 0 ? 1 : 0);
         }
 
         private void LD_HLm_n()
