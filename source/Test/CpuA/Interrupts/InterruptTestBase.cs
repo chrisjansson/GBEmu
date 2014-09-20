@@ -12,6 +12,9 @@ namespace Test.CpuA.Interrupts
                 {
                     new[] {Interrupt.Timer},
                     new[] {Interrupt.VBlank},
+                    new[] {Interrupt.LCDStat},
+                    new[] {Interrupt.Serial},
+                    new[] {Interrupt.JoyPad},
                 };
             }
         }
