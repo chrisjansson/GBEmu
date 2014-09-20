@@ -1,30 +1,34 @@
 ﻿using System;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Test.CpuA.Interrupts
 {
-    public class TimerInterruptTests
+    public class InterruptTests
     {
-        public class EnabledAndRequested : CpuTestBase
+        public class EnabledAndRequested : InterruptTestBase
         {
             public EnabledAndRequested()
             {
-                Cpu.IE = 0x04;
-                Cpu.IF = 0x04;
                 Cpu.IME = true;
             }
 
-            [Fact]
-            public void Sets_program_counter_to_interrupt_vector()
+            [Theory, PropertyData("Interrupts")]
+            public void Sets_program_counter_to_interrupt_vector(Interrupt interrupt)
             {
+                Enable(interrupt);
+                Request(interrupt);
+
                 Cpu.Execute(0x00);
 
-                Assert.Equal(0x50, Cpu.ProgramCounter);
+                Assert.Equal(interrupt.InterruptVector, Cpu.ProgramCounter);
             }
 
-            [Fact]
-            public void Pushes_current_program_counter_onto_the_stack()
+            [Theory, PropertyData("Interrupts")]
+            public void Pushes_current_program_counter_onto_the_stack(Interrupt interrupt)
             {
+                Enable(interrupt);
+                Request(interrupt);
                 var originalProgramCounter = Cpu.ProgramCounter;
 
                 Cpu.Execute(0x00);
@@ -35,9 +39,12 @@ namespace Test.CpuA.Interrupts
                 Assert.Equal(originalProgramCounter, high << 8 | low);
             }
 
-            [Fact]
-            public void Resets_interrupt_request()
+            [Theory, PropertyData("Interrupts")]
+            public void Resets_interrupt_request(Interrupt interrupt)
             {
+                Enable(interrupt);
+                Request(interrupt);
+
                 Cpu.Execute(0x00);
 
                 Assert.Equal(0, Cpu.IF);
@@ -50,18 +57,19 @@ namespace Test.CpuA.Interrupts
             }
         }
 
-        public class EnabledAndNotRequested : CpuTestBase
+        public class EnabledAndNotRequested : InterruptTestBase
         {
             public EnabledAndNotRequested()
             {
-                Cpu.IE = 0x04;
                 Cpu.IF = 0;
                 Cpu.IME = true;
             }
 
-            [Fact]
-            public void Does_not_execute_interrupt()
+            [Theory, PropertyData("Interrupts")]
+            public void Does_not_execute_interrupt(Interrupt interrupt)
             {
+                Enable(interrupt);
+
                 Cpu.Execute(0x00);
 
                 AdvancedProgramCounter(1);
@@ -70,18 +78,19 @@ namespace Test.CpuA.Interrupts
             }
         }
 
-        public class NotEnabledAndRequested : CpuTestBase
+        public class NotEnabledAndRequested : InterruptTestBase
         {
             public NotEnabledAndRequested()
             {
                 Cpu.IE = 0;
-                Cpu.IF = 0x04;
                 Cpu.IME = true;
             }
 
-            [Fact]
-            public void Does_not_execute_interrupt()
+            [Theory, PropertyData("Interrupts")]
+            public void Does_not_execute_interrupt(Interrupt interrupt)
             {
+                Request(interrupt);
+
                 Cpu.Execute(0x00);
 
                 AdvancedProgramCounter(1);

@@ -305,8 +305,11 @@ namespace Core
 
         public void Execute(byte opcode)
         {
-            var interrupted = (IE & 0x04) == 0x04 && (IF & 0x04) == 0x04;
-            if (Halted && !interrupted)
+            var maskedIE = IE & 0x1F;
+            var maskedIF = IF & 0x1F;
+
+            var interrupted = maskedIE & maskedIF;
+            if (Halted && interrupted == 0)
             {
                 Cycles += 1;
                 return;
@@ -317,15 +320,22 @@ namespace Core
                 Halted = false;
             }
 
-            if (IME)
+            if (IME && interrupted > 0)
             {
-                if (interrupted)
-                {
-                    //Push program counter to stack
-                    _mmu.SetByte((ushort)(SP - 1), (byte)(ProgramCounter >> 8));
-                    _mmu.SetByte((ushort)(SP - 2), (byte)ProgramCounter);
-                    SP -= 2;
+                //Push program counter to stack
+                _mmu.SetByte((ushort)(SP - 1), (byte)(ProgramCounter >> 8));
+                _mmu.SetByte((ushort)(SP - 2), (byte)ProgramCounter);
+                SP -= 2;
 
+                if ((interrupted & 0x01) == 0x01)
+                {
+                    //Jump to interrupt vector
+                    ProgramCounter = 0x40;
+                    IF = (byte)(IF & ~0x01);
+                    return;
+                }
+                if ((interrupted & 0x04) == 0x04)
+                {
                     //Jump to interrupt vector
                     ProgramCounter = 0x50;
                     IF = (byte)(IF & ~0x04);
@@ -1112,7 +1122,7 @@ namespace Core
 
         private void LD_HLm_n()
         {
-            var value = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            var value = _mmu.GetByte((ushort)(ProgramCounter + 1));
             _mmu.SetByte(HL, value);
         }
 
@@ -1170,12 +1180,12 @@ namespace Core
             Z = 0;
             N = 0;
             var n = _mmu.GetByte((ushort)(ProgramCounter + 1));
-            var e = (sbyte) n;
+            var e = (sbyte)n;
             var result = SP + e;
             H = (byte)((result >> 8) & 0xFF);
             L = (byte)(result & 0xFF);
-            Carry = (byte) ((SP & 0xFF) + n > 0xFF ? 1 : 0);
-            HC = (byte) ((SP & 0xF) + (n & 0xF) > 0xF ? 1 : 0);
+            Carry = (byte)((SP & 0xFF) + n > 0xFF ? 1 : 0);
+            HC = (byte)((SP & 0xF) + (n & 0xF) > 0xF ? 1 : 0);
         }
 
         private void EI()
