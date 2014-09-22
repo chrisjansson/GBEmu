@@ -45,7 +45,8 @@
                 if (Line == NumberOfLines)
                 {
                     _mode = 1;
-                    _mmu.SetByte(RegisterAddresses.IF, 1);
+                    var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x01;
+                    _mmu.SetByte(RegisterAddresses.IF, (byte) newIf);
                     _displayDataTransferService.FinishFrame();
                 }
                 else

@@ -123,7 +123,7 @@
     <Compile Include="Display\FakeDisplayDataTransferService.cs" />
     <Compile Include="Display\Mode_tests.cs" />
     <Compile Include="Display\Scanline_tests.cs" />
-    <Compile Include="Display\VBlankTests.cs" />
+    <Compile Include="Display\VBlank_interrupt_Tests.cs" />
     <Compile Include="INC_ss.cs" />
     <Compile Include="JP_cc_nn.cs" />
     <Compile Include="JP_HL.cs" />
