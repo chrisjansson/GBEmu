@@ -10,7 +10,7 @@ namespace Test.Display
         public Scanline_tests()
         {
             _fakeDisplayDataTransferService = new FakeDisplayDataTransferService();
-            _sut = new Core.Display(_fakeDisplayDataTransferService);
+            _sut = new Core.Display(new FakeMmu(), _fakeDisplayDataTransferService);
         }
 
         [Fact]

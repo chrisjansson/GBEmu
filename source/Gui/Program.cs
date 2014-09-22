@@ -32,7 +32,7 @@ namespace Gui
             _mmuWithBootRom = new MMUWithBootRom(rom, _mmu);
             _cpu = new Cpu(_mmuWithBootRom);
             _displayDataTransferService = new DisplayDataTransferService(_mmuWithBootRom);
-            _display = new Display(_displayDataTransferService);
+            _display = new Display(_mmu, _displayDataTransferService);
             _mmu.Display = _display;
             _mmu.Cpu = _cpu;
             _timer = new Timer(_mmu);

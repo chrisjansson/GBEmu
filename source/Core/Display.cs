@@ -13,9 +13,11 @@
         private int _mode = 2;
         private int _clock;
         private readonly IDisplayDataTransferService _displayDataTransferService;
+        private IMmu _mmu;
 
-        public Display(IDisplayDataTransferService displayDataTransferService)
+        public Display(IMmu mmu, IDisplayDataTransferService displayDataTransferService)
         {
+            _mmu = mmu;
             _displayDataTransferService = displayDataTransferService;
         }
 
@@ -43,6 +45,7 @@
                 if (Line == NumberOfLines)
                 {
                     _mode = 1;
+                    _mmu.SetByte(RegisterAddresses.IF, 1);
                     _displayDataTransferService.FinishFrame();
                 }
                 else
