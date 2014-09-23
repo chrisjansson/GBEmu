@@ -1,5 +1,7 @@
 ﻿using Core;
+using Ploeh.AutoFixture.Xunit;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Test.MMU
 {
@@ -77,9 +79,9 @@ namespace Test.MMU
         [Fact]
         public void FF40_is_LCDC_on_display()
         {
-            _sut.SetByte(RegisterAddresses.LCDC, 0x12);
+            _sut.SetByte(RegisterAddresses.LCDC, 0xFC);
 
-            Assert.Equal(0x12, _display.LCDC);
+            Assert.Equal(0xFC, _display.LCDC);
         }
 
         [Fact]
@@ -90,6 +92,16 @@ namespace Test.MMU
             var actual = _sut.GetByte(RegisterAddresses.LCDC);
 
             Assert.Equal(0xAB, actual);
+        }
+
+        [Fact]
+        public void First_3_bits_of_LCDC_are_read_only()
+        {
+            _display.LCDC = 0xFF;
+
+            _sut.SetByte(RegisterAddresses.LCDC, 0x00);
+
+            Assert.Equal(0x07, _display.LCDC);
         }
     }
 
