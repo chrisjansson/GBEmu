@@ -26,15 +26,20 @@
         public byte BackgroundPaletteData { get; set; }
         public byte Line { get; set; }
 
+        private byte _coincidenceInterrupt;
+
         public byte LCDC
         {
             get
             {
                 var result = 0;
                 result = result | ((LYC == Line) ? 0x4 : 0);
-                return (byte) result;
+                return (byte)result;
             }
-            set { }
+            set
+            {
+                _coincidenceInterrupt = (byte) ((value >> 6) & 1);
+            }
         }
 
         private const int HorizontalBlankingTime = 51;
@@ -52,12 +57,13 @@
             {
                 _clock = 0;
                 Line++;
+                CheckLYCountInterrupt();
 
                 if (Line == NumberOfLines)
                 {
                     _mode = 1;
                     var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x01;
-                    _mmu.SetByte(RegisterAddresses.IF, (byte) newIf);
+                    _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
                     _displayDataTransferService.FinishFrame();
                 }
                 else
@@ -68,6 +74,7 @@
             else if (Mode == 1 && _clock == VerticalBlankingTime)
             {
                 Line++;
+                CheckLYCountInterrupt();
                 _clock = 0;
 
                 if (Line == NumberOfLines + NumberOfVerticalBlankingLines)
@@ -87,6 +94,16 @@
                 _clock = 0;
                 _displayDataTransferService.TransferScanLine(Line);
             }
+        }
+
+        private void CheckLYCountInterrupt()
+        {
+            if (LYC != Line || _coincidenceInterrupt == 0)
+            {
+                return;
+            }
+            var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x02;
+            _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
         }
     }
 }
