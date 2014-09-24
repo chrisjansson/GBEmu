@@ -1,7 +1,5 @@
 ﻿using Core;
-using Ploeh.AutoFixture.Xunit;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Test.MMU
 {

@@ -10,10 +10,11 @@
     //0xFF4B - WX - Window X Position minus 7 (R/W)
     public class Display : IDisplay
     {
+        private readonly IDisplayDataTransferService _displayDataTransferService;
+        private readonly IMmu _mmu;
         private int _mode = 2;
         private int _clock;
-        private readonly IDisplayDataTransferService _displayDataTransferService;
-        private IMmu _mmu;
+        public int LYC;
 
         public Display(IMmu mmu, IDisplayDataTransferService displayDataTransferService)
         {
@@ -24,7 +25,17 @@
         public int Mode { get { return _mode; } }
         public byte BackgroundPaletteData { get; set; }
         public byte Line { get; set; }
-        public byte LCDC { get; set; }
+
+        public byte LCDC
+        {
+            get
+            {
+                var result = 0;
+                result = result | ((LYC == Line) ? 0x4 : 0);
+                return (byte) result;
+            }
+            set { }
+        }
 
         private const int HorizontalBlankingTime = 51;
         private const int VerticalBlankingTime = 114;

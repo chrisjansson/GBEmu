@@ -61,7 +61,6 @@
     <Compile Include="Display.cs" />
     <Compile Include="IDisplayDataTransferService.cs" />
     <Compile Include="IMmu.cs" />
-    <Compile Include="InterruptMasks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisterAddresses.cs" />
     <Compile Include="Timer.cs" />
