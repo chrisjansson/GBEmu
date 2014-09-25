@@ -24,7 +24,17 @@
 
         public int Mode { get { return _mode; } }
         public byte BackgroundPaletteData { get; set; }
-        public byte Line { get; set; }
+
+        private byte _line;
+        public byte Line
+        {
+            get { return _line; }
+            set
+            {
+                _line = value;
+                CheckLYCountInterrupt();
+            }
+        }
 
         private byte _coincidenceInterrupt;
 
@@ -57,7 +67,6 @@
             {
                 _clock = 0;
                 Line++;
-                CheckLYCountInterrupt();
 
                 if (Line == NumberOfLines)
                 {
@@ -74,7 +83,6 @@
             else if (Mode == 1 && _clock == VerticalBlankingTime)
             {
                 Line++;
-                CheckLYCountInterrupt();
                 _clock = 0;
 
                 if (Line == NumberOfLines + NumberOfVerticalBlankingLines)
