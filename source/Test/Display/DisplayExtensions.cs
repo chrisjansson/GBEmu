@@ -18,6 +18,14 @@
             }
         }
 
+        public static void AdvanceToScanLine(this Core.Display display, int scanLine)
+        {
+            while (display.Line != scanLine % 154)
+            {
+                display.AdvanceScanLine();
+            }
+        }
+
         public static void AdvanceFrame(this Core.Display display)
         {
             for (var i = 0; i < 154; i++)

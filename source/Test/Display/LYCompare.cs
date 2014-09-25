@@ -6,7 +6,7 @@ namespace Test.Display
     public class LYCompare : CpuTestBase
     {
         private readonly Core.Display _sut;
-        private FakeMmu _fakeMmu;
+        private readonly FakeMmu _fakeMmu;
 
         public LYCompare()
         {
@@ -18,10 +18,8 @@ namespace Test.Display
         public void Coincidence_flag_is_zero_when_LYC_and_LY_are_different()
         {
             _sut.LYC = 100;
-            for (var i = 0; i < 99; i++)
-            {
-                _sut.AdvanceScanLine();
-            }
+
+            _sut.AdvanceToScanLine(99);
 
             Assert.False(CoincidenceFlag);
         }
@@ -32,10 +30,8 @@ namespace Test.Display
             _sut.LCDC |= 0x40;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0xFD;
             _sut.LYC = 102;
-            for (var i = 0; i < 100; i++)
-            {
-                _sut.AdvanceScanLine();
-            }
+
+            _sut.AdvanceToScanLine(100);
 
             Assert.Equal(0xFD, _fakeMmu.Memory[RegisterAddresses.IF]);
         }
@@ -44,10 +40,8 @@ namespace Test.Display
         public void Coincidence_flag_is_one_when_LYC_and_LY_are_same()
         {
             _sut.LYC = 123;
-            for (var i = 0; i < 123; i++)
-            {
-                _sut.AdvanceScanLine();
-            }
+
+            _sut.AdvanceToScanLine(123);
 
             Assert.True(CoincidenceFlag);
         }
@@ -58,10 +52,8 @@ namespace Test.Display
             _sut.LCDC |= 0x40;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0x18;
             _sut.LYC = 123;
-            for (var i = 0; i < 123; i++)
-            {
-                _sut.AdvanceScanLine();
-            }
+
+            _sut.AdvanceToScanLine(123);
 
             Assert.Equal(0x1A, _fakeMmu.Memory[RegisterAddresses.IF]);
         }
@@ -72,10 +64,8 @@ namespace Test.Display
             _sut.LCDC |= 0x40;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0x18;
             _sut.LYC = 150;
-            for (var i = 0; i < 152; i++)
-            {
-                _sut.AdvanceScanLine();
-            }
+
+            _sut.AdvanceToScanLine(150);
 
             Assert.Equal(0x1B, _fakeMmu.Memory[RegisterAddresses.IF]);
         }
@@ -86,10 +76,8 @@ namespace Test.Display
             _sut.LCDC = 0;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0x18;
             _sut.LYC = 150;
-            for (var i = 0; i < 152; i++)
-            {
-                _sut.AdvanceScanLine();
-            }
+
+            _sut.AdvanceToScanLine(150);
 
             Assert.Equal(0x19, _fakeMmu.Memory[RegisterAddresses.IF]);
         }
