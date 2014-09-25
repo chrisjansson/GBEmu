@@ -22,7 +22,7 @@
             _displayDataTransferService = displayDataTransferService;
         }
 
-        public int Mode { get { return _mode; } }
+        //public int Mode { get { return _mode; } }
         public byte BackgroundPaletteData { get; set; }
 
         private byte _line;
@@ -44,6 +44,7 @@
             {
                 var result = 0;
                 result = result | ((LYC == Line) ? 0x4 : 0);
+                result = result | _mode;
                 return (byte)result;
             }
             set
@@ -63,7 +64,7 @@
         {
             _clock++;
 
-            if (Mode == 0 && _clock == HorizontalBlankingTime)
+            if (_mode == 0 && _clock == HorizontalBlankingTime)
             {
                 _clock = 0;
                 Line++;
@@ -80,7 +81,7 @@
                     _mode = 2;
                 }
             }
-            else if (Mode == 1 && _clock == VerticalBlankingTime)
+            else if (_mode == 1 && _clock == VerticalBlankingTime)
             {
                 Line++;
                 _clock = 0;
@@ -91,12 +92,12 @@
                     _mode = 2;
                 }
             }
-            else if (Mode == 2 && _clock == OAMScanningTime)
+            else if (_mode == 2 && _clock == OAMScanningTime)
             {
                 _mode = 3;
                 _clock = 0;
             }
-            else if (Mode == 3 && _clock == TransferTime)
+            else if (_mode == 3 && _clock == TransferTime)
             {
                 _mode = 0;
                 _clock = 0;

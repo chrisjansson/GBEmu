@@ -1,4 +1,4 @@
-﻿using Xunit;    
+﻿using Xunit;
 
 namespace Test.Display
 {
@@ -14,9 +14,8 @@ namespace Test.Display
         [Fact]
         public void Starts_in_mode_2()
         {
-            Assert.Equal(2, _sut.Mode);
+            Assert.Equal(2, DisplayMode);
         }
-
 
         [Fact]
         public void Is_in_mode_2_for_20_cycles()
@@ -25,7 +24,7 @@ namespace Test.Display
             {
                 _sut.Tick();
 
-                Assert.Equal(2, _sut.Mode);
+                Assert.Equal(2, DisplayMode);
             }
         }
 
@@ -34,7 +33,7 @@ namespace Test.Display
         {
             Tick(20);
 
-            Assert.Equal(3, _sut.Mode);
+            Assert.Equal(3, DisplayMode);
         }
 
         [Fact]
@@ -46,7 +45,7 @@ namespace Test.Display
             {
                 _sut.Tick();
 
-                Assert.Equal(3, _sut.Mode);
+                Assert.Equal(3, DisplayMode);
             }
         }
 
@@ -55,7 +54,7 @@ namespace Test.Display
         {
             Tick(63);
 
-            Assert.Equal(0, _sut.Mode);
+            Assert.Equal(0, DisplayMode);
         }
 
         [Fact]
@@ -66,8 +65,8 @@ namespace Test.Display
             for (var i = 0; i < 50; i++)
             {
                 _sut.Tick();
-           
-                Assert.Equal(0, _sut.Mode);
+
+                Assert.Equal(0, DisplayMode);
             }
         }
 
@@ -76,7 +75,7 @@ namespace Test.Display
         {
             Tick(114);
 
-            Assert.Equal(2, _sut.Mode);
+            Assert.Equal(2, DisplayMode);
         }
 
         [Fact]
@@ -84,7 +83,7 @@ namespace Test.Display
         {
             Tick(134);
 
-            Assert.Equal(3, _sut.Mode);
+            Assert.Equal(3, DisplayMode);
         }
 
         [Fact]
@@ -92,10 +91,10 @@ namespace Test.Display
         {
             for (var i = 0; i < 143; i++)
             {
-                _sut.AdvanceScanLine();    
+                _sut.AdvanceScanLine();
             }
-            
-            Assert.Equal(2, _sut.Mode);
+
+            Assert.Equal(2, DisplayMode);
         }
 
         [Fact]
@@ -106,7 +105,7 @@ namespace Test.Display
                 _sut.AdvanceScanLine();
             }
 
-            Assert.Equal(1, _sut.Mode);
+            Assert.Equal(1, DisplayMode);
         }
 
         [Fact]
@@ -119,7 +118,7 @@ namespace Test.Display
 
             for (var i = 0; i < 1139; i++)
             {
-                Assert.Equal(1, _sut.Mode);
+                Assert.Equal(1, DisplayMode);
             }
         }
 
@@ -131,7 +130,15 @@ namespace Test.Display
                 _sut.AdvanceScanLine();
             }
 
-            Assert.Equal(2, _sut.Mode);
+            Assert.Equal(2, DisplayMode);
+        }
+
+        private byte DisplayMode
+        {
+            get
+            {
+                return (byte)(_sut.LCDC & 0x03);
+            }
         }
 
         private void Tick(int clocks)
