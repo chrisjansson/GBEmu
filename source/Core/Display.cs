@@ -24,7 +24,6 @@ namespace Core
             _displayDataTransferService = displayDataTransferService;
         }
 
-        //public int Mode { get { return _mode; } }
         public byte BackgroundPaletteData { get; set; }
 
         private byte _line;
