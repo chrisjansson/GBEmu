@@ -59,7 +59,7 @@
             switch (address)
             {
                 case RegisterAddresses.LCDC:
-                    Display.LCDC = (byte) (value & 0xFC | Display.LCDC & 0x07);
+                    Display.LCDC = value;
                     break;
                 case RegisterAddresses.BGP:
                     Display.BackgroundPaletteData = value;

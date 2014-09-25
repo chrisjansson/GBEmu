@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System.Security.Cryptography;
+
+namespace Core
 {
     //0xFF40 - LCDC - LCD Control
     //0xFF41 - STAT - LCDC Status
@@ -38,18 +40,21 @@
 
         private byte _coincidenceInterrupt;
 
+        private int _lcdcRest;
         public byte LCDC
         {
             get
             {
-                var result = 0;
+                var result = _lcdcRest;
                 result = result | ((LYC == Line) ? 0x4 : 0);
                 result = result | _mode;
+                result = result | (_coincidenceInterrupt << 6);
                 return (byte)result;
             }
             set
             {
                 _coincidenceInterrupt = (byte) ((value >> 6) & 1);
+                _lcdcRest = value & 0xB8;
             }
         }
 

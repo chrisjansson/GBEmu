@@ -91,16 +91,6 @@ namespace Test.MMU
 
             Assert.Equal(0xAB, actual);
         }
-
-        [Fact]
-        public void First_3_bits_of_LCDC_are_read_only()
-        {
-            _display.LCDC = 0xFF;
-
-            _sut.SetByte(RegisterAddresses.LCDC, 0x00);
-
-            Assert.Equal(0x07, _display.LCDC);
-        }
     }
 
     public class FakeDisplay : IDisplay
