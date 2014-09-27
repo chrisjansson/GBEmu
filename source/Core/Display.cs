@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace Core
+﻿namespace Core
 {
     //0xFF40 - LCDC - LCD Control
     //0xFF41 - STAT - LCDC Status
@@ -38,6 +36,7 @@ namespace Core
         }
 
         private byte _coincidenceInterrupt;
+        private byte _hblankInterrupt;
 
         private int _lcdcRest;
         public byte LCDC
@@ -48,12 +47,14 @@ namespace Core
                 result = result | ((LYC == Line) ? 0x4 : 0);
                 result = result | _mode;
                 result = result | (_coincidenceInterrupt << 6);
+                result = result | (_hblankInterrupt << 3);
                 return (byte)result;
             }
             set
             {
-                _coincidenceInterrupt = (byte) ((value >> 6) & 1);
-                _lcdcRest = value & 0xB8;
+                _coincidenceInterrupt = (byte)((value >> 6) & 1);
+                _hblankInterrupt = (byte) ((value >> 3) & 1);
+                _lcdcRest = value & 0xB0;
             }
         }
 
@@ -106,6 +107,12 @@ namespace Core
                 _mode = 0;
                 _clock = 0;
                 _displayDataTransferService.TransferScanLine(Line);
+                if (_hblankInterrupt == 0)
+                {
+                    return;
+                }
+                var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x02;
+                _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
             }
         }
 
