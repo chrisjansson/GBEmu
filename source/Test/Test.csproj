@@ -121,6 +121,7 @@
     <Compile Include="Display\DataTransfer_tests.cs" />
     <Compile Include="Display\DisplayExtensions.cs" />
     <Compile Include="Display\FakeDisplayDataTransferService.cs" />
+    <Compile Include="Display\HBlank_interrupt_tests.cs" />
     <Compile Include="Display\LCDC_tests.cs" />
     <Compile Include="Display\LYCompareTests.cs" />
     <Compile Include="Display\Mode_tests.cs" />
