@@ -37,6 +37,7 @@
 
         private byte _coincidenceInterrupt;
         private byte _hblankInterrupt;
+        private byte _vblankInterrupt;
 
         private int _lcdcRest;
         public byte LCDC
@@ -48,12 +49,14 @@
                 result = result | _mode;
                 result = result | (_coincidenceInterrupt << 6);
                 result = result | (_hblankInterrupt << 3);
+                result = result | (_vblankInterrupt << 4);
                 return (byte)result;
             }
             set
             {
                 _coincidenceInterrupt = (byte)((value >> 6) & 1);
                 _hblankInterrupt = (byte) ((value >> 3) & 1);
+                _vblankInterrupt = (byte) ((value >> 4) & 1);
                 _lcdcRest = value & 0xB0;
             }
         }
@@ -77,9 +80,7 @@
                 if (Line == NumberOfLines)
                 {
                     _mode = 1;
-                    var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x01;
-                    _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
-                    _displayDataTransferService.FinishFrame();
+                    VBlank();
                 }
                 else
                 {
@@ -106,14 +107,30 @@
             {
                 _mode = 0;
                 _clock = 0;
-                _displayDataTransferService.TransferScanLine(Line);
-                if (_hblankInterrupt == 0)
-                {
-                    return;
-                }
-                var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x02;
-                _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
+                HBlank();
             }
+        }
+
+        private void VBlank()
+        {
+            var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x01;
+            if (_vblankInterrupt == 1)
+            {
+                newIf = newIf | 0x02;
+            }
+            _mmu.SetByte(RegisterAddresses.IF, (byte) newIf);
+            _displayDataTransferService.FinishFrame();
+        }
+
+        private void HBlank()
+        {
+            _displayDataTransferService.TransferScanLine(Line);
+            if (_hblankInterrupt == 0)
+            {
+                return;
+            }
+            var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x02;
+            _mmu.SetByte(RegisterAddresses.IF, (byte) newIf);
         }
 
         private void CheckLYCountInterrupt()
