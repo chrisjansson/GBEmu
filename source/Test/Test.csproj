@@ -125,8 +125,10 @@
     <Compile Include="Display\LCDC_tests.cs" />
     <Compile Include="Display\LYCompareTests.cs" />
     <Compile Include="Display\Mode_tests.cs" />
+    <Compile Include="Display\OAM_interrupt_tests.cs" />
     <Compile Include="Display\Scanline_tests.cs" />
     <Compile Include="Display\VBlank_interrupt_Tests.cs" />
+    <Compile Include="Display\VBlank_lcdstat_interrupt_tests.cs" />
     <Compile Include="INC_ss.cs" />
     <Compile Include="JP_cc_nn.cs" />
     <Compile Include="JP_HL.cs" />

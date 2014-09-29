@@ -38,26 +38,29 @@
         private byte _coincidenceInterrupt;
         private byte _hblankInterrupt;
         private byte _vblankInterrupt;
-
+        private byte _oamInterrupt;
         private int _lcdcRest;
+
         public byte LCDC
         {
             get
             {
                 var result = _lcdcRest;
-                result = result | ((LYC == Line) ? 0x4 : 0);
                 result = result | _mode;
+                result = result | ((LYC == Line) ? 0x4 : 0);
                 result = result | (_coincidenceInterrupt << 6);
                 result = result | (_hblankInterrupt << 3);
                 result = result | (_vblankInterrupt << 4);
+                result = result | (_oamInterrupt << 5);
                 return (byte)result;
             }
             set
             {
                 _coincidenceInterrupt = (byte)((value >> 6) & 1);
-                _hblankInterrupt = (byte) ((value >> 3) & 1);
-                _vblankInterrupt = (byte) ((value >> 4) & 1);
-                _lcdcRest = value & 0xB0;
+                _hblankInterrupt = (byte)((value >> 3) & 1);
+                _vblankInterrupt = (byte)((value >> 4) & 1);
+                _oamInterrupt = (byte)((value >> 5) & 1);
+                _lcdcRest = value & 0x80;
             }
         }
 
@@ -85,6 +88,7 @@
                 else
                 {
                     _mode = 2;
+                    OAM();
                 }
             }
             else if (_mode == 1 && _clock == VerticalBlankingTime)
@@ -118,8 +122,18 @@
             {
                 newIf = newIf | 0x02;
             }
-            _mmu.SetByte(RegisterAddresses.IF, (byte) newIf);
+            _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
             _displayDataTransferService.FinishFrame();
+        }
+
+        private void OAM()
+        {
+            if (_oamInterrupt == 0)
+            {
+                return;
+            }
+            var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x02;
+            _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
         }
 
         private void HBlank()
@@ -130,7 +144,7 @@
                 return;
             }
             var newIf = _mmu.GetByte(RegisterAddresses.IF) | 0x02;
-            _mmu.SetByte(RegisterAddresses.IF, (byte) newIf);
+            _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
         }
 
         private void CheckLYCountInterrupt()
