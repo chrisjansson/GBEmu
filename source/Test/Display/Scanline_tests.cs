@@ -87,7 +87,7 @@ namespace Test.Display
             {
                 _sut.Tick();
             }
-            Assert.Equal(3, _sut.LCDC & 0x3);
+            Assert.Equal(3, _sut.STAT & 0x3);
 
             _sut.Tick();
 

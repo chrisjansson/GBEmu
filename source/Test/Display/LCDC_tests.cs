@@ -19,9 +19,9 @@ namespace Test.Display
             _sut.Tick(43);
             _sut.LYC = 1; //Set first three LCDC status flags to zero
 
-            _sut.LCDC = 0xFF;
+            _sut.STAT = 0xFF;
 
-            Assert.Equal(0xF8, _sut.LCDC);
+            Assert.Equal(0xF8, _sut.STAT);
         }
     }
 }

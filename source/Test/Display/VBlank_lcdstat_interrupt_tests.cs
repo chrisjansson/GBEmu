@@ -17,7 +17,7 @@ namespace Test.Display
         [Fact]
         public void Does_not_raise_interrupt_before_v_blank()
         {
-            _sut.LCDC = 0x10;
+            _sut.STAT = 0x10;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0xFD;
 
             _sut.AdvanceToScanLine(143);
@@ -31,7 +31,7 @@ namespace Test.Display
         [Fact]
         public void Does_not_raise_interrupt_when_v_blank_interrupt_is_disabled()
         {
-            _sut.LCDC = 0;
+            _sut.STAT = 0;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0xFD;
 
             _sut.AdvanceToScanLine(143);
@@ -45,7 +45,7 @@ namespace Test.Display
         [Fact]
         public void Raises_interrupt_when_entering_v_blank()
         {
-            _sut.LCDC = 0x10;
+            _sut.STAT = 0x10;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0x18;
 
             _sut.AdvanceToScanLine(143);

@@ -27,7 +27,7 @@ namespace Test.Display
         [Fact]
         public void Has_not_raised_LYC_interrupt_before_LY_and_LYC_are_same()
         {
-            _sut.LCDC |= 0x40;
+            _sut.STAT |= 0x40;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0xFD;
             _sut.LYC = 102;
 
@@ -49,7 +49,7 @@ namespace Test.Display
         [Fact]
         public void Raises_coincidence_interrupt_when_LYC_and_LY_are_same()
         {
-            _sut.LCDC |= 0x40;
+            _sut.STAT |= 0x40;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0x18;
             _sut.LYC = 123;
 
@@ -61,7 +61,7 @@ namespace Test.Display
         [Fact]
         public void Raises_coincidence_interrupt_for_vertical_blanking_lines()
         {
-            _sut.LCDC |= 0x40;
+            _sut.STAT |= 0x40;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0x18;
             _sut.LYC = 150;
 
@@ -73,7 +73,7 @@ namespace Test.Display
         [Fact]
         public void Does_not_raise_interrupt_when_coincidence_interrupt_is_disabled()
         {
-            _sut.LCDC = 0;
+            _sut.STAT = 0;
             _fakeMmu.Memory[RegisterAddresses.IF] = 0x18;
             _sut.LYC = 150;
 
@@ -84,7 +84,7 @@ namespace Test.Display
 
         private bool CoincidenceFlag
         {
-            get { return ((_sut.LCDC >> 2) & 0x1) == 0x1; }
+            get { return ((_sut.STAT >> 2) & 0x1) == 0x1; }
         }
     }
 }

@@ -35,13 +35,15 @@
             }
         }
 
+        public byte LCDC { get; set; }
+
         private byte _coincidenceInterrupt;
         private byte _hblankInterrupt;
         private byte _vblankInterrupt;
         private byte _oamInterrupt;
         private int _lcdcRest;
 
-        public byte LCDC
+        public byte STAT
         {
             get
             {

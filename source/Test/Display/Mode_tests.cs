@@ -137,7 +137,7 @@ namespace Test.Display
         {
             get
             {
-                return (byte)(_sut.LCDC & 0x03);
+                return (byte)(_sut.STAT & 0x03);
             }
         }
 
