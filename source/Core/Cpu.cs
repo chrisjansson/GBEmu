@@ -269,6 +269,7 @@ namespace Core
             { 0xF2, new InstructionMetaData(1, 2, "LD A, (C)")},
             { 0xF3, new InstructionMetaData(1, 1, "DI")},
             { 0xF5, new InstructionMetaData(1, 4, "PUSH AF")},
+            { 0xF6, new InstructionMetaData(2, 2, "OR n")},
             { 0xF7, new InstructionMetaData(0, 4, "RST 30H")},
             { 0xF8, new InstructionMetaData(2, 3, "LD HL, SP+e")},
             { 0xF9, new InstructionMetaData(1, 2, "LD SP, HL")},
@@ -1115,6 +1116,9 @@ namespace Core
                     _mmu.SetByte((ushort)(SP - 2), F);
                     SP -= 2;
                     break;
+                case 0xF6:
+                    OR_n();
+                    break;
                 case 0xF7:
                     RST(0x30);
                     break;
@@ -1147,6 +1151,11 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void OR_n()
+        {
+            OR_A(_mmu.GetByte((ushort) (ProgramCounter + 1)));
         }
 
         private void INC_HLm()
