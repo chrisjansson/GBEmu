@@ -30,11 +30,24 @@ namespace Test
         [Theory, AutoData]
         public void ORs_contents_of_A_with_n(byte a, byte n)
         {
+            Flags(x => x.Zero());
             Cpu.A = a;
 
             Execute(OpCode, n);
 
             Assert.Equal(a | n, Cpu.A);
+            AssertFlags(x => x.ResetZero());
+        }
+
+        [Fact]
+        public void Sets_zero_if_result_is_zero()
+        {
+            Flags(x => x.ResetZero());
+            Cpu.A = 0;
+
+            Execute(OpCode, 0);
+
+            AssertFlags(x => x.SetZero());
         }
     }
 }
