@@ -152,7 +152,7 @@
     <Compile Include="AcceptanceTest.cs" />
     <Compile Include="LD_A_HLI.cs" />
     <Compile Include="LD_dd_nn.cs" />
-    <Compile Include="LD_DE_A.cs" />
+    <Compile Include="LD_qqm_A.cs" />
     <Compile Include="LD_HL_r.cs" />
     <Compile Include="LD_NN_SP.cs" />
     <Compile Include="LD_n_A.cs" />

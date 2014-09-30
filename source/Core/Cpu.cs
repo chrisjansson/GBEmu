@@ -48,6 +48,7 @@ namespace Core
         {
             { 0x00, new InstructionMetaData(1, 1, "NOP")},
             { 0x01, new InstructionMetaData(3, 3, "LD BC, nn")},
+            { 0x02, new InstructionMetaData(1, 2, "LD (BC), A")},
             { 0x03, new InstructionMetaData(1, 2, "INC BC")},
             { 0x04, new InstructionMetaData(1, 1, "INC B")},
             { 0x05, new InstructionMetaData(1, 1, "DEC B")},
@@ -377,6 +378,9 @@ namespace Core
                 case 0x01:
                     C = _mmu.GetByte((ushort)(ProgramCounter + 1));
                     B = _mmu.GetByte((ushort)(ProgramCounter + 2));
+                    break;
+                case 0x02:
+                    _mmu.SetByte((ushort) (B << 8 | C), A);
                     break;
                 case 0x03:
                     var newValue = (B << 8 | C) + 1;
