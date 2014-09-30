@@ -91,10 +91,29 @@ namespace Test.MMU
 
             Assert.Equal(0xAB, actual);
         }
+
+        [Fact]
+        public void FF41_is_LCDStat_on_display()
+        {
+            _sut.SetByte(RegisterAddresses.LCDSTAT, 0xF8);
+
+            Assert.Equal(0xF8, _display.STAT);
+        }
+
+        [Fact]
+        public void FF41_depdends_on_display_STAT()
+        {
+            _display.STAT = 0xAB;
+
+            var actual = _sut.GetByte(RegisterAddresses.LCDSTAT);
+
+            Assert.Equal(0xAB, actual);
+        }
     }
 
     public class FakeDisplay : IDisplay
     {
+        public byte STAT { get; set; }
         public byte BackgroundPaletteData { get; set; }
         public byte Line { get; set; }
         public byte LCDC { get; set; }

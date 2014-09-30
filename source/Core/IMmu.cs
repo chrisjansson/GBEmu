@@ -18,6 +18,7 @@
         byte BackgroundPaletteData { get; set; }
         byte Line { get; }
         byte LCDC { get; set; }
+        byte STAT { get; set; }
     }
 
     public class MMU : IMmu
@@ -35,6 +36,8 @@
             {
                 case RegisterAddresses.LCDC:
                     return Display.LCDC;
+                case RegisterAddresses.LCDSTAT:
+                    return Display.STAT;
                 case RegisterAddresses.BGP:
                     return Display.BackgroundPaletteData;
                 case RegisterAddresses.LY:
@@ -60,6 +63,9 @@
             {
                 case RegisterAddresses.LCDC:
                     Display.LCDC = value;
+                    break;
+                case RegisterAddresses.LCDSTAT:
+                    Display.STAT = value;
                     break;
                 case RegisterAddresses.BGP:
                     Display.BackgroundPaletteData = value;
