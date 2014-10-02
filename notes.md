@@ -10,3 +10,5 @@ LCD OAM transfer is not implemented
 transfer is from $0000-DFFF not $8000-$DFFF as programming manual says
 
 Unimplemented differences between GB and CGB:
+
+IME shoudl be disabled when entering interrupt vector...
