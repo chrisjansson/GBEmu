@@ -7,5 +7,6 @@ Check that all display registers are implemented properly:
 LYC should be reset when written to, even though its read only..
 
 LCD OAM transfer is not implemented
+transfer is from $0000-DFFF not $8000-$DFFF as programming manual says
 
 Unimplemented differences between GB and CGB:
