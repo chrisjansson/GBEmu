@@ -161,7 +161,9 @@
     <Compile Include="LD_r_r.cs" />
     <Compile Include="LD_SP_HL.cs" />
     <Compile Include="MMU\DisplayRegisters.cs" />
+    <Compile Include="MMU\FakeJoypad.cs" />
     <Compile Include="MMU\InterruptRegisters.cs" />
+    <Compile Include="MMU\JoypadRegister.cs" />
     <Compile Include="MMU\TimerRegisters.cs" />
     <Compile Include="Nop.cs" />
     <Compile Include="NullDisplay.cs" />

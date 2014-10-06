@@ -60,6 +60,7 @@
     <Compile Include="Cpu.cs" />
     <Compile Include="Display.cs" />
     <Compile Include="IDisplayDataTransferService.cs" />
+    <Compile Include="IJoypad.cs" />
     <Compile Include="IMmu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisterAddresses.cs" />

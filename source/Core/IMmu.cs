@@ -34,6 +34,8 @@
         {
             switch (address)
             {
+                case RegisterAddresses.P1:
+                    return Joypad.P1;
                 case RegisterAddresses.LCDC:
                     return Display.LCDC;
                 case RegisterAddresses.LCDSTAT:
@@ -61,6 +63,9 @@
         {
             switch (address)
             {
+                case RegisterAddresses.P1:
+                    Joypad.P1 = value;
+                    break;
                 case RegisterAddresses.LCDC:
                     Display.LCDC = value;
                     break;
@@ -96,5 +101,6 @@
         public Timer Timer;
         public IDisplay Display;
         public Cpu Cpu;
+        public IJoypad Joypad;
     }
 }
