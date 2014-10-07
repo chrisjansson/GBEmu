@@ -1,4 +1,5 @@
 ﻿using Core;
+using Ploeh.AutoFixture.Xunit;
 using Xunit;
 
 namespace Test.JoypadTests

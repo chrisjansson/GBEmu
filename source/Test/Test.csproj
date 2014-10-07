@@ -130,6 +130,7 @@
     <Compile Include="Display\VBlank_interrupt_Tests.cs" />
     <Compile Include="Display\VBlank_lcdstat_interrupt_tests.cs" />
     <Compile Include="INC_ss.cs" />
+    <Compile Include="JoypadTests\JoypadDirectionKeyTests.cs" />
     <Compile Include="JoypadTests\LowerHalfOfP1IsReadOnly.cs" />
     <Compile Include="JP_cc_nn.cs" />
     <Compile Include="JP_HL.cs" />
