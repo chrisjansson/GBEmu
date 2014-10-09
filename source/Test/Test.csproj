@@ -132,6 +132,7 @@
     <Compile Include="INC_ss.cs" />
     <Compile Include="JoypadTests\JoypadButtonKeysTests.cs" />
     <Compile Include="JoypadTests\JoypadDirectionKeyTests.cs" />
+    <Compile Include="JoypadTests\JoypadKeysTests.cs" />
     <Compile Include="JoypadTests\LowerHalfOfP1IsReadOnly.cs" />
     <Compile Include="JP_cc_nn.cs" />
     <Compile Include="JP_HL.cs" />

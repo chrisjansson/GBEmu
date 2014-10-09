@@ -15,8 +15,8 @@ namespace Test.JoypadTests
         }
 
         [Theory]
-        [InlineData(false, (byte)0x1F)]
-        [InlineData(true, (byte)0x1E)]
+        [InlineData(false, (byte)0x2F)]
+        [InlineData(true, (byte)0x2E)]
         public void Bit_0_is_right(bool isPressed, byte expectedP1)
         {
             _sut.Right = isPressed;
@@ -25,8 +25,8 @@ namespace Test.JoypadTests
         }
 
         [Theory]
-        [InlineData(false, (byte)0x1F)]
-        [InlineData(true, (byte)0x1D)]
+        [InlineData(false, (byte)0x2F)]
+        [InlineData(true, (byte)0x2D)]
         public void Bit_1_is_left(bool isPressed, byte expectedP1)
         {
             _sut.Left = isPressed;
@@ -35,8 +35,8 @@ namespace Test.JoypadTests
         }
 
         [Theory]
-        [InlineData(false, (byte)0x1F)]
-        [InlineData(true, (byte)0x1B)]
+        [InlineData(false, (byte)0x2F)]
+        [InlineData(true, (byte)0x2B)]
         public void Bit_2_is_up(bool isPressed, byte expectedP1)
         {
             _sut.Up = isPressed;
@@ -45,8 +45,8 @@ namespace Test.JoypadTests
         }
 
         [Theory]
-        [InlineData(false, (byte)0x1F)]
-        [InlineData(true, (byte)0x17)]
+        [InlineData(false, (byte)0x2F)]
+        [InlineData(true, (byte)0x27)]
         public void Bit_3_is_up(bool isPressed, byte expectedP1)
         {
             _sut.Down = isPressed;
@@ -60,7 +60,7 @@ namespace Test.JoypadTests
             _sut.Left = true;
             _sut.Up = true;
 
-            Assert.Equal(0x19, _sut.P1);
+            Assert.Equal(0x29, _sut.P1);
         }
     }
 }
