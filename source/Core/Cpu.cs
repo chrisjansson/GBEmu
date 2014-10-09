@@ -338,6 +338,14 @@ namespace Core
                     return;
                 }
 
+                const int lcdStat = 0x02;
+                if ((interrupted & lcdStat) == lcdStat)
+                {
+                    ProgramCounter = 0x48;
+                    IF = (byte) (IF & ~lcdStat);
+                    return;
+                }
+
                 const int timer = 0x04;
                 if ((interrupted & timer) == timer)
                 {
@@ -346,11 +354,11 @@ namespace Core
                     return;
                 }
 
-                const int lcdStat = 0x02;
-                if ((interrupted & lcdStat) == lcdStat)
+                const int serial = 0x08;
+                if ((interrupted & serial) == serial)
                 {
-                    ProgramCounter = 0x48;
-                    IF = (byte) (IF & ~lcdStat);
+                    ProgramCounter = 0x58;
+                    IF = (byte) (IF & ~serial);
                     return;
                 }
 
@@ -362,13 +370,6 @@ namespace Core
                     return;
                 }
 
-                const int serial = 0x08;
-                if ((interrupted & serial) == serial)
-                {
-                    ProgramCounter = 0x58;
-                    IF = (byte) (IF & ~serial);
-                    return;
-                }
             }
 
             switch (opcode)
