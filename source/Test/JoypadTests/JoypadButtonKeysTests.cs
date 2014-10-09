@@ -11,7 +11,7 @@ namespace Test.JoypadTests
         public JoypadButtonKeysTests()
         {
             _sut = new Joypad();
-            _sut.P1 = 0x20; //Select button keys
+            _sut.P1 = 0x10; //Select button keys
         }
 
         [Theory]

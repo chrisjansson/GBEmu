@@ -11,7 +11,7 @@ namespace Test.JoypadTests
         public JoypadDirectionKeyTests()
         {
             _sut = new Joypad();
-            _sut.P1 = 0x10; //Select direction keys
+            _sut.P1 = 0x20; //Select direction keys
         }
 
         [Theory]
