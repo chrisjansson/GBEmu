@@ -325,6 +325,7 @@ namespace Core
 
             if (IME && interrupted > 0)
             {
+                IME = false;
                 //Push program counter to stack
                 _mmu.SetByte((ushort)(SP - 1), (byte)(ProgramCounter >> 8));
                 _mmu.SetByte((ushort)(SP - 2), (byte)ProgramCounter);

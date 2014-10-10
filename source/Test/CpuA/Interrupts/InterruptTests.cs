@@ -25,6 +25,17 @@ namespace Test.CpuA.Interrupts
             }
 
             [Theory, PropertyData("Interrupts")]
+            public void Restes_master_interrupt_enable(Interrupt interrupt)
+            {
+                Enable(interrupt);
+                Request(interrupt);
+
+                Cpu.Execute(0x00);
+
+               Assert.False(Cpu.IME);
+            }
+
+            [Theory, PropertyData("Interrupts")]
             public void Pushes_current_program_counter_onto_the_stack(Interrupt interrupt)
             {
                 Enable(interrupt);
