@@ -2,7 +2,7 @@
 using Xunit;
 using Xunit.Extensions;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
     public class DEC_ss : CpuTestBase
     {

@@ -1,11 +1,10 @@
 ﻿using Xunit;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
-    public class RLCA : CpuTestBase
+    public class RRCA : CpuTestBase
     {
-        private const byte OpCode = 0x07;
-
+        private const byte OpCode = 0x0F;
         [Fact]
         public void Advances_counters()
         {
@@ -16,36 +15,36 @@ namespace Test.CpuA
         }
 
         [Fact]
-        public void Resets_HNZ()
+        public void Resets_ZHN()
         {
-            Flags(x => x.Subtract().Zero().HalfCarry());
+            Flags(x => x.Zero().Subtract().HalfCarry());
 
             Execute(OpCode);
 
-            AssertFlags(x => x.ResetSubtract().ResetZero().ResetHalfCarry());
+            AssertFlags(x => x.ResetZero().ResetHalfCarry().ResetSubtract());
         }
 
         [Fact]
-        public void Rotates_contents_of_A_left()
+        public void Rotates_A_to_the_right()
         {
             Flags(x => x.ResetCarry());
-            Cpu.A = 0x81;
+            Cpu.A = 0x11;
 
             Execute(OpCode);
 
-            Assert.Equal(0x03, Cpu.A);
+            Assert.Equal(0x88, Cpu.A);
             AssertFlags(x => x.SetCarry());
         }
 
         [Fact]
-        public void Rotates_contents_of_A_left_does_not_set_carry()
+        public void Rotates_A_to_the_right_resetting_carry()
         {
             Flags(x => x.Carry());
-            Cpu.A = 0x42;
+            Cpu.A = 0x12;
 
             Execute(OpCode);
 
-            Assert.Equal(0x84, Cpu.A);
+            Assert.Equal(0x9, Cpu.A);
             AssertFlags(x => x.ResetCarry());
         }
     }

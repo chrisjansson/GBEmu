@@ -1,7 +1,7 @@
 ﻿using Xunit;
 using Xunit.Extensions;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
     public abstract class RES_x_R : CBRegisterTestBase
     {

@@ -2,7 +2,7 @@
 using Xunit;
 using Xunit.Extensions;
 
-namespace Test.CpuA.Interrupts
+namespace Test.CpuTests.Interrupts
 {
     public class InterruptTests
     {

@@ -27,6 +27,7 @@ namespace Test
             Timer = new Timer(Mmu);
             mmu.Cpu = Sut;
             mmu.Timer = Timer;
+            mmu.Joypad = new Joypad();
         }
 
         private void LoadTest(string rom)

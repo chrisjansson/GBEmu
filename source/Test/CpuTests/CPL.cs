@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
     public class CPL : CpuTestBase
     {

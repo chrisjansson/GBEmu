@@ -1,7 +1,7 @@
 ﻿using Xunit;
 using Xunit.Extensions;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
     public class SLA_r : CBRegisterTestBase
     {

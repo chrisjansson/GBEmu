@@ -2,7 +2,7 @@
 using Xunit;
 using Xunit.Extensions;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
     public class LD_HL_n : CpuTestBase
     {

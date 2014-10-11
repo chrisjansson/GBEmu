@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Test.CpuA.Interrupts
+namespace Test.CpuTests.Interrupts
 {
     public class InterruptTestBase : CpuTestBase
     {

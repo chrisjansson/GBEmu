@@ -1,7 +1,7 @@
 ﻿using Core;
 using Xunit;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
     public class Flags
     {

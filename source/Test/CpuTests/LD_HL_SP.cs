@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
     public class LD_HL_SP : CpuTestBase
     {

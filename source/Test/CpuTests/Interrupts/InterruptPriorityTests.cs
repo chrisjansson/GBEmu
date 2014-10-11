@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Test.CpuA.Interrupts
+namespace Test.CpuTests.Interrupts
 {
     public class InterruptPriorityTests : CpuTestBase
     {

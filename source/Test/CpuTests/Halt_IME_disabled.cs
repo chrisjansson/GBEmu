@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 
-namespace Test.CpuA
+namespace Test.CpuTests
 {
     public class Halt_IME_disabled : CpuTestBase
     {
