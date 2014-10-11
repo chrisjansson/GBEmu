@@ -1,6 +1,6 @@
 using Core;
 
-namespace Test.TimerA
+namespace Test.TimerTests
 {
     public static class TimerExtensions
     {

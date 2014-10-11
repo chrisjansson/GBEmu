@@ -1,7 +1,7 @@
 using Core;
 using Xunit;
 
-namespace Test.TimerA
+namespace Test.TimerTests
 {
     public abstract class TimerTestBase
     {

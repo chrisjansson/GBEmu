@@ -1,4 +1,4 @@
-﻿namespace Test.TimerA
+﻿namespace Test.TimerTests
 {
     public class Timer_4096Tests : TimerTestBase
     {
