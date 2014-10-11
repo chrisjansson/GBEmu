@@ -101,6 +101,7 @@ namespace Core
             { 0x37, new InstructionMetaData(1, 1, "SCF")},
             { 0x38, new InstructionMetaData(0, 0, "JR, C, $+e")},
             { 0x39, new InstructionMetaData(1, 2, "ADD HL, SP")},
+            { 0x3A, new InstructionMetaData(1, 2, "LD A, (HL-)")},
             { 0x3B, new InstructionMetaData(1, 2, "DEC SP")},
             { 0x3C, new InstructionMetaData(1, 1, "INC A")},
             { 0x3D, new InstructionMetaData(1, 1, "DEC A")},
@@ -569,6 +570,9 @@ namespace Core
                     break;
                 case 0x39:
                     ADD_HL_ss(SP);
+                    break;
+                case 0x3A:
+                    LD_A_HLD();
                     break;
                 case 0x3B:
                     DEC_SP();
@@ -1161,6 +1165,14 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void LD_A_HLD()
+        {
+            A = _mmu.GetByte(HL);
+            var newValue = (ushort)(HL - 1);
+            H = (byte) (newValue >> 8);
+            L = (byte) (newValue);
         }
 
         private void LD_A_BCm()

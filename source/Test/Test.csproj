@@ -100,6 +100,7 @@
     <Compile Include="CpuTests\LD_A_C.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CpuTests\LD_A_HL_sub.cs" />
     <Compile Include="CpuTests\LD_HL_n.cs" />
     <Compile Include="CpuTests\LD_HL_SP.cs" />
     <Compile Include="CpuTests\RES_x_R.cs" />
