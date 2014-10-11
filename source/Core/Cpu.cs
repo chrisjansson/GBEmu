@@ -56,6 +56,7 @@ namespace Core
             { 0x07, new InstructionMetaData(1, 1, "RLCA")},
             { 0x08, new InstructionMetaData(3, 5, "LD (nn), SP")},
             { 0x09, new InstructionMetaData(1, 2, "ADD HL, BC")},
+            { 0x0A, new InstructionMetaData(1, 2, "LD A, (BC)")},
             { 0x0B, new InstructionMetaData(1, 2, "DEC BC")},
             { 0x0C, new InstructionMetaData(1, 1, "INC C")},
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
@@ -406,6 +407,9 @@ namespace Core
                     break;
                 case 0x09:
                     ADD_HL_ss((ushort)(_registers[Register.B] << 8 | _registers[Register.C]));
+                    break;
+                case 0x0A:
+                    LD_A_BCm();
                     break;
                 case 0x0B:
                     DEC_ss(Register.B, Register.C);
@@ -1157,6 +1161,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void LD_A_BCm()
+        {
+            var address = (B << 8 | C);
+            A = _mmu.GetByte((ushort) address);
         }
 
         private void OR_n()

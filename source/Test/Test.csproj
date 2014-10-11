@@ -138,7 +138,7 @@
     <Compile Include="JP_HL.cs" />
     <Compile Include="JR.cs" />
     <Compile Include="JumpCondition.cs" />
-    <Compile Include="LD_A_DE.cs" />
+    <Compile Include="LD_A_QQm.cs" />
     <Compile Include="LD_A_n.cs" />
     <Compile Include="LD_A_nn.cs" />
     <Compile Include="LD_C_A.cs" />

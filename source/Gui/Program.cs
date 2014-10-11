@@ -37,6 +37,8 @@ namespace Gui
             _mmu.Cpu = _cpu;
             _timer = new Timer(_mmu);
             _mmu.Timer = _timer;
+            var joypad = new Joypad();
+            _mmu.Joypad = joypad;
 
             var openRead = File.OpenRead(args[1]);
             ushort inPosition = 0;
