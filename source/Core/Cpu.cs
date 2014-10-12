@@ -1928,6 +1928,9 @@ namespace Core
                 case 0x7D:
                     BIT(7, Register.L);
                     break;
+                case 0x7E:
+                    BIT_HLm(7);
+                    break;
                 case 0x7f:
                     BIT(7, Register.A);
                     break;
@@ -1962,6 +1965,14 @@ namespace Core
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
+        }
+
+        private void BIT_HLm(int bit)
+        {
+            var value = _mmu.GetByte(HL);
+            Z = (byte) ((value & 0x80) == 0x80 ? 0 : 1);
+            HC = 1;
+            N = 0;
         }
 
         private void RES_HLm(int bit)
@@ -2088,6 +2099,7 @@ namespace Core
             {0x7B, new InstructionMetaData(2, 2, "BIT 7, E")},
             {0x7C, new InstructionMetaData(2, 2, "BIT 7, H")},
             {0x7D, new InstructionMetaData(2, 2, "BIT 7, L")},
+            {0x7E, new InstructionMetaData(2, 4, "BIT 7, (HL)")},
             {0x7F, new InstructionMetaData(2, 2, "BIT 7, A")},
             {0x80, new InstructionMetaData(2, 2, "RES 0, B")},
             {0x81, new InstructionMetaData(2, 2, "RES 0, C")},
