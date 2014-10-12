@@ -1949,6 +1949,9 @@ namespace Core
                 case 0x85:
                     RES(0, Register.L);
                     break;
+                case 0x86:
+                    RES_HLm(0);
+                    break;
                 case 0x87:
                     RES(0, Register.A);
                     break;
@@ -1959,6 +1962,12 @@ namespace Core
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
+        }
+
+        private void RES_HLm(int bit)
+        {
+            var value = _mmu.GetByte(HL);
+            _mmu.SetByte(HL, (byte) (value & 0xFE));
         }
 
         private void RES(byte bit, Register register)
@@ -2086,6 +2095,7 @@ namespace Core
             {0x83, new InstructionMetaData(2, 2, "RES 0, E")},
             {0x84, new InstructionMetaData(2, 2, "RES 0, H")},
             {0x85, new InstructionMetaData(2, 2, "RES 0, L")},
+            {0x86, new InstructionMetaData(2, 4, "RES 0, (HL)")},
             {0x87, new InstructionMetaData(2, 2, "RES 0, A")},
         };
 
