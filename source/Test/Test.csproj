@@ -69,6 +69,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ADCTestBase.cs" />
+    <Compile Include="ADC_A_HLm.cs" />
     <Compile Include="ADC_n.cs" />
     <Compile Include="ADD_HL.cs" />
     <Compile Include="ADD_HL_ss.cs" />

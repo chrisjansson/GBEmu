@@ -185,6 +185,7 @@ namespace Core
             { 0x8B, new InstructionMetaData(1, 1, "ADC A, E")},
             { 0x8C, new InstructionMetaData(1, 1, "ADC A, H")},
             { 0x8D, new InstructionMetaData(1, 1, "ADC A, L")},
+            { 0x8E, new InstructionMetaData(1, 2, "ADC A, (HL)")},
             { 0x8F, new InstructionMetaData(1, 1, "ADC A, A")},
             { 0x90, new InstructionMetaData(1, 1, "SUB B")},
             { 0x91, new InstructionMetaData(1, 1, "SUB C")},
@@ -823,6 +824,9 @@ namespace Core
                 case 0x8D:
                     ADC_r(Register.L);
                     break;
+                case 0x8E:
+                    ADC_A_HLm();
+                    break;
                 case 0x8F:
                     ADC_r(Register.A);
                     break;
@@ -1165,6 +1169,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void ADC_A_HLm()
+        {
+            var arg = _mmu.GetByte(HL);
+            ADC(arg);
         }
 
         private void LD_A_HLD()
