@@ -373,7 +373,6 @@ namespace Core
                     IF = (byte) (IF & ~joyPad);
                     return;
                 }
-
             }
 
             switch (opcode)
