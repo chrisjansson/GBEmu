@@ -1,17 +1,20 @@
-﻿using Xunit;
+﻿using Ploeh.AutoFixture;
+using Xunit;
 
 namespace Test
 {
-    public class SUB_n : CpuTestBase
+    public abstract class SUBTestBase : CpuTestBase
     {
-        private const byte OpCode = 0xD6;
+        protected abstract byte OpCode { get; }
+        protected abstract byte InstructionLength { get; }
+        protected abstract void ArrangeArgument(byte argument);
 
         [Fact]
         public void Advances_counters()
         {
             Execute(OpCode);
 
-            AdvancedProgramCounter(2);
+            AdvancedProgramCounter(InstructionLength);
             AdvancedClock(2);
         }
 
@@ -19,9 +22,10 @@ namespace Test
         public void Sets_z_when_result_is_zero()
         {
             Flags(x => x.ResetZero().Carry().HalfCarry());
+            ArrangeArgument(0xAB);
             Cpu.A = 0xAB;
 
-            Execute(OpCode, 0xAB);
+            Execute(OpCode);
 
             Assert.Equal(0, Cpu.A);
             AssertFlags(x => x.SetZero().ResetCarry().ResetCarry());
@@ -31,9 +35,10 @@ namespace Test
         public void Resets_z_when_A_is_not_zero()
         {
             Flags(x => x.Zero().ResetCarry().ResetHalfCarry());
+            ArrangeArgument(0xAB);
             Cpu.A = 0x34;
 
-            Execute(OpCode, 0xAB);
+            Execute(OpCode);
 
             Assert.Equal(0x89, Cpu.A);
             AssertFlags(x => x.ResetZero().SetCarry().SetHalfCarry());
@@ -43,9 +48,10 @@ namespace Test
         public void Sets_half_carry_when_borrow_from_4th_to_3rd_bit()
         {
             Flags(x => x.ResetHalfCarry().ResetCarry());
+            ArrangeArgument(0x01);
             Cpu.A = 0x00;
 
-            Execute(OpCode, 0x01);
+            Execute(OpCode);
 
             Assert.Equal(0xFF, Cpu.A);
             AssertFlags(x => x.SetHalfCarry().SetCarry());
@@ -59,6 +65,44 @@ namespace Test
             Cpu.Execute(OpCode);
 
             AssertFlags(x => x.SetSubtract());
+        }
+    }
+
+    public class SUB_HLm : SUBTestBase
+    {
+        protected override byte OpCode
+        {
+            get { return 0x96; }
+        }
+
+        protected override byte InstructionLength
+        {
+            get { return 1; }
+        }
+
+        protected override void ArrangeArgument(byte argument)
+        {
+            var hl = Fixture.Create<ushort>();
+            RegisterPair.HL.Set(Cpu, (byte) (hl >> 8), (byte) hl);
+            FakeMmu.Memory[hl] = argument;
+        }
+    }
+
+    public class SUB_n : SUBTestBase
+    {
+        protected override byte OpCode
+        {
+            get { return 0xD6; }
+        }
+
+        protected override byte InstructionLength
+        {
+            get { return 2; }
+        }
+
+        protected override void ArrangeArgument(byte argument)
+        {
+            FakeMmu.Memory[Cpu.ProgramCounter + 1] = argument;
         }
     }
 }

@@ -193,6 +193,7 @@ namespace Core
             { 0x93, new InstructionMetaData(1, 1, "SUB E")},
             { 0x94, new InstructionMetaData(1, 1, "SUB H")},
             { 0x95, new InstructionMetaData(1, 1, "SUB L")},
+            { 0x96, new InstructionMetaData(1, 2, "SUB (HL)")},
             { 0x97, new InstructionMetaData(1, 1, "SUB A")},
             { 0x98, new InstructionMetaData(1, 1, "SBC B")},
             { 0x99, new InstructionMetaData(1, 1, "SBC C")},
@@ -847,6 +848,9 @@ namespace Core
                 case 0x95:
                     SUB(Register.L);
                     break;
+                case 0x96:
+                    SUB_HLm();
+                    break;
                 case 0x97:
                     SUB(Register.A);
                     break;
@@ -1168,6 +1172,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void SUB_HLm()
+        {
+            var arg = _mmu.GetByte(HL);
+            SUB(arg);
         }
 
         private void ADC_A_HLm()
