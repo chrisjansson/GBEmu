@@ -191,6 +191,8 @@
     <Compile Include="RR_r.cs" />
     <Compile Include="RST.cs" />
     <Compile Include="SRL_r.cs" />
+    <Compile Include="SUBTestBase.cs" />
+    <Compile Include="SUB_HLm.cs" />
     <Compile Include="SUB_n.cs" />
     <Compile Include="SUB_r.cs" />
     <Compile Include="TestBase.cs" />
