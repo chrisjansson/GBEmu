@@ -209,6 +209,7 @@ namespace Core
             { 0xA3, new InstructionMetaData(1, 1, "AND E")},
             { 0xA4, new InstructionMetaData(1, 1, "AND H")},
             { 0xA5, new InstructionMetaData(1, 1, "AND L")},
+            { 0xA6, new InstructionMetaData(1, 2, "AND (HL)")},
             { 0xA7, new InstructionMetaData(1, 1, "AND A")},
             { 0xA8, new InstructionMetaData(1, 1, "XOR B")},
             { 0xAA, new InstructionMetaData(1, 1, "XOR D")},
@@ -898,6 +899,9 @@ namespace Core
                 case 0xA5:
                     AND_r(Register.L);
                     break;
+                case 0xA6:
+                    AND_HLm();
+                    break;
                 case 0xA7:
                     AND_r(Register.A);
                     break;
@@ -1171,6 +1175,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void AND_HLm()
+        {
+            var argument = _mmu.GetByte(HL);
+            AND(argument);
         }
 
         private void AND_n()

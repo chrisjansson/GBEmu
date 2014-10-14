@@ -12,9 +12,9 @@
             get { return 2; }
         }
 
-        protected override void ArrangeArgument(byte i)
+        protected override void ArrangeArgument(byte argument)
         {
-            FakeMmu.Memory[Cpu.ProgramCounter + 1] = i;
+            FakeMmu.Memory[Cpu.ProgramCounter + 1] = argument;
         }
     }
 }
