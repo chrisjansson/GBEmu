@@ -79,6 +79,11 @@ namespace Test
             register.Set(Cpu, value);
         }
 
+        protected void Set(RegisterPair register, ushort value)
+        {
+            register.Set(Cpu, (byte) (value >> 8), (byte) value);
+        }
+
         protected class FlagSetter
         {
             private readonly Cpu _cpu;

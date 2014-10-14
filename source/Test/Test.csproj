@@ -111,6 +111,8 @@
     <Compile Include="CpuTests\RLCA.cs" />
     <Compile Include="CpuTests\RRCA.cs" />
     <Compile Include="CpuTests\RRC_r.cs" />
+    <Compile Include="CpuTests\SBCTestBase.cs" />
+    <Compile Include="CpuTests\SBC_HLm.cs" />
     <Compile Include="CpuTests\SBC_r.cs" />
     <Compile Include="CpuTests\SCF.cs">
       <SubType>Code</SubType>

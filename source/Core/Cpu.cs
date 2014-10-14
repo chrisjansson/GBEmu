@@ -201,6 +201,7 @@ namespace Core
             { 0x9B, new InstructionMetaData(1, 1, "SBC E")},
             { 0x9C, new InstructionMetaData(1, 1, "SBC H")},
             { 0x9D, new InstructionMetaData(1, 1, "SBC L")},
+            { 0x9E, new InstructionMetaData(1, 2, "SBC (HL)")},
             { 0x9F, new InstructionMetaData(1, 1, "SBC A")},
             { 0xA0, new InstructionMetaData(1, 1, "AND B")},
             { 0xA1, new InstructionMetaData(1, 1, "AND C")},
@@ -872,6 +873,9 @@ namespace Core
                 case 0x9D:
                     SBC_r(Register.L);
                     break;
+                case 0x9E:
+                    SBC_HLm();
+                    break;
                 case 0x9F:
                     SBC_r(Register.A);
                     break;
@@ -1172,6 +1176,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void SBC_HLm()
+        {
+            var arg = _mmu.GetByte(HL);
+            SBC(arg);
         }
 
         private void SUB_HLm()
