@@ -83,9 +83,13 @@ namespace Gui
             SDL.SDL_Quit();
         }
 
+        private static ushort[] _trace = new ushort[10000];
+        private static int _index;
         private static void EmulateCycle()
         {
             var next = _cpu.ProgramCounter;
+            _trace[_index++] = next;
+            _index = _index % _trace.Length;
             var instruction = _mmuWithBootRom.GetByte(next);
 
             var old = _cpu.Cycles;
@@ -95,6 +99,14 @@ namespace Gui
             {
                 _display.Tick();
                 _timer.Tick();
+            }
+        }
+
+        private static void PrintTrace()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                Console.WriteLine(_trace[_index - i].ToString("x4"));
             }
         }
 
