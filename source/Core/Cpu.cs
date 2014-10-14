@@ -264,6 +264,7 @@ namespace Core
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
             { 0xE2, new InstructionMetaData(1, 2, "LD (C), A")},
             { 0xE5, new InstructionMetaData(1, 4, "PUSH HL")},
+            { 0xE6, new InstructionMetaData(2, 2, "AND n")},
             { 0xE7, new InstructionMetaData(0, 4, "RST 20H")},
             { 0xE8, new InstructionMetaData(2, 4, "ADD SP, n")},
             { 0xE9, new InstructionMetaData(0, 1, "JP HL")},
@@ -348,7 +349,7 @@ namespace Core
                 if ((interrupted & lcdStat) == lcdStat)
                 {
                     ProgramCounter = 0x48;
-                    IF = (byte) (IF & ~lcdStat);
+                    IF = (byte)(IF & ~lcdStat);
                     return;
                 }
 
@@ -364,7 +365,7 @@ namespace Core
                 if ((interrupted & serial) == serial)
                 {
                     ProgramCounter = 0x58;
-                    IF = (byte) (IF & ~serial);
+                    IF = (byte)(IF & ~serial);
                     return;
                 }
 
@@ -372,7 +373,7 @@ namespace Core
                 if ((interrupted & joyPad) == joyPad)
                 {
                     ProgramCounter = 0x60;
-                    IF = (byte) (IF & ~joyPad);
+                    IF = (byte)(IF & ~joyPad);
                     return;
                 }
             }
@@ -386,7 +387,7 @@ namespace Core
                     B = _mmu.GetByte((ushort)(ProgramCounter + 2));
                     break;
                 case 0x02:
-                    _mmu.SetByte((ushort) (B << 8 | C), A);
+                    _mmu.SetByte((ushort)(B << 8 | C), A);
                     break;
                 case 0x03:
                     var newValue = (B << 8 | C) + 1;
@@ -1089,13 +1090,7 @@ namespace Core
                     SP -= 2;
                     break;
                 case 0xE6:
-                    A = (byte)(A & _mmu.GetByte((ushort)(ProgramCounter + 1)));
-                    Carry = 0;
-                    N = 0;
-                    HC = 1;
-                    Z = (byte)(A == 0 ? 1 : 0);
-                    ProgramCounter += 2;
-                    Cycles += 2;
+                    AND_n();
                     break;
                 case 0xE7:
                     RST(0x20);
@@ -1178,6 +1173,12 @@ namespace Core
             }
         }
 
+        private void AND_n()
+        {
+            var argument = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            AND(argument);
+        }
+
         private void SBC_HLm()
         {
             var arg = _mmu.GetByte(HL);
@@ -1200,29 +1201,29 @@ namespace Core
         {
             A = _mmu.GetByte(HL);
             var newValue = (ushort)(HL - 1);
-            H = (byte) (newValue >> 8);
-            L = (byte) (newValue);
+            H = (byte)(newValue >> 8);
+            L = (byte)(newValue);
         }
 
         private void LD_A_BCm()
         {
             var address = (B << 8 | C);
-            A = _mmu.GetByte((ushort) address);
+            A = _mmu.GetByte((ushort)address);
         }
 
         private void OR_n()
         {
-            OR_A(_mmu.GetByte((ushort) (ProgramCounter + 1)));
+            OR_A(_mmu.GetByte((ushort)(ProgramCounter + 1)));
         }
 
         private void INC_HLm()
         {
             var value = _mmu.GetByte(HL);
-            var result = (byte) (value + 1);
+            var result = (byte)(value + 1);
             _mmu.SetByte(HL, result);
             N = 0;
-            HC = (byte) ((value & 0xF) == 0xF ? 1 : 0);
-            Z = (byte) (result == 0 ? 1 : 0);
+            HC = (byte)((value & 0xF) == 0xF ? 1 : 0);
+            Z = (byte)(result == 0 ? 1 : 0);
         }
 
         private void LD_HLm_n()
@@ -1337,9 +1338,15 @@ namespace Core
 
         private void AND_r(Register register)
         {
-            var result = A & _registers[register];
-            A = (byte)result;
-            Z = (byte)(result == 0 ? 1 : 0);
+            var argument = _registers[register];
+            AND(argument);
+        }
+
+        private void AND(byte argument)
+        {
+            var result = A & argument;
+            A = (byte) result;
+            Z = (byte) (result == 0 ? 1 : 0);
             N = 0;
             HC = 1;
             Carry = 0;
@@ -1989,7 +1996,7 @@ namespace Core
         private void BIT_HLm(int bit)
         {
             var value = _mmu.GetByte(HL);
-            Z = (byte) ((value & 0x80) == 0x80 ? 0 : 1);
+            Z = (byte)((value & 0x80) == 0x80 ? 0 : 1);
             HC = 1;
             N = 0;
         }
@@ -1997,7 +2004,7 @@ namespace Core
         private void RES_HLm(int bit)
         {
             var value = _mmu.GetByte(HL);
-            _mmu.SetByte(HL, (byte) (value & 0xFE));
+            _mmu.SetByte(HL, (byte)(value & 0xFE));
         }
 
         private void RES(byte bit, Register register)

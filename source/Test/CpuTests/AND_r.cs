@@ -7,7 +7,7 @@ namespace Test.CpuTests
     {
         protected override byte CreateOpCode(RegisterMapping register)
         {
-            return (byte) (0xA0 | register);
+            return (byte)(0xA0 | register);
         }
 
         [Theory, PropertyData("Registers")]

@@ -86,6 +86,8 @@
     <Compile Include="CpuTests\ADC_r.cs" />
     <Compile Include="CpuTests\ADD_n.cs" />
     <Compile Include="CpuTests\ADD_SP_e.cs" />
+    <Compile Include="CpuTests\ANDTestTempate.cs" />
+    <Compile Include="CpuTests\AND_n.cs" />
     <Compile Include="CpuTests\AND_r.cs" />
     <Compile Include="CpuTests\CCF.cs" />
     <Compile Include="CpuTests\CPL.cs" />
