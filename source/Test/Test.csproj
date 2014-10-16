@@ -111,6 +111,7 @@
     <Compile Include="CpuTests\RES_x_R.cs" />
     <Compile Include="CpuTests\RLC.cs" />
     <Compile Include="CpuTests\RLCA.cs" />
+    <Compile Include="CpuTests\RLC_HLm.cs" />
     <Compile Include="CpuTests\RRCA.cs" />
     <Compile Include="CpuTests\RRC_r.cs" />
     <Compile Include="CpuTests\SBCTestBase.cs" />
