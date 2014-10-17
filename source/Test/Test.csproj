@@ -110,6 +110,7 @@
     <Compile Include="CpuTests\LD_HL_n.cs" />
     <Compile Include="CpuTests\LD_HL_SP.cs" />
     <Compile Include="CpuTests\RegisterCBTestTarget.cs" />
+    <Compile Include="CpuTests\RegisterCBTestTargetBase.cs" />
     <Compile Include="CpuTests\RES_x_HLm.cs" />
     <Compile Include="CpuTests\RES_x_R.cs" />
     <Compile Include="CpuTests\RLC.cs" />
