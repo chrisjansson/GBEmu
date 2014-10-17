@@ -7,11 +7,11 @@ namespace Test
 {
     public class CpuTestBase
     {
-        protected readonly FakeMmu FakeMmu;
-        protected readonly Cpu Cpu;
+        public readonly FakeMmu FakeMmu;
+        public readonly Cpu Cpu;
         private readonly ushort _initialProgramCounter;
         private readonly long _initialCycles;
-        protected Fixture Fixture;
+        public Fixture Fixture;
         private readonly ushort _initialStackPointer;
 
         public CpuTestBase()
@@ -74,12 +74,12 @@ namespace Test
             Cpu.Execute(opCode);
         }
 
-        protected void Set(RegisterMapping register, byte value)
+        public void Set(RegisterMapping register, byte value)
         {
             register.Set(Cpu, value);
         }
 
-        protected void Set(RegisterPair register, ushort value)
+        public void Set(RegisterPair register, ushort value)
         {
             register.Set(Cpu, (byte) (value >> 8), (byte) value);
         }
