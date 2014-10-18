@@ -96,7 +96,7 @@
     <Compile Include="CpuTests\Flags.cs" />
     <Compile Include="CpuTests\Halt.cs" />
     <Compile Include="CpuTests\Halt_IME_disabled.cs" />
-    <Compile Include="CpuTests\HLCBTestTarget.cs" />
+    <Compile Include="CpuTests\HLCBTestTargetBase.cs" />
     <Compile Include="CpuTests\ICBTestTarget.cs" />
     <Compile Include="CpuTests\INC_HLm.cs" />
     <Compile Include="CpuTests\Interrupts\Interrupt.cs" />

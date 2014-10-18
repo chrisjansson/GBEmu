@@ -15,7 +15,7 @@ namespace Test.CpuTests
             ExecutingCB(target.OpCode);
 
             AdvancedProgramCounter(target.InstructionLength);
-            AdvancedProgramCounter(target.InstructionTime);
+            AdvancedClock(target.InstructionTime);
         }
 
         [Theory, PropertyData("Targets")]
@@ -68,6 +68,7 @@ namespace Test.CpuTests
                     new RRCRegisterTestTarget(RegisterMapping.E), 
                     new RRCRegisterTestTarget(RegisterMapping.H), 
                     new RRCRegisterTestTarget(RegisterMapping.L), 
+                    new RRCHLTestTarget(), 
                 };
 
                 return targets
@@ -84,6 +85,14 @@ namespace Test.CpuTests
             public override byte OpCode
             {
                 get { return (byte)(0x08 | Register); }
+            }
+        }
+
+        public class RRCHLTestTarget : HLCBTestTargetBase
+        {
+            public override byte OpCode
+            {
+                get { return 0x0E; }
             }
         }
     }

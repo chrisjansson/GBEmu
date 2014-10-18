@@ -1673,6 +1673,9 @@ namespace Core
                 case 0x0D:
                     RRC_r(Register.L);
                     break;
+                case 0x0E:
+                    RRC_HLm();
+                    break;
                 case 0x0F:
                     RRC_r(Register.A);
                     break;
@@ -2006,6 +2009,13 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void RRC_HLm()
+        {
+            var argument = _mmu.GetByte(HL);
+            var result = RRC(argument);
+            _mmu.SetByte(HL, result);
+        }
+
         private void RLC_HLm()
         {
             var argument = _mmu.GetByte(HL);
@@ -2048,6 +2058,7 @@ namespace Core
             {0x0B, new InstructionMetaData(2, 2, "RRC E")},
             {0x0C, new InstructionMetaData(2, 2, "RRC H")},
             {0x0D, new InstructionMetaData(2, 2, "RRC L")},
+            {0x0E, new InstructionMetaData(2, 4, "RRC (HL)")},
             {0x0F, new InstructionMetaData(2, 2, "RRC A")},
             {0x10, new InstructionMetaData(2, 2, "RL B")},
             {0x11, new InstructionMetaData(2, 2, "RL C")},
@@ -2181,14 +2192,19 @@ namespace Core
 
         private void RRC_r(Register register)
         {
+            var argument = _registers[register];
+            _registers[register] = RRC(argument);
+        }
+
+        private byte RRC(byte argument)
+        {
+            var bit0 = (argument & 0x01);
+            var result = (byte) ((argument >> 1) | (bit0 << 7));
+            Carry = (byte) bit0;
+            Z = (byte) (result == 0 ? 1 : 0);
             N = 0;
             HC = 0;
-            var bit0 = (_registers[register] & 0x01);
-
-            var result = (byte)((_registers[register] >> 1) | (bit0 << 7));
-            _registers[register] = result;
-            Carry = (byte)bit0;
-            Z = (byte)(result == 0 ? 1 : 0);
+            return result;
         }
 
         private byte RLC(byte argument)

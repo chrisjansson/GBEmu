@@ -68,12 +68,20 @@ namespace Test.CpuTests
                     new RegisterCBTestTarget(RegisterMapping.E), 
                     new RegisterCBTestTarget(RegisterMapping.H), 
                     new RegisterCBTestTarget(RegisterMapping.L), 
-                    new HLCBTestTarget(), 
+                    new RLCHLTestTarget(), 
                 };
 
                 return targets
                     .Select(x => new[] { x })
                     .ToList();
+            }
+        }
+
+        public class RLCHLTestTarget : HLCBTestTargetBase
+        {
+            public override byte OpCode
+            {
+                get { return 0x06; }
             }
         }
     }

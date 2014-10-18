@@ -2,7 +2,7 @@
 
 namespace Test.CpuTests
 {
-    public class HLCBTestTarget : ICBTestTarget
+    public abstract class HLCBTestTargetBase : ICBTestTarget
     {
         private CpuTestBase _fixture;
         private ushort _hl;
@@ -19,10 +19,7 @@ namespace Test.CpuTests
             _fixture.Set(RegisterPair.HL, _hl);
         }
 
-        public byte OpCode
-        {
-            get { return 0x06; }
-        }
+        public abstract byte OpCode { get; }
 
         public byte Actual
         {
