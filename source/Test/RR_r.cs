@@ -1,58 +1,106 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Test.CpuTests;
+using Xunit;
 using Xunit.Extensions;
 
 namespace Test
 {
-    public class RR_r : CBRegisterTestBase
+    public class RR_r : CpuTestBase
     {
-        protected override byte CreateOpCode(RegisterMapping register)
+        [Theory, PropertyData("Targets")]
+        public void Advances_counters(ICBTestTarget target)
         {
-            return (byte) (0x18 | register);
+            target.SetUp(this);
+
+            ExecutingCB(target.OpCode);
+
+            AdvancedProgramCounter(target.InstructionLength);
+            AdvancedClock(target.InstructionTime);
         }
 
-        [Theory, PropertyData("Registers")]
-        public void Rotates_the_contents_right_rotating_in_carry(RegisterMapping register)
+        [Theory, PropertyData("Targets")]
+        public void Rotates_the_contents_right_rotating_in_carry(ICBTestTarget target)
         {
+            target.SetUp(this);
+            target.ArrangeArgument(0xDD);
             Flags(x => x.ResetCarry());
-            register.Set(Cpu, 0xDD);
 
-            ExecutingCB(CreateOpCode(register));
+            ExecutingCB(target.OpCode);
 
-            Assert.Equal(0x6E, register.Get(Cpu));
+            Assert.Equal(0x6E, target.Actual);
             AssertFlags(x => x.SetCarry());
         }
 
-        [Theory, PropertyData("Registers")]
-        public void Rotates_the_contents_right_and_resets_carry(RegisterMapping register)
+        [Theory, PropertyData("Targets")]
+        public void Rotates_the_contents_right_and_resets_carry(ICBTestTarget target)
         {
+            target.SetUp(this);
+            target.ArrangeArgument(0x00);
             Flags(x => x.Carry().Zero());
-            register.Set(Cpu, 0x00);
 
-            ExecutingCB(CreateOpCode(register));
+            ExecutingCB(target.OpCode);
 
-            Assert.Equal(0x80, register.Get(Cpu));
+            Assert.Equal(0x80, target.Actual);
             AssertFlags(x => x.ResetZero().ResetCarry());
         }
 
-        [Theory, PropertyData("Registers")]
-        public void Sets_zero_when_result_is_zero(RegisterMapping registerMapping)
+        [Theory, PropertyData("Targets")]
+        public void Sets_zero_when_result_is_zero(ICBTestTarget target)
         {
+            target.SetUp(this);
+            target.ArrangeArgument(0x00);
             Flags(x => x.ResetZero().ResetCarry());
-            registerMapping.Set(Cpu, 0x00);
 
-            ExecutingCB(CreateOpCode(registerMapping));
+            ExecutingCB(target.OpCode);
 
             AssertFlags(x => x.SetZero());
         }
 
-        [Theory, PropertyData("Registers")]
-        public void Resets_half_carry_and_subtract(RegisterMapping register)
+        [Theory, PropertyData("Targets")]
+        public void Resets_half_carry_and_subtract(ICBTestTarget target)
         {
+            target.SetUp(this);
             Flags(x => x.HalfCarry().Subtract());
 
-            ExecutingCB(CreateOpCode(register));
+            ExecutingCB(target.OpCode);
 
             AssertFlags(x => x.ResetHalfCarry().ResetSubtract());
         }
+
+        public class RRRegisterTestTarget : RegisterCBTestTargetBase
+        {
+            public RRRegisterTestTarget(RegisterMapping register)
+                : base(register)
+            {
+            }
+
+            public override byte OpCode
+            {
+                get { return (byte)(0x18 | Register); }
+            }
+        }
+
+        public static IEnumerable<object[]> Targets
+        {
+            get
+            {
+                var targets = new ICBTestTarget[]
+                {
+                    new RRRegisterTestTarget(RegisterMapping.A),
+                    new RRRegisterTestTarget(RegisterMapping.B),
+                    new RRRegisterTestTarget(RegisterMapping.C),
+                    new RRRegisterTestTarget(RegisterMapping.D),
+                    new RRRegisterTestTarget(RegisterMapping.E),
+                    new RRRegisterTestTarget(RegisterMapping.H),
+                    new RRRegisterTestTarget(RegisterMapping.L),
+                };
+
+                return targets
+                    .Select(x => new[] { x })
+                    .ToList();
+            }
+        }
+
     }
 }
