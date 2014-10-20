@@ -9,18 +9,6 @@ namespace Test
 {
     public class RL : CpuTestBase
     {
-        public class RLRegisterTestTarget : RegisterCBTestTargetBase
-        {
-            public RLRegisterTestTarget(RegisterMapping register) 
-                : base(register) { }
-
-            public override byte OpCode
-            {
-                get { return (byte) (0x10 | Register); }
-            }
-        }
-
-
         [Theory, PropertyData("Targets")]
         public void Advances_counters(ICBTestTarget target)
         {
@@ -94,12 +82,33 @@ namespace Test
                     new RLRegisterTestTarget(RegisterMapping.E), 
                     new RLRegisterTestTarget(RegisterMapping.H), 
                     new RLRegisterTestTarget(RegisterMapping.L), 
+                    new RLHLTestTarget()
                 };
 
                 return targets
-                    .Select(x => new[] {x})
+                    .Select(x => new[] { x })
                     .ToList();
             }
         }
+
+        public class RLHLTestTarget : HLCBTestTargetBase
+        {
+            public override byte OpCode
+            {
+                get { return 0x16; }
+            }
+        }
+
+        public class RLRegisterTestTarget : RegisterCBTestTargetBase
+        {
+            public RLRegisterTestTarget(RegisterMapping register)
+                : base(register) { }
+
+            public override byte OpCode
+            {
+                get { return (byte)(0x10 | Register); }
+            }
+        }
     }
+
 }
