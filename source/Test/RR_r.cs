@@ -81,6 +81,14 @@ namespace Test
             }
         }
 
+        public class RRHLTestTarget : HLCBTestTargetBase
+        {
+            public override byte OpCode
+            {
+                get { return 0x1E; }
+            }
+        }
+
         public static IEnumerable<object[]> Targets
         {
             get
@@ -94,6 +102,7 @@ namespace Test
                     new RRRegisterTestTarget(RegisterMapping.E),
                     new RRRegisterTestTarget(RegisterMapping.H),
                     new RRRegisterTestTarget(RegisterMapping.L),
+                    new RRHLTestTarget(), 
                 };
 
                 return targets
