@@ -65,6 +65,14 @@ namespace Test.CpuTests
             }
         }
 
+        public class SRAHLTestTarget : HLCBTestTargetBase
+        {
+            public override byte OpCode
+            {
+                get { return 0x2E; }
+            }
+        }
+
         public static IEnumerable<object[]> Targets
         {
             get
@@ -78,6 +86,7 @@ namespace Test.CpuTests
                     new SRARegisterTestTarget(RegisterMapping.E), 
                     new SRARegisterTestTarget(RegisterMapping.H), 
                     new SRARegisterTestTarget(RegisterMapping.L), 
+                    new SRAHLTestTarget(), 
                 };
 
                 return targets
