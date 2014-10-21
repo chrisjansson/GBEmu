@@ -124,7 +124,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CpuTests\SLA.cs" />
-    <Compile Include="CpuTests\SRA_r.cs" />
+    <Compile Include="CpuTests\SRA.cs" />
     <Compile Include="CpuTests\SWAP_r.cs" />
     <Compile Include="CpuTestBase.cs" />
     <Compile Include="CP_n.cs" />
