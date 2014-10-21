@@ -1745,6 +1745,9 @@ namespace Core
                 case 0x25:
                     SLA_r(Register.L);
                     break;
+                case 0x26:
+                    SLA_HLm();
+                    break;
                 case 0x27:
                     SLA_r(Register.A);
                     break;
@@ -2015,6 +2018,13 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void SLA_HLm()
+        {
+            var argument = _mmu.GetByte(HL);
+            var result = SLA(argument);
+            _mmu.SetByte(HL, result);
+        }
+
         private void RR_HLm()
         {
             var argument = _mmu.GetByte(HL);
@@ -2102,6 +2112,7 @@ namespace Core
             {0x23, new InstructionMetaData(2, 2, "SLA E")},
             {0x24, new InstructionMetaData(2, 2, "SLA H")},
             {0x25, new InstructionMetaData(2, 2, "SLA L")},
+            {0x26, new InstructionMetaData(2, 4, "SLA (HL)")},
             {0x27, new InstructionMetaData(2, 2, "SLA A")},
             {0x28, new InstructionMetaData(2, 2, "SRA B")},
             {0x29, new InstructionMetaData(2, 2, "SRA C")},
@@ -2193,12 +2204,19 @@ namespace Core
 
         private void SLA_r(Register register)
         {
+            var argument = _registers[register];
+            var result = SLA(argument);
+            _registers[register] = result;
+        }
+
+        private byte SLA(byte argument)
+        {
             HC = 0;
             N = 0;
-            Carry = (byte)((_registers[register] & 0x80) >> 7);
-            var result = (byte)(_registers[register] << 1);
-            _registers[register] = result;
-            Z = (byte)(result == 0 ? 1 : 0);
+            Carry = (byte) ((argument & 0x80) >> 7);
+            var result = (byte) (argument << 1);
+            Z = (byte) (result == 0 ? 1 : 0);
+            return result;
         }
 
         private void SRA_r(Register register)
