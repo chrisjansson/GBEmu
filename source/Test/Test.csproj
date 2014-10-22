@@ -89,6 +89,7 @@
     <Compile Include="CpuTests\ANDTestTempate.cs" />
     <Compile Include="CpuTests\AND_n.cs" />
     <Compile Include="CpuTests\AND_r.cs" />
+    <Compile Include="CpuTests\CBTestTargetBase.cs" />
     <Compile Include="CpuTests\CCF.cs" />
     <Compile Include="CpuTests\CPL.cs" />
     <Compile Include="CpuTests\DEC_ss.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="CpuTests\HLCBTestTargetBase.cs" />
     <Compile Include="CpuTests\ICBTestTarget.cs" />
     <Compile Include="CpuTests\INC_HLm.cs" />
+    <Compile Include="CpuTests\InstancePropertyDataAttribute.cs" />
     <Compile Include="CpuTests\Interrupts\Interrupt.cs" />
     <Compile Include="CpuTests\Interrupts\InterruptPriorityTests.cs" />
     <Compile Include="CpuTests\Interrupts\InterruptTestBase.cs" />
