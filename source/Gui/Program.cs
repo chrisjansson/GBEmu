@@ -147,16 +147,12 @@ namespace Gui
             {
                 case 0:
                     return 0xFFFFFFFF;
-                    break;
                 case 1:
                     return 0xD3D3D3FF;
-                    break;
                 case 2:
                     return 0xA9A9A9FF;
-                    break;
                 case 3:
                     return 0;
-                    break;
                 default:
                     throw new NotImplementedException();
             }
