@@ -1793,6 +1793,9 @@ namespace Core
                 case 0x35:
                     SWAP_r(Register.L);
                     break;
+                case 0x36:
+                    SWAP_HLm();
+                    break;
                 case 0x37:
                     SWAP_r(Register.A);
                     break;
@@ -2021,6 +2024,13 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void SWAP_HLm()
+        {
+            var argument = _mmu.GetByte(HL);
+            var result = SWAP(argument);
+            _mmu.SetByte(HL, result);
+        }
+
         private void SRA_HLm()
         {
             var argument = _mmu.GetByte(HL);
@@ -2138,6 +2148,7 @@ namespace Core
             {0x33, new InstructionMetaData(2, 2, "SWAP E")},
             {0x34, new InstructionMetaData(2, 2, "SWAP H")},
             {0x35, new InstructionMetaData(2, 2, "SWAP L")},
+            {0x36, new InstructionMetaData(2, 4, "SWAP (HL)")},
             {0x37, new InstructionMetaData(2, 2, "SWAP A")},
             {0x38, new InstructionMetaData(2, 2, "SRL B")},
             {0x39, new InstructionMetaData(2, 2, "SRL C")},
@@ -2285,12 +2296,18 @@ namespace Core
         private void SWAP_r(Register register)
         {
             var value = _registers[register];
-            _registers[register] = (byte)(((value >> 4) & 0x0F) | ((value << 4) & 0xF0));
+            var result = SWAP(value);
+            _registers[register] = result;
+        }
 
-            Z = (byte)(value == 0 ? 1 : 0);
+        private byte SWAP(byte argument)
+        {
+            var result = (byte) (((argument >> 4) & 0x0F) | ((argument << 4) & 0xF0));
+            Z = (byte) (argument == 0 ? 1 : 0);
             Carry = 0;
             N = 0;
             HC = 0;
+            return result;
         }
 
         private void RL_r(Register register)

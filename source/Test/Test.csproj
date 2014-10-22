@@ -125,7 +125,7 @@
     </Compile>
     <Compile Include="CpuTests\SLA.cs" />
     <Compile Include="CpuTests\SRA.cs" />
-    <Compile Include="CpuTests\SWAP_r.cs" />
+    <Compile Include="CpuTests\SWAP.cs" />
     <Compile Include="CpuTestBase.cs" />
     <Compile Include="CP_n.cs" />
     <Compile Include="CP_R.cs" />
