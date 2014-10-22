@@ -1817,6 +1817,9 @@ namespace Core
                 case 0x3D:
                     SRL_r(Register.L);
                     break;
+                case 0x3E:
+                    SRL_HLm();
+                    break;
                 case 0x3F:
                     SRL_r(Register.A);
                     break;
@@ -2024,6 +2027,13 @@ namespace Core
             Cycles += instructionMetaData.Cycles;
         }
 
+        private void SRL_HLm()
+        {
+            var argument = _mmu.GetByte(HL);
+            var result = SRL(argument);
+            _mmu.SetByte(HL, result);
+        }
+
         private void SWAP_HLm()
         {
             var argument = _mmu.GetByte(HL);
@@ -2156,6 +2166,7 @@ namespace Core
             {0x3B, new InstructionMetaData(2, 2, "SRL E")},
             {0x3C, new InstructionMetaData(2, 2, "SRL H")},
             {0x3D, new InstructionMetaData(2, 2, "SRL L")},
+            {0x3E, new InstructionMetaData(2, 4, "SRL (HL)")},
             {0x3F, new InstructionMetaData(2, 2, "SRL A")},
             {0x40, new InstructionMetaData(2, 2, "BIT 0, B")},
             {0x41, new InstructionMetaData(2, 2, "BIT 0, C")},
@@ -2353,11 +2364,19 @@ namespace Core
 
         private void SRL_r(Register register)
         {
-            Carry = (byte)((_registers[register] & 0x01) == 0x01 ? 1 : 0);
-            _registers[register] = (byte)(_registers[register] >> 1);
-            Z = (byte)(_registers[register] == 0 ? 1 : 0);
+            var argument = _registers[register];
+            var result = SRL(argument);
+            _registers[register] = result;
+        }
+
+        private byte SRL(byte argument)
+        {
+            Carry = (byte) ((argument & 0x01) == 0x01 ? 1 : 0);
+            var result = (byte) (argument >> 1);
+            Z = (byte) (result == 0 ? 1 : 0);
             N = 0;
             HC = 0;
+            return result;
         }
 
         private void XOR(byte value)
