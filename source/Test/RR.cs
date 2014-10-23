@@ -6,20 +6,9 @@ using Xunit.Extensions;
 
 namespace Test
 {
-    public class RR_r : CpuTestBase
+    public class RR : CBTestTargetBase
     {
-        [Theory, PropertyData("Targets")]
-        public void Advances_counters(ICBTestTarget target)
-        {
-            target.SetUp(this);
-
-            ExecutingCB(target.OpCode);
-
-            AdvancedProgramCounter(target.InstructionLength);
-            AdvancedClock(target.InstructionTime);
-        }
-
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Rotates_the_contents_right_rotating_in_carry(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -32,7 +21,7 @@ namespace Test
             AssertFlags(x => x.SetCarry());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Rotates_the_contents_right_and_resets_carry(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -45,7 +34,7 @@ namespace Test
             AssertFlags(x => x.ResetZero().ResetCarry());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Sets_zero_when_result_is_zero(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -57,7 +46,7 @@ namespace Test
             AssertFlags(x => x.SetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Resets_half_carry_and_subtract(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -66,6 +55,21 @@ namespace Test
             ExecutingCB(target.OpCode);
 
             AssertFlags(x => x.ResetHalfCarry().ResetSubtract());
+        }
+
+        protected override IEnumerable<ICBTestTarget> GetTargets()
+        {
+            return new ICBTestTarget[]
+            {
+                new RRRegisterTestTarget(RegisterMapping.A),
+                new RRRegisterTestTarget(RegisterMapping.B),
+                new RRRegisterTestTarget(RegisterMapping.C),
+                new RRRegisterTestTarget(RegisterMapping.D),
+                new RRRegisterTestTarget(RegisterMapping.E),
+                new RRRegisterTestTarget(RegisterMapping.H),
+                new RRRegisterTestTarget(RegisterMapping.L),
+                new RRHLTestTarget(), 
+            };
         }
 
         public class RRRegisterTestTarget : RegisterCBTestTargetBase
@@ -88,28 +92,5 @@ namespace Test
                 get { return 0x1E; }
             }
         }
-
-        public static IEnumerable<object[]> Targets
-        {
-            get
-            {
-                var targets = new ICBTestTarget[]
-                {
-                    new RRRegisterTestTarget(RegisterMapping.A),
-                    new RRRegisterTestTarget(RegisterMapping.B),
-                    new RRRegisterTestTarget(RegisterMapping.C),
-                    new RRRegisterTestTarget(RegisterMapping.D),
-                    new RRRegisterTestTarget(RegisterMapping.E),
-                    new RRRegisterTestTarget(RegisterMapping.H),
-                    new RRRegisterTestTarget(RegisterMapping.L),
-                    new RRHLTestTarget(), 
-                };
-
-                return targets
-                    .Select(x => new[] { x })
-                    .ToList();
-            }
-        }
-
     }
 }

@@ -5,20 +5,9 @@ using Xunit.Extensions;
 
 namespace Test.CpuTests
 {
-    public class RLC : CpuTestBase
+    public class RLC : CBTestTargetBase
     {
-        [Theory, PropertyData("Targets")]
-        public void Advances_counters(ICBTestTarget target)
-        {
-            target.SetUp(this);
-
-            ExecutingCB(target.OpCode);
-
-            AdvancedProgramCounter(target.InstructionLength);
-            AdvancedClock(target.InstructionTime);
-        }
-
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Rotates_value_left(ICBTestTarget target)
         {
             Flags(x => x.ResetCarry().Zero());
@@ -31,7 +20,7 @@ namespace Test.CpuTests
             AssertFlags(x => x.SetCarry().ResetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Rotates_value_left_set_zero_reset_carry(ICBTestTarget target)
         {
             Flags(x => x.Carry().ResetZero());
@@ -44,7 +33,7 @@ namespace Test.CpuTests
             AssertFlags(x => x.ResetCarry().SetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Resets_subtract_and_half_carry(ICBTestTarget target)
         {
             Flags(x => x.Subtract().HalfCarry());
@@ -55,10 +44,8 @@ namespace Test.CpuTests
             AssertFlags(x => x.ResetSubtract().ResetHalfCarry());
         }
 
-        public static IEnumerable<object[]> Targets
+        protected override IEnumerable<ICBTestTarget> GetTargets()
         {
-            get
-            {
                 var targets = new ICBTestTarget[]
                 {
                     new RegisterCBTestTarget(RegisterMapping.A), 
@@ -70,11 +57,7 @@ namespace Test.CpuTests
                     new RegisterCBTestTarget(RegisterMapping.L), 
                     new RLCHLTestTarget(), 
                 };
-
-                return targets
-                    .Select(x => new[] { x })
-                    .ToList();
-            }
+            return targets;
         }
 
         public class RLCHLTestTarget : HLCBTestTargetBase

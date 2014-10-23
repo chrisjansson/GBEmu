@@ -1,26 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Test.CpuTests;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Test
 {
-    public class RL : CpuTestBase
+    public class RL : CBTestTargetBase
     {
-        [Theory, PropertyData("Targets")]
-        public void Advances_counters(ICBTestTarget target)
-        {
-            target.SetUp(this);
-
-            ExecutingCB(target.OpCode);
-
-            AdvancedProgramCounter(target.InstructionLength);
-            AdvancedClock(target.InstructionTime);
-        }
-
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Rotates_the_content_left_and_sets_carry(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -33,7 +20,7 @@ namespace Test
             AssertFlags(x => x.SetCarry());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Rotates_content_left_and_resets_carry(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -46,7 +33,7 @@ namespace Test
             AssertFlags(x => x.ResetZero().ResetCarry());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Sets_zero_when_result_is_zero(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -58,7 +45,7 @@ namespace Test
             AssertFlags(x => x.SetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Resets_half_carry_and_subtract(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -69,11 +56,9 @@ namespace Test
             AssertFlags(x => x.ResetHalfCarry().ResetSubtract());
         }
 
-        public static IEnumerable<object[]> Targets
+        protected override IEnumerable<ICBTestTarget> GetTargets()
         {
-            get
-            {
-                var targets = new ICBTestTarget[]
+            return new ICBTestTarget[]
                 {
                     new RLRegisterTestTarget(RegisterMapping.A), 
                     new RLRegisterTestTarget(RegisterMapping.B), 
@@ -84,11 +69,6 @@ namespace Test
                     new RLRegisterTestTarget(RegisterMapping.L), 
                     new RLHLTestTarget()
                 };
-
-                return targets
-                    .Select(x => new[] { x })
-                    .ToList();
-            }
         }
 
         public class RLHLTestTarget : HLCBTestTargetBase

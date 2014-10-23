@@ -198,7 +198,7 @@
     <Compile Include="RLA.cs" />
     <Compile Include="RL.cs" />
     <Compile Include="RRA.cs" />
-    <Compile Include="RR_r.cs" />
+    <Compile Include="RR.cs" />
     <Compile Include="RST.cs" />
     <Compile Include="SRL_r.cs" />
     <Compile Include="SUBTestBase.cs" />

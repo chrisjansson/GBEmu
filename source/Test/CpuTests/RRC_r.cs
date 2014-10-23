@@ -1,24 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Test.CpuTests
 {
-    public class RRC : CpuTestBase
+    public class RRC : CBTestTargetBase
     {
-        [Theory, PropertyData("Targets")]
-        public void Advances_counters(ICBTestTarget target)
-        {
-            target.SetUp(this);
-
-            ExecutingCB(target.OpCode);
-
-            AdvancedProgramCounter(target.InstructionLength);
-            AdvancedClock(target.InstructionTime);
-        }
-
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Rotates_register_right(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -31,7 +19,7 @@ namespace Test.CpuTests
             AssertFlags(x => x.SetCarry().ResetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Rotates_register_right_set_zero_reset_carry(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -44,7 +32,7 @@ namespace Test.CpuTests
             AssertFlags(x => x.ResetCarry().SetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Resets_subtract_and_half_carry(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -55,11 +43,9 @@ namespace Test.CpuTests
             AssertFlags(x => x.ResetSubtract().ResetHalfCarry());
         }
 
-        public static IEnumerable<object[]> Targets
+        protected override IEnumerable<ICBTestTarget> GetTargets()
         {
-            get
-            {
-                var targets = new ICBTestTarget[]
+            return new ICBTestTarget[]
                 {
                     new RRCRegisterTestTarget(RegisterMapping.A), 
                     new RRCRegisterTestTarget(RegisterMapping.B), 
@@ -70,11 +56,6 @@ namespace Test.CpuTests
                     new RRCRegisterTestTarget(RegisterMapping.L), 
                     new RRCHLTestTarget(), 
                 };
-
-                return targets
-                    .Select(x => new object[] { x })
-                    .ToList();
-            }
         }
 
         public class RRCRegisterTestTarget : RegisterCBTestTargetBase
