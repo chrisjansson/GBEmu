@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Extensions;
 
@@ -46,7 +45,7 @@ namespace Test.CpuTests
 
         protected override IEnumerable<ICBTestTarget> GetTargets()
         {
-                var targets = new ICBTestTarget[]
+            var targets = new ICBTestTarget[]
                 {
                     new RegisterCBTestTarget(RegisterMapping.A), 
                     new RegisterCBTestTarget(RegisterMapping.B), 
@@ -60,7 +59,19 @@ namespace Test.CpuTests
             return targets;
         }
 
-        public class RLCHLTestTarget : HLCBTestTargetBase
+        private class RegisterCBTestTarget : RegisterCBTestTargetBase
+        {
+            public RegisterCBTestTarget(RegisterMapping register)
+                : base(register) { }
+
+            public override byte OpCode
+            {
+                get { return Register; }
+            }
+
+        }
+
+        private class RLCHLTestTarget : HLCBTestTargetBase
         {
             public override byte OpCode
             {

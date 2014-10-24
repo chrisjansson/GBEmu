@@ -1,24 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Test.CpuTests
 {
-    public class SRA : CpuTestBase
+    public class SRA : CBTestTargetBase
     {
-        [Theory, PropertyData("Targets")]
-        public void Advances_counters(ICBTestTarget target)
-        {
-            target.SetUp(this);
-
-            ExecutingCB(target.OpCode);
-
-            AdvancedProgramCounter(target.InstructionLength);
-            AdvancedClock(target.InstructionTime);
-        }
-
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Resets_half_carry_and_subtract(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -29,7 +17,7 @@ namespace Test.CpuTests
             AssertFlags(x => x.ResetHalfCarry().ResetSubtract());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Shifts_content_right_into_carry(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -42,7 +30,7 @@ namespace Test.CpuTests
             AssertFlags(x => x.SetCarry().ResetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Shifts_content_right_zero(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -55,17 +43,22 @@ namespace Test.CpuTests
             AssertFlags(x => x.ResetCarry().SetZero());
         }
 
-        public class SRARegisterTestTarget : RegisterCBTestTargetBase
+        protected override IEnumerable<ICBTestTarget> GetTargets()
         {
-            public SRARegisterTestTarget(RegisterMapping register) : base(register) { }
-
-            public override byte OpCode
+            return new ICBTestTarget[]
             {
-                get { return (byte)(0x28 | Register); }
-            }
+                new SRARegisterTestTarget(RegisterMapping.A),
+                new SRARegisterTestTarget(RegisterMapping.B),
+                new SRARegisterTestTarget(RegisterMapping.C),
+                new SRARegisterTestTarget(RegisterMapping.D),
+                new SRARegisterTestTarget(RegisterMapping.E),
+                new SRARegisterTestTarget(RegisterMapping.H),
+                new SRARegisterTestTarget(RegisterMapping.L),
+                new SRAHLTestTarget()
+            };
         }
 
-        public class SRAHLTestTarget : HLCBTestTargetBase
+        private class SRAHLTestTarget : HLCBTestTargetBase
         {
             public override byte OpCode
             {
@@ -73,25 +66,15 @@ namespace Test.CpuTests
             }
         }
 
-        public static IEnumerable<object[]> Targets
+        private class SRARegisterTestTarget : RegisterCBTestTargetBase
         {
-            get
+            public SRARegisterTestTarget(RegisterMapping register) : base(register)
             {
-                var targets = new ICBTestTarget[]
-                {
-                    new SRARegisterTestTarget(RegisterMapping.A), 
-                    new SRARegisterTestTarget(RegisterMapping.B), 
-                    new SRARegisterTestTarget(RegisterMapping.C), 
-                    new SRARegisterTestTarget(RegisterMapping.D), 
-                    new SRARegisterTestTarget(RegisterMapping.E), 
-                    new SRARegisterTestTarget(RegisterMapping.H), 
-                    new SRARegisterTestTarget(RegisterMapping.L), 
-                    new SRAHLTestTarget(), 
-                };
+            }
 
-                return targets
-                    .Select(x => new[] { x })
-                    .ToList();
+            public override byte OpCode
+            {
+                get { return (byte) (0x28 | Register); }
             }
         }
     }

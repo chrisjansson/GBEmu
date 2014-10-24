@@ -111,7 +111,6 @@
     <Compile Include="CpuTests\LD_A_HL_sub.cs" />
     <Compile Include="CpuTests\LD_HL_n.cs" />
     <Compile Include="CpuTests\LD_HL_SP.cs" />
-    <Compile Include="CpuTests\RegisterCBTestTarget.cs" />
     <Compile Include="CpuTests\RegisterCBTestTargetBase.cs" />
     <Compile Include="CpuTests\RES_x_HLm.cs" />
     <Compile Include="CpuTests\RES_x_R.cs" />
@@ -200,7 +199,7 @@
     <Compile Include="RRA.cs" />
     <Compile Include="RR.cs" />
     <Compile Include="RST.cs" />
-    <Compile Include="SRL_r.cs" />
+    <Compile Include="SRL.cs" />
     <Compile Include="SUBTestBase.cs" />
     <Compile Include="SUB_HLm.cs" />
     <Compile Include="SUB_n.cs" />

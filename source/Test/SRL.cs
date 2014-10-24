@@ -1,23 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Test.CpuTests;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Test
 {
-    public class SRL_r : CpuTestBase
+    public class SRL : CBTestTargetBase
     {
-        [Theory, PropertyData("Targets")]
-        public void Advances_counters(ICBTestTarget target)
-        {
-            ExecutingCB(target.OpCode);
-
-            AdvancedProgramCounter(target.InstructionLength);
-            AdvancedClock(target.InstructionTime);
-        }
-
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Shifts_contents_right_sets_carry_and_resets_zero(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -30,7 +20,7 @@ namespace Test
             AssertFlags(x => x.SetCarry().ResetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Resets_carry_and_sets_zero(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -42,7 +32,7 @@ namespace Test
             AssertFlags(x => x.ResetCarry().SetZero());
         }
 
-        [Theory, PropertyData("Targets")]
+        [Theory, InstancePropertyData("Targets")]
         public void Subtract_and_half_carry_flags_are_reset(ICBTestTarget target)
         {
             target.SetUp(this);
@@ -53,26 +43,19 @@ namespace Test
             AssertFlags(x => x.ResetSubtract().ResetHalfCarry());
         }
 
-        public static IEnumerable<object[]> Targets
+        protected override IEnumerable<ICBTestTarget> GetTargets()
         {
-            get
+            return new ICBTestTarget[]
             {
-                var targets = new ICBTestTarget[]
-                {
-                    new SRLRegisterTestTarget(RegisterMapping.A), 
-                    new SRLRegisterTestTarget(RegisterMapping.B), 
-                    new SRLRegisterTestTarget(RegisterMapping.C), 
-                    new SRLRegisterTestTarget(RegisterMapping.D), 
-                    new SRLRegisterTestTarget(RegisterMapping.E), 
-                    new SRLRegisterTestTarget(RegisterMapping.H), 
-                    new SRLRegisterTestTarget(RegisterMapping.L), 
-                    new SRLHLTestTarget(), 
-                };
-
-                return targets
-                    .Select(x => new[] { x })
-                    .ToList();
-            }
+                new SRLRegisterTestTarget(RegisterMapping.A),
+                new SRLRegisterTestTarget(RegisterMapping.B),
+                new SRLRegisterTestTarget(RegisterMapping.C),
+                new SRLRegisterTestTarget(RegisterMapping.D),
+                new SRLRegisterTestTarget(RegisterMapping.E),
+                new SRLRegisterTestTarget(RegisterMapping.H),
+                new SRLRegisterTestTarget(RegisterMapping.L),
+                new SRLHLTestTarget(),
+            };
         }
 
         private class SRLRegisterTestTarget : RegisterCBTestTargetBase
