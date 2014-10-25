@@ -1654,17 +1654,6 @@ namespace Core
             N = 0;
         }
 
-        private void RES_HLm(int bit)
-        {
-            var value = _mmu.GetByte(HL);
-            _mmu.SetByte(HL, (byte)(value & 0xFE));
-        }
-
-        private void RES(byte bit, Register register)
-        {
-            _registers[register] = (byte)(_registers[register] & ~(1 << bit));
-        }
-
         private void SLA_r(Register register)
         {
             var argument = _registers[register];

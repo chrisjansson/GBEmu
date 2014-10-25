@@ -142,6 +142,13 @@ namespace Core
             {0x85, new InstructionMetaData(2, 2, "RES 0, L")},
             {0x86, new InstructionMetaData(2, 4, "RES 0, (HL)")},
             {0x87, new InstructionMetaData(2, 2, "RES 0, A")},
+            {0x8E, new InstructionMetaData(2, 4, "RES 1, (HL)")},
+            {0x96, new InstructionMetaData(2, 4, "RES 2, (HL)")},
+            {0x9E, new InstructionMetaData(2, 4, "RES 3, (HL)")},
+            {0xA6, new InstructionMetaData(2, 4, "RES 4, (HL)")},
+            {0xAE, new InstructionMetaData(2, 4, "RES 5, (HL)")},
+            {0xB6, new InstructionMetaData(2, 4, "RES 6, (HL)")},
+            {0xBE, new InstructionMetaData(2, 4, "RES 7, (HL)")},
         };
 
         private void CB()
@@ -557,6 +564,27 @@ namespace Core
                 case 0x87:
                     RES(0, Register.A);
                     break;
+                case 0x8E:
+                    RES_HLm(1);
+                    break;
+                case 0x96:
+                    RES_HLm(2);
+                    break;
+                case 0x9E:
+                    RES_HLm(3);
+                    break;
+                case 0xA6:
+                    RES_HLm(4);
+                    break;
+                case 0xAE:
+                    RES_HLm(5);
+                    break;
+                case 0xB6:
+                    RES_HLm(6);
+                    break;
+                case 0xBE:
+                    RES_HLm(7);
+                    break;
                 default:
                     throw new IllegalOpcodeException(opCode, ProgramCounter);
             }
@@ -564,6 +592,18 @@ namespace Core
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
+        }
+
+        private void RES_HLm(int bit)
+        {
+            var value = _mmu.GetByte(HL);
+            var mask = ~(1 << bit);
+            _mmu.SetByte(HL, (byte)(value & mask));
+        }
+
+        private void RES(byte bit, Register register)
+        {
+            _registers[register] = (byte)(_registers[register] & ~(1 << bit));
         }
     }
 }
