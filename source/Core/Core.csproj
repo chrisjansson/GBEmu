@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cpu.cs" />
+    <Compile Include="Cpu_cb.cs" />
     <Compile Include="Display.cs" />
     <Compile Include="IDisplayDataTransferService.cs" />
     <Compile Include="IJoypad.cs" />
