@@ -9,7 +9,7 @@ namespace Test.CpuTests
 {
     public class BIT_x_HLm : CpuTestBase
     {
-        private ushort _hl;
+        private readonly ushort _hl;
 
         public BIT_x_HLm()
         {

@@ -1185,7 +1185,7 @@ namespace Core
 
         private void AND_n()
         {
-            var argument = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            var argument = _mmu.GetByte((ushort)(ProgramCounter + 1));
             AND(argument);
         }
 
@@ -1355,8 +1355,8 @@ namespace Core
         private void AND(byte argument)
         {
             var result = A & argument;
-            A = (byte) result;
-            Z = (byte) (result == 0 ? 1 : 0);
+            A = (byte)result;
+            Z = (byte)(result == 0 ? 1 : 0);
             N = 0;
             HC = 1;
             Carry = 0;
@@ -1841,6 +1841,9 @@ namespace Core
                 case 0x45:
                     BIT(0, Register.L);
                     break;
+                case 0x46:
+                    BIT_HLm(0);
+                    break;
                 case 0x47:
                     BIT(0, Register.A);
                     break;
@@ -1861,6 +1864,9 @@ namespace Core
                     break;
                 case 0x4D:
                     BIT(1, Register.L);
+                    break;
+                case 0x4E:
+                    BIT_HLm(1);
                     break;
                 case 0x50:
                     BIT(2, Register.B);
@@ -1886,6 +1892,9 @@ namespace Core
                 case 0x52:
                     BIT(2, Register.D);
                     break;
+                case 0x56:
+                    BIT_HLm(2);
+                    break;
                 case 0x57:
                     BIT(2, Register.A);
                     break;
@@ -1903,6 +1912,9 @@ namespace Core
                     break;
                 case 0x5D:
                     BIT(3, Register.L);
+                    break;
+                case 0x5E:
+                    BIT_HLm(3);
                     break;
                 case 0x5F:
                     BIT(3, Register.A);
@@ -1925,6 +1937,9 @@ namespace Core
                 case 0x65:
                     BIT(4, Register.L);
                     break;
+                case 0x66:
+                    BIT_HLm(4);
+                    break;
                 case 0x67:
                     BIT(4, Register.A);
                     break;
@@ -1946,6 +1961,9 @@ namespace Core
                 case 0x6D:
                     BIT(5, Register.L);
                     break;
+                case 0x6E:
+                    BIT_HLm(5);
+                    break;
                 case 0x6F:
                     BIT(5, Register.A);
                     break;
@@ -1966,6 +1984,9 @@ namespace Core
                     break;
                 case 0x75:
                     BIT(6, Register.L);
+                    break;
+                case 0x76:
+                    BIT_HLm(6);
                     break;
                 case 0x77:
                     BIT(6, Register.A);
@@ -2085,8 +2106,8 @@ namespace Core
 
         private void BIT_HLm(int bit)
         {
-            var value = _mmu.GetByte(HL);
-            Z = (byte)((value & 0x80) == 0x80 ? 0 : 1);
+            var value = (_mmu.GetByte(HL) >> bit);
+            Z = (byte)(~value & 0x01);
             HC = 1;
             N = 0;
         }
@@ -2174,6 +2195,7 @@ namespace Core
             {0x43, new InstructionMetaData(2, 2, "BIT 0, E")},
             {0x44, new InstructionMetaData(2, 2, "BIT 0, H")},
             {0x45, new InstructionMetaData(2, 2, "BIT 0, L")},
+            {0x46, new InstructionMetaData(2, 4, "BIT 0, (HL)")},
             {0x47, new InstructionMetaData(2, 2, "BIT 0, A")},
             {0x48, new InstructionMetaData(2, 2, "BIT 1, B")},
             {0x49, new InstructionMetaData(2, 2, "BIT 1, C")},
@@ -2181,6 +2203,7 @@ namespace Core
             {0x4B, new InstructionMetaData(2, 2, "BIT 1, E")},
             {0x4C, new InstructionMetaData(2, 2, "BIT 1, H")},
             {0x4D, new InstructionMetaData(2, 2, "BIT 1, L")},
+            {0x4E, new InstructionMetaData(2, 4, "BIT 1, (HL)")},
             {0x50, new InstructionMetaData(2, 2, "BIT 2, B")},
             {0x4F, new InstructionMetaData(2, 2, "BIT 1, A")},
             {0x51, new InstructionMetaData(2, 2, "BIT 2, C")},
@@ -2188,6 +2211,7 @@ namespace Core
             {0x53, new InstructionMetaData(2, 2, "BIT 2, E")},
             {0x54, new InstructionMetaData(2, 2, "BIT 2, H")},
             {0x55, new InstructionMetaData(2, 2, "BIT 2, L")},
+            {0x56, new InstructionMetaData(2, 4, "BIT 2, (HL)")},
             {0x57, new InstructionMetaData(2, 2, "BIT 2, A")},
             {0x58, new InstructionMetaData(2, 2, "BIT 3, B")},
             {0x59, new InstructionMetaData(2, 2, "BIT 3, C")},
@@ -2195,6 +2219,7 @@ namespace Core
             {0x5B, new InstructionMetaData(2, 2, "BIT 3, E")},
             {0x5C, new InstructionMetaData(2, 2, "BIT 3, H")},
             {0x5D, new InstructionMetaData(2, 2, "BIT 3, L")},
+            {0x5E, new InstructionMetaData(2, 4, "BIT 3, (HL)")},
             {0x5F, new InstructionMetaData(2, 2, "BIT 3, A")},
             {0x60, new InstructionMetaData(2, 2, "BIT 4, B")},
             {0x61, new InstructionMetaData(2, 2, "BIT 4, C")},
@@ -2202,13 +2227,15 @@ namespace Core
             {0x63, new InstructionMetaData(2, 2, "BIT 4, E")},
             {0x64, new InstructionMetaData(2, 2, "BIT 4, H")},
             {0x65, new InstructionMetaData(2, 2, "BIT 4, L")},
+            {0x66, new InstructionMetaData(2, 4, "BIT 4, (HL)")},
             {0x67, new InstructionMetaData(2, 2, "BIT 4, A")},
             {0x68, new InstructionMetaData(2, 2, "BIT 5, B")},
             {0x69, new InstructionMetaData(2, 2, "BIT 5, C")},
             {0x6A, new InstructionMetaData(2, 2, "BIT 5, D")},
             {0x6B, new InstructionMetaData(2, 2, "BIT 5, E")},
             {0x6C, new InstructionMetaData(2, 2, "BIT 5, H")},
-            {0x6D, new InstructionMetaData(2, 2, "BIT 6, L")},
+            {0x6D, new InstructionMetaData(2, 2, "BIT 5, L")},
+            {0x6E, new InstructionMetaData(2, 4, "BIT 5, (HL)")},
             {0x6F, new InstructionMetaData(2, 2, "BIT 5, A")},
             {0x70, new InstructionMetaData(2, 2, "BIT 6, B")},
             {0x71, new InstructionMetaData(2, 2, "BIT 6, C")},
@@ -2216,6 +2243,7 @@ namespace Core
             {0x73, new InstructionMetaData(2, 2, "BIT 6, E")},
             {0x74, new InstructionMetaData(2, 2, "BIT 6, H")},
             {0x75, new InstructionMetaData(2, 2, "BIT 6, L")},
+            {0x76, new InstructionMetaData(2, 4, "BIT 6, (HL)")},
             {0x77, new InstructionMetaData(2, 2, "BIT 6, A")},
             {0x78, new InstructionMetaData(2, 2, "BIT 7, B")},
             {0x79, new InstructionMetaData(2, 2, "BIT 7, C")},
@@ -2246,9 +2274,9 @@ namespace Core
         {
             HC = 0;
             N = 0;
-            Carry = (byte) ((argument & 0x80) >> 7);
-            var result = (byte) (argument << 1);
-            Z = (byte) (result == 0 ? 1 : 0);
+            Carry = (byte)((argument & 0x80) >> 7);
+            var result = (byte)(argument << 1);
+            Z = (byte)(result == 0 ? 1 : 0);
             return result;
         }
 
@@ -2263,9 +2291,9 @@ namespace Core
         {
             N = 0;
             HC = 0;
-            var result = (byte) ((argument >> 1) | (argument & 0x80));
-            Carry = (byte) (argument & 0x01);
-            Z = (byte) (result == 0 ? 1 : 0);
+            var result = (byte)((argument >> 1) | (argument & 0x80));
+            Carry = (byte)(argument & 0x01);
+            Z = (byte)(result == 0 ? 1 : 0);
             return result;
         }
 
@@ -2278,9 +2306,9 @@ namespace Core
         private byte RRC(byte argument)
         {
             var bit0 = (argument & 0x01);
-            var result = (byte) ((argument >> 1) | (bit0 << 7));
-            Carry = (byte) bit0;
-            Z = (byte) (result == 0 ? 1 : 0);
+            var result = (byte)((argument >> 1) | (bit0 << 7));
+            Carry = (byte)bit0;
+            Z = (byte)(result == 0 ? 1 : 0);
             N = 0;
             HC = 0;
             return result;
@@ -2313,8 +2341,8 @@ namespace Core
 
         private byte SWAP(byte argument)
         {
-            var result = (byte) (((argument >> 4) & 0x0F) | ((argument << 4) & 0xF0));
-            Z = (byte) (argument == 0 ? 1 : 0);
+            var result = (byte)(((argument >> 4) & 0x0F) | ((argument << 4) & 0xF0));
+            Z = (byte)(argument == 0 ? 1 : 0);
             Carry = 0;
             N = 0;
             HC = 0;
@@ -2330,11 +2358,11 @@ namespace Core
 
         private byte RL(byte argument)
         {
-            var result = (byte) ((argument << 1) | Carry);
-            Carry = (byte) ((argument & 0x80) == 0 ? 0 : 1);
+            var result = (byte)((argument << 1) | Carry);
+            Carry = (byte)((argument & 0x80) == 0 ? 0 : 1);
             HC = 0;
             N = 0;
-            Z = (byte) (result == 0 ? 1 : 0);
+            Z = (byte)(result == 0 ? 1 : 0);
             return result;
         }
 
@@ -2354,9 +2382,9 @@ namespace Core
 
         private byte RR(byte argument)
         {
-            var result = (byte) (argument >> 1 | (Carry << 7));
-            Carry = (byte) ((argument & 0x01) == 0x01 ? 1 : 0);
-            Z = (byte) (result == 0 ? 1 : 0);
+            var result = (byte)(argument >> 1 | (Carry << 7));
+            Carry = (byte)((argument & 0x01) == 0x01 ? 1 : 0);
+            Z = (byte)(result == 0 ? 1 : 0);
             HC = 0;
             N = 0;
             return result;
@@ -2371,9 +2399,9 @@ namespace Core
 
         private byte SRL(byte argument)
         {
-            Carry = (byte) ((argument & 0x01) == 0x01 ? 1 : 0);
-            var result = (byte) (argument >> 1);
-            Z = (byte) (result == 0 ? 1 : 0);
+            Carry = (byte)((argument & 0x01) == 0x01 ? 1 : 0);
+            var result = (byte)(argument >> 1);
+            Z = (byte)(result == 0 ? 1 : 0);
             N = 0;
             HC = 0;
             return result;
