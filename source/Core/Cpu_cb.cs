@@ -149,6 +149,14 @@ namespace Core
             {0xAE, new InstructionMetaData(2, 4, "RES 5, (HL)")},
             {0xB6, new InstructionMetaData(2, 4, "RES 6, (HL)")},
             {0xBE, new InstructionMetaData(2, 4, "RES 7, (HL)")},
+            {0xC6, new InstructionMetaData(2, 4, "SET 0, (HL)")},
+            {0xCE, new InstructionMetaData(2, 4, "SET 1, (HL)")},
+            {0xD6, new InstructionMetaData(2, 4, "SET 2, (HL)")},
+            {0xDE, new InstructionMetaData(2, 4, "SET 3, (HL)")},
+            {0xE6, new InstructionMetaData(2, 4, "SET 4, (HL)")},
+            {0xEE, new InstructionMetaData(2, 4, "SET 5, (HL)")},
+            {0xF6, new InstructionMetaData(2, 4, "SET 6, (HL)")},
+            {0xFE, new InstructionMetaData(2, 4, "SET 7, (HL)")},
         };
 
         private void CB()
@@ -585,6 +593,30 @@ namespace Core
                 case 0xBE:
                     RES_HLm(7);
                     break;
+                case 0xC6:
+                    SET_HLm(0);
+                    break;
+                case 0xCE:
+                    SET_HLm(1);
+                    break;
+                case 0xD6:
+                    SET_HLm(2);
+                    break;
+                case 0xDE:
+                    SET_HLm(3);
+                    break;
+                case 0xE6:
+                    SET_HLm(4);
+                    break;
+                case 0xEE:
+                    SET_HLm(5);
+                    break;
+                case 0xF6:
+                    SET_HLm(6);
+                    break;
+                case 0xFE:
+                    SET_HLm(7);
+                    break;
                 default:
                     throw new IllegalOpcodeException(opCode, ProgramCounter);
             }
@@ -592,6 +624,13 @@ namespace Core
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
+        }
+
+        private void SET_HLm(int bit)
+        {
+            var value = _mmu.GetByte(HL);
+            var result = value | (1 << bit);
+            _mmu.SetByte(HL, (byte) result);
         }
 
         private void RES_HLm(int bit)
