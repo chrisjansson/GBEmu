@@ -89,6 +89,7 @@
     <Compile Include="CpuTests\ANDTestTempate.cs" />
     <Compile Include="CpuTests\AND_n.cs" />
     <Compile Include="CpuTests\AND_r.cs" />
+    <Compile Include="CpuTests\BIT_x_HLm.cs" />
     <Compile Include="CpuTests\CBTestTargetBase.cs" />
     <Compile Include="CpuTests\CCF.cs" />
     <Compile Include="CpuTests\CPL.cs" />
