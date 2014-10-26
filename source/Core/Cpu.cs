@@ -46,6 +46,7 @@ namespace Core
             { 0x24, new InstructionMetaData(1, 1, "INC H")},
             { 0x25, new InstructionMetaData(1, 1, "DEC H")},
             { 0x26, new InstructionMetaData(2, 2, "LD H, n")},
+            { 0x27, new InstructionMetaData(1, 1, "DAA")},
             { 0x28, new InstructionMetaData(0, 0, "JR Z, $ + e")},
             { 0x29, new InstructionMetaData(1, 2, "ADD HL, HL")},
             { 0x2A, new InstructionMetaData(1, 2, "LD A, (HLI)")},
@@ -473,6 +474,9 @@ namespace Core
                     break;
                 case 0x26:
                     LD_r_n(Register.H);
+                    break;
+                case 0x27:
+                    DAA();
                     break;
                 case 0x28:
                     var n = ((sbyte)_mmu.GetByte((ushort)(ProgramCounter + 1))) + 2;
@@ -1138,6 +1142,24 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void DAA()
+        {
+            var l = A & 0xF;
+            var h = (A & 0xF0) >> 4;
+            int adjustement = 0;
+            if (l > 9)
+                adjustement = 6;
+            if (h > 8)
+                adjustement |= 0x60;
+            if (HC == 1)
+                adjustement = 6;
+
+            var result = (A + adjustement);
+            A = (byte) result;
+            HC = 0;
+            Carry = (byte) (result > 0xFF ? 1 : 0);
         }
 
         private void AND_HLm()

@@ -93,6 +93,7 @@
     <Compile Include="CpuTests\CBTestTargetBase.cs" />
     <Compile Include="CpuTests\CCF.cs" />
     <Compile Include="CpuTests\CPL.cs" />
+    <Compile Include="CpuTests\DAA.cs" />
     <Compile Include="CpuTests\DEC_ss.cs" />
     <Compile Include="CpuTests\EI.cs" />
     <Compile Include="CpuTests\Flags.cs" />
