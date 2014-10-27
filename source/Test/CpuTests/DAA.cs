@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Xunit;
 using Xunit.Extensions;
 
 namespace Test.CpuTests
@@ -26,23 +28,62 @@ namespace Test.CpuTests
             AssertFlags(x => x.ResetHalfCarry());
         }
 
-        [Theory]
-        [InlineData(0, 0, 0x99, 0x99, 0)]
-        [InlineData(0, 0, 0x8A, 0x90, 0)]
-        [InlineData(0, 1, 0x93, 0x99, 0)]
-        [InlineData(0, 0, 0xA9, 0x09, 1)]
-        [InlineData(0, 0, 0x9A, 0x00, 1)]
-        public void Adjusts_accumulator_add(int c, int hc, int a, int expectedA, int expectedC)
+        [Fact]
+        public void Corrects_0x60_when_A_is_greater_than_0x99()
         {
-            Cpu.N = 0;
-            Cpu.Carry = (byte)c;
-            Cpu.HC = (byte)hc;
-            Cpu.A = (byte)a;
+            Flags(x => x.ResetCarry().ResetHalfCarry());
+            Cpu.A = 0xA0;
 
             Execute(OpCode);
 
-            Assert.Equal(expectedA, Cpu.A);
-            Assert.Equal(expectedC, Cpu.Carry);
+            Assert.Equal(0x00, Cpu.A);
+            AssertFlags(x => x.SetCarry());
+        }
+
+        [Fact]
+        public void Corrects_0x60_when_carry_is_set()
+        {
+            Flags(x => x.Carry().ResetHalfCarry());
+            Cpu.A = 0;
+
+            Execute(OpCode);
+
+            Assert.Equal(0x60, Cpu.A);
+            AssertFlags(x => x.SetCarry());
+        }
+
+        [Fact]
+        public void Clears_carry_when_A_is_less_than_0x99()
+        {
+            Flags(x => x.ResetCarry().ResetHalfCarry());
+            Cpu.A = 0;
+
+            Execute(OpCode);
+
+            Assert.Equal(0, Cpu.A);
+            AssertFlags(x => x.ResetCarry());
+        }
+
+        [Fact]
+        public void Corrects_0x06_when_lower_4_are_greater_than_0x09()
+        {
+            Flags(x => x.ResetHalfCarry().ResetCarry());
+            Cpu.A = 0x0A;
+
+            Execute(OpCode);
+
+            Assert.Equal(0x10, Cpu.A);
+        }
+
+        [Fact]
+        public void Corrects_0x06_when_half_carry_is_set()
+        {
+            Flags(x => x.ResetCarry().HalfCarry());
+            Cpu.A = 0x00;
+
+            Execute(OpCode);
+
+            Assert.Equal(0x06, Cpu.A);
         }
     }
 }
