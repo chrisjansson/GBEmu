@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Xunit;
-using Xunit.Extensions;
+﻿using Xunit;
 
 namespace Test.CpuTests
 {
@@ -28,62 +25,149 @@ namespace Test.CpuTests
             AssertFlags(x => x.ResetHalfCarry());
         }
 
-        [Fact]
-        public void Corrects_0x60_when_A_is_greater_than_0x99()
+        public class DAA_Add : CpuTestBase
         {
-            Flags(x => x.ResetCarry().ResetHalfCarry());
-            Cpu.A = 0xA0;
+            [Fact]
+            public void Corrects_0x60_when_A_is_greater_than_0x99()
+            {
+                Flags(x => x.ResetCarry().ResetHalfCarry());
+                Cpu.N = 0;
+                Cpu.A = 0xA0;
 
-            Execute(OpCode);
+                Execute(OpCode);
 
-            Assert.Equal(0x00, Cpu.A);
-            AssertFlags(x => x.SetCarry());
+                Assert.Equal(0x00, Cpu.A);
+                AssertFlags(x => x.SetCarry());
+            }
+
+            [Fact]
+            public void Corrects_0x60_when_carry_is_set()
+            {
+                Flags(x => x.Carry().ResetHalfCarry());
+                Cpu.N = 0;
+                Cpu.A = 0;
+
+                Execute(OpCode);
+
+                Assert.Equal(0x60, Cpu.A);
+                AssertFlags(x => x.SetCarry());
+            }
+
+            [Fact]
+            public void Clears_carry_when_A_is_less_than_0x99()
+            {
+                Flags(x => x.ResetCarry().ResetHalfCarry());
+                Cpu.N = 0;
+                Cpu.A = 0;
+
+                Execute(OpCode);
+
+                Assert.Equal(0, Cpu.A);
+                AssertFlags(x => x.ResetCarry());
+            }
+
+            [Fact]
+            public void Corrects_0x06_when_lower_4_are_greater_than_0x09()
+            {
+                Flags(x => x.ResetHalfCarry().ResetCarry());
+                Cpu.N = 0;
+                Cpu.A = 0x0A;
+
+                Execute(OpCode);
+
+                Assert.Equal(0x10, Cpu.A);
+            }
+
+            [Fact]
+            public void Corrects_0x06_when_half_carry_is_set()
+            {
+                Flags(x => x.ResetCarry().HalfCarry());
+                Cpu.N = 0;
+                Cpu.A = 0x00;
+
+                Execute(OpCode);
+
+                Assert.Equal(0x06, Cpu.A);
+            }
+
+            [Fact]
+            public void Corrects_0x66_when_A_is_greater_than_0x99_and_lower_four_bits_are_greater_than_0x09()
+            {
+                Flags(x => x.ResetCarry().ResetHalfCarry());
+                Cpu.N = 0;
+                Cpu.A = 0xAA;
+
+                Execute(OpCode);
+
+                Assert.Equal(0x10, Cpu.A);
+                AssertFlags(x => x.SetCarry());
+            }
         }
 
-        [Fact]
-        public void Corrects_0x60_when_carry_is_set()
+        public class DAA_Subtract : CpuTestBase
         {
-            Flags(x => x.Carry().ResetHalfCarry());
-            Cpu.A = 0;
+            [Fact]
+            public void Corrects_0x60_when_A_is_greater_than_0x99()
+            {
+                Flags(x => x.ResetCarry().ResetHalfCarry());
+                Cpu.N = 1;
+                Cpu.A = 0xA0;
 
-            Execute(OpCode);
+                Execute(OpCode);
 
-            Assert.Equal(0x60, Cpu.A);
-            AssertFlags(x => x.SetCarry());
-        }
+                Assert.Equal(0x40, Cpu.A);
+                AssertFlags(x => x.SetCarry());
+            }
 
-        [Fact]
-        public void Clears_carry_when_A_is_less_than_0x99()
-        {
-            Flags(x => x.ResetCarry().ResetHalfCarry());
-            Cpu.A = 0;
+            [Fact]
+            public void Corrects_0x60_when_carry_is_set()
+            {
+                Flags(x => x.Carry().ResetHalfCarry());
+                Cpu.N = 1;
+                Cpu.A = 0;
 
-            Execute(OpCode);
+                Execute(OpCode);
 
-            Assert.Equal(0, Cpu.A);
-            AssertFlags(x => x.ResetCarry());
-        }
+                Assert.Equal(0xA0, Cpu.A);
+                AssertFlags(x => x.SetCarry());
+            }
 
-        [Fact]
-        public void Corrects_0x06_when_lower_4_are_greater_than_0x09()
-        {
-            Flags(x => x.ResetHalfCarry().ResetCarry());
-            Cpu.A = 0x0A;
+            [Fact]
+            public void Clears_carry_when_A_is_less_than_0x99()
+            {
+                Flags(x => x.ResetCarry().ResetHalfCarry());
+                Cpu.N = 1;
+                Cpu.A = 0;
 
-            Execute(OpCode);
+                Execute(OpCode);
 
-            Assert.Equal(0x10, Cpu.A);
-        }
+                Assert.Equal(0, Cpu.A);
+                AssertFlags(x => x.ResetCarry());
+            }
 
-        [Fact]
-        public void Corrects_0x06_when_half_carry_is_set()
-        {
-            Flags(x => x.ResetCarry().HalfCarry());
-            Cpu.A = 0x00;
+            [Fact]
+            public void Corrects_0x06_when_lower_4_are_greater_than_0x09()
+            {
+                Flags(x => x.ResetHalfCarry().ResetCarry());
+                Cpu.N = 1;
+                Cpu.A = 0x0A;
 
-            Execute(OpCode);
+                Execute(OpCode);
 
-            Assert.Equal(0x06, Cpu.A);
+                Assert.Equal(0x4, Cpu.A);
+            }
+
+            [Fact]
+            public void Corrects_0x06_when_half_carry_is_set()
+            {
+                Flags(x => x.ResetCarry().HalfCarry());
+                Cpu.N = 1;
+                Cpu.A = 0x00;
+
+                Execute(OpCode);
+
+                Assert.Equal(0xFA, Cpu.A);
+            }
         }
     }
 }

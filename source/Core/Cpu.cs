@@ -1158,7 +1158,12 @@ namespace Core
             else
                 Carry = 0;
 
-            var result = (A + adjustement);
+            int result;
+            if (N == 1)
+                result = A - adjustement;
+            else
+                result = A + adjustement;
+            
             HC = 0;
             A = (byte)result;
         }
