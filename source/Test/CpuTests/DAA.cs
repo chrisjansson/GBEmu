@@ -107,66 +107,29 @@ namespace Test.CpuTests
         public class DAA_Subtract : CpuTestBase
         {
             [Fact]
-            public void Corrects_0x60_when_A_is_greater_than_0x99()
+            public void Subtracts_0x06_if_half_carry()
             {
-                Flags(x => x.ResetCarry().ResetHalfCarry());
+                Flags(x => x.ResetCarry().HalfCarry());
                 Cpu.N = 1;
-                Cpu.A = 0xA0;
+                Cpu.A = 0xAA;
 
                 Execute(OpCode);
 
-                Assert.Equal(0x40, Cpu.A);
-                AssertFlags(x => x.SetCarry());
-            }
-
-            [Fact]
-            public void Corrects_0x60_when_carry_is_set()
-            {
-                Flags(x => x.Carry().ResetHalfCarry());
-                Cpu.N = 1;
-                Cpu.A = 0;
-
-                Execute(OpCode);
-
-                Assert.Equal(0xA0, Cpu.A);
-                AssertFlags(x => x.SetCarry());
-            }
-
-            [Fact]
-            public void Clears_carry_when_A_is_less_than_0x99()
-            {
-                Flags(x => x.ResetCarry().ResetHalfCarry());
-                Cpu.N = 1;
-                Cpu.A = 0;
-
-                Execute(OpCode);
-
-                Assert.Equal(0, Cpu.A);
+                Assert.Equal(0xA4, Cpu.A);
                 AssertFlags(x => x.ResetCarry());
             }
 
             [Fact]
-            public void Corrects_0x06_when_lower_4_are_greater_than_0x09()
+            public void Subtracts_0x60_if_carry()
             {
-                Flags(x => x.ResetHalfCarry().ResetCarry());
+                Flags(x => x.Carry().ResetHalfCarry());
                 Cpu.N = 1;
-                Cpu.A = 0x0A;
+                Cpu.A = 0xAA;
 
                 Execute(OpCode);
 
-                Assert.Equal(0x4, Cpu.A);
-            }
-
-            [Fact]
-            public void Corrects_0x06_when_half_carry_is_set()
-            {
-                Flags(x => x.ResetCarry().HalfCarry());
-                Cpu.N = 1;
-                Cpu.A = 0x00;
-
-                Execute(OpCode);
-
-                Assert.Equal(0xFA, Cpu.A);
+                Assert.Equal(0x4A, Cpu.A);
+                AssertFlags(x => x.SetCarry());
             }
         }
     }

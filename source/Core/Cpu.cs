@@ -1146,26 +1146,31 @@ namespace Core
 
         private void DAA()
         {
-            var l = A & 0xF;
-            int adjustement = 0;
-            if (l > 9 || HC == 1)
-                adjustement = 6;
-            if (A > 0x99 || Carry == 1)
+            int a = A;
+            if (N == 0)
             {
-                adjustement |= 0x60;
-                Carry = 1;
+                if (HC == 1 || (a & 0xF) > 9)
+                    a += 0x06;
+
+                if (Carry == 1 || a > 0x9F)
+                    a += 0x60;
             }
             else
-                Carry = 0;
+            {
+                if (HC == 1)
+                    a = (a - 6) & 0xFF;
 
-            int result;
-            if (N == 1)
-                result = A - adjustement;
-            else
-                result = A + adjustement;
-            
+                if (Carry == 1)
+                    a -= 0x60;
+            }
+
             HC = 0;
-            A = (byte)result;
+
+            if ((a & 0x100) == 0x100)
+                Carry = 1;
+
+            A = (byte)a;
+            Z = (byte) (A == 0 ? 1 : 0);
         }
 
         private void AND_HLm()
