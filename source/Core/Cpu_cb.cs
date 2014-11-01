@@ -142,18 +142,25 @@ namespace Core
             {0x85, new InstructionMetaData(2, 2, "RES 0, L")},
             {0x86, new InstructionMetaData(2, 4, "RES 0, (HL)")},
             {0x87, new InstructionMetaData(2, 2, "RES 0, A")},
+            {0x88, new InstructionMetaData(2, 2, "RES 1, B")},
             {0x8E, new InstructionMetaData(2, 4, "RES 1, (HL)")},
             {0x8F, new InstructionMetaData(2, 2, "RES 1, A")},
+            {0x90, new InstructionMetaData(2, 2, "RES 2, B")},
             {0x96, new InstructionMetaData(2, 4, "RES 2, (HL)")},
             {0x97, new InstructionMetaData(2, 2, "RES 2, A")},
+            {0x98, new InstructionMetaData(2, 2, "RES 3, B")},
             {0x9E, new InstructionMetaData(2, 4, "RES 3, (HL)")},
             {0x9F, new InstructionMetaData(2, 2, "RES 3, A")},
+            {0xA0, new InstructionMetaData(2, 2, "RES 4, B")},
             {0xA6, new InstructionMetaData(2, 4, "RES 4, (HL)")},
             {0xA7, new InstructionMetaData(2, 2, "RES 4, A")},
+            {0xA8, new InstructionMetaData(2, 2, "RES 5, B")},
             {0xAE, new InstructionMetaData(2, 4, "RES 5, (HL)")},
             {0xAF, new InstructionMetaData(2, 2, "RES 5, A")},
+            {0xB0, new InstructionMetaData(2, 2, "RES 6, B")},
             {0xB6, new InstructionMetaData(2, 4, "RES 6, (HL)")},
             {0xB7, new InstructionMetaData(2, 2, "RES 6, A")},
+            {0xB8, new InstructionMetaData(2, 2, "RES 7, B")},
             {0xBE, new InstructionMetaData(2, 4, "RES 7, (HL)")},
             {0xBF, new InstructionMetaData(2, 2, "RES 7, A")},
             {0xC6, new InstructionMetaData(2, 4, "SET 0, (HL)")},
@@ -579,11 +586,17 @@ namespace Core
                 case 0x87:
                     RES(0, Register.A);
                     break;
+                case 0x88:
+                    RES(1, Register.B);
+                    break;
                 case 0x8E:
                     RES_HLm(1);
                     break;
                 case 0x8F:
                     RES(1, Register.A);
+                    break;
+                case 0x90:
+                    RES(2, Register.B);
                     break;
                 case 0x96:
                     RES_HLm(2);
@@ -591,11 +604,17 @@ namespace Core
                 case 0x97:
                     RES(2, Register.A);
                     break;
+                case 0x98:
+                    RES(3, Register.B);
+                    break;
                 case 0x9E:
                     RES_HLm(3);
                     break;
                 case 0x9F:
                     RES(3, Register.A);
+                    break;
+                case 0xA0:
+                    RES(4, Register.B);
                     break;
                 case 0xA6:
                     RES_HLm(4);
@@ -603,17 +622,26 @@ namespace Core
                 case 0xA7:
                     RES(4, Register.A);
                     break;
+                case 0xA8:
+                    RES(5, Register.B);
+                    break;
                 case 0xAE:
                     RES_HLm(5);
                     break;
                 case 0xAF:
                     RES(5, Register.A);
                     break;
+                case 0xB0:
+                    RES(6, Register.B);
+                    break;
                 case 0xB6:
                     RES_HLm(6);
                     break;
                 case 0xB7:
                     RES(6, Register.A);
+                    break;
+                case 0xB8:
+                    RES(7, Register.B);
                     break;
                 case 0xBE:
                     RES_HLm(7);
