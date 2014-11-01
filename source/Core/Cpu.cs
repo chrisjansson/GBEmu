@@ -224,6 +224,7 @@ namespace Core
             { 0xD9, new InstructionMetaData(0, 4, "RETI")},
             { 0xDA, new InstructionMetaData(0, 0, "JP C, nn")},
             { 0xDC, new InstructionMetaData(0, 0, "CALL C, nn")},
+            { 0xDE, new InstructionMetaData(2, 2, "SBC A, n")},
             { 0xDF, new InstructionMetaData(0, 4, "RST 18H")},
             { 0xE0, new InstructionMetaData(2, 3, "LD (FFn), A")},
             { 0xE1, new InstructionMetaData(1, 3, "POP HL")},
@@ -1041,6 +1042,9 @@ namespace Core
                 case 0xDC:
                     Call_cc(Carry == 1);
                     break;
+                case 0xDE:
+                    SBC_n();
+                    break;
                 case 0xDF:
                     RST(0x18);
                     break;
@@ -1142,6 +1146,12 @@ namespace Core
                 ProgramCounter += _instructionMetaData[opcode].Size;
                 Cycles += _instructionMetaData[opcode].Cycles;
             }
+        }
+
+        private void SBC_n()
+        {
+            var arg = _mmu.GetByte((ushort) (ProgramCounter + 1));
+            SBC(arg);
         }
 
         private void DAA()
