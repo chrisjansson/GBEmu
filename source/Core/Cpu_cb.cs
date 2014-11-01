@@ -143,12 +143,19 @@ namespace Core
             {0x86, new InstructionMetaData(2, 4, "RES 0, (HL)")},
             {0x87, new InstructionMetaData(2, 2, "RES 0, A")},
             {0x8E, new InstructionMetaData(2, 4, "RES 1, (HL)")},
+            {0x8F, new InstructionMetaData(2, 2, "RES 1, A")},
             {0x96, new InstructionMetaData(2, 4, "RES 2, (HL)")},
+            {0x97, new InstructionMetaData(2, 2, "RES 2, A")},
             {0x9E, new InstructionMetaData(2, 4, "RES 3, (HL)")},
+            {0x9F, new InstructionMetaData(2, 2, "RES 3, A")},
             {0xA6, new InstructionMetaData(2, 4, "RES 4, (HL)")},
+            {0xA7, new InstructionMetaData(2, 2, "RES 4, A")},
             {0xAE, new InstructionMetaData(2, 4, "RES 5, (HL)")},
+            {0xAF, new InstructionMetaData(2, 2, "RES 5, A")},
             {0xB6, new InstructionMetaData(2, 4, "RES 6, (HL)")},
+            {0xB7, new InstructionMetaData(2, 2, "RES 6, A")},
             {0xBE, new InstructionMetaData(2, 4, "RES 7, (HL)")},
+            {0xBF, new InstructionMetaData(2, 2, "RES 7, A")},
             {0xC6, new InstructionMetaData(2, 4, "SET 0, (HL)")},
             {0xCE, new InstructionMetaData(2, 4, "SET 1, (HL)")},
             {0xD6, new InstructionMetaData(2, 4, "SET 2, (HL)")},
@@ -545,7 +552,7 @@ namespace Core
                 case 0x7E:
                     BIT_HLm(7);
                     break;
-                case 0x7f:
+                case 0x7F:
                     BIT(7, Register.A);
                     break;
                 case 0x80:
@@ -575,23 +582,44 @@ namespace Core
                 case 0x8E:
                     RES_HLm(1);
                     break;
+                case 0x8F:
+                    RES(1, Register.A);
+                    break;
                 case 0x96:
                     RES_HLm(2);
+                    break;
+                case 0x97:
+                    RES(2, Register.A);
                     break;
                 case 0x9E:
                     RES_HLm(3);
                     break;
+                case 0x9F:
+                    RES(3, Register.A);
+                    break;
                 case 0xA6:
                     RES_HLm(4);
+                    break;
+                case 0xA7:
+                    RES(4, Register.A);
                     break;
                 case 0xAE:
                     RES_HLm(5);
                     break;
+                case 0xAF:
+                    RES(5, Register.A);
+                    break;
                 case 0xB6:
                     RES_HLm(6);
                     break;
+                case 0xB7:
+                    RES(6, Register.A);
+                    break;
                 case 0xBE:
                     RES_HLm(7);
+                    break;
+                case 0xBF:
+                    RES(7, Register.A);
                     break;
                 case 0xC6:
                     SET_HLm(0);
@@ -621,6 +649,8 @@ namespace Core
                     throw new IllegalOpcodeException(opCode, ProgramCounter);
             }
 
+            if (!_cbInstructions.ContainsKey(opCode))
+                throw new IllegalOpcodeException(opCode, ProgramCounter);
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
@@ -630,7 +660,7 @@ namespace Core
         {
             var value = _mmu.GetByte(HL);
             var result = value | (1 << bit);
-            _mmu.SetByte(HL, (byte) result);
+            _mmu.SetByte(HL, (byte)result);
         }
 
         private void RES_HLm(int bit)
