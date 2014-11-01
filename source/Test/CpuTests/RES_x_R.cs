@@ -1,33 +1,67 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 using Xunit.Extensions;
 
 namespace Test.CpuTests
 {
-    public abstract class RES_x_R : CBRegisterTestBase
+    public class RES_x_R : CBTestTargetBase
     {
-        [Theory, PropertyData("Registers")]
-        public void Resets_bit(RegisterMapping register)
+        [Theory, InstancePropertyData("Targets")]
+        public void Resets_bit(IRESxR_CBTestTarget target)
         {
-            Set(register, 0xFF);
+            target.SetUp(this);
+            target.ArrangeArgument(0xFF);
 
-            ExecutingCB(CreateOpCode(register));
+            ExecutingCB(target.OpCode);
 
-            var expected = 0xFF & ~(1 << Bit);
-            Assert.Equal(expected, register.Get(Cpu));
+            Assert.Equal(target.Expected, target.Actual);
         }
 
-        protected override byte CreateOpCode(RegisterMapping register)
+        protected override IEnumerable<ICBTestTarget> GetTargets()
         {
-            return (byte)(0x80 | register | (Bit << 3));
+            var targets =
+                from bit in Enumerable.Range(0, 8)
+                from register in RegisterMapping.GetAll()
+                select new RESxR_CBTestTarget(bit, register);
+
+            return targets.ToList();
         }
 
-        protected abstract byte Bit { get; }
-
-        public class RES_0_R : RES_x_R
+        public interface IRESxR_CBTestTarget : ICBTestTarget
         {
-            protected override byte Bit
+            byte Expected { get; }
+        }
+
+        private class RESxR_CBTestTarget : RegisterCBTestTargetBase, IRESxR_CBTestTarget
+        {
+            private readonly int _bit;
+
+            public RESxR_CBTestTarget(int bit, RegisterMapping register)
+                : base(register)
             {
-                get { return 0; }
+                _bit = bit;
+            }
+
+            public override byte OpCode
+            {
+                get
+                {
+                    return (byte)(0x80 | Register | (_bit << 3));
+                }
+            }
+
+            public byte Expected
+            {
+                get
+                {
+                    return (byte)(0xFF & ~(1 << _bit));
+                }
+            }
+
+            public override string ToString()
+            {
+                return Register + " " + _bit;
             }
         }
     }
