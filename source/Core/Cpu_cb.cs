@@ -144,30 +144,37 @@ namespace Core
             {0x87, new InstructionMetaData(2, 2, "RES 0, A")},
             {0x88, new InstructionMetaData(2, 2, "RES 1, B")},
             {0x89, new InstructionMetaData(2, 2, "RES 1, C")},
+            {0x8A, new InstructionMetaData(2, 2, "RES 1, D")},
             {0x8E, new InstructionMetaData(2, 4, "RES 1, (HL)")},
             {0x8F, new InstructionMetaData(2, 2, "RES 1, A")},
             {0x90, new InstructionMetaData(2, 2, "RES 2, B")},
             {0x91, new InstructionMetaData(2, 2, "RES 2, C")},
+            {0x92, new InstructionMetaData(2, 2, "RES 2, D")},
             {0x96, new InstructionMetaData(2, 4, "RES 2, (HL)")},
             {0x97, new InstructionMetaData(2, 2, "RES 2, A")},
             {0x98, new InstructionMetaData(2, 2, "RES 3, B")},
             {0x99, new InstructionMetaData(2, 2, "RES 3, C")},
+            {0x9A, new InstructionMetaData(2, 2, "RES 3, D")},
             {0x9E, new InstructionMetaData(2, 4, "RES 3, (HL)")},
             {0x9F, new InstructionMetaData(2, 2, "RES 3, A")},
             {0xA0, new InstructionMetaData(2, 2, "RES 4, B")},
             {0xA1, new InstructionMetaData(2, 2, "RES 4, C")},
+            {0xA2, new InstructionMetaData(2, 2, "RES 4, D")},
             {0xA6, new InstructionMetaData(2, 4, "RES 4, (HL)")},
             {0xA7, new InstructionMetaData(2, 2, "RES 4, A")},
             {0xA8, new InstructionMetaData(2, 2, "RES 5, B")},
             {0xA9, new InstructionMetaData(2, 2, "RES 5, C")},
+            {0xAA, new InstructionMetaData(2, 2, "RES 5, D")},
             {0xAE, new InstructionMetaData(2, 4, "RES 5, (HL)")},
             {0xAF, new InstructionMetaData(2, 2, "RES 5, A")},
             {0xB0, new InstructionMetaData(2, 2, "RES 6, B")},
             {0xB1, new InstructionMetaData(2, 2, "RES 6, C")},
+            {0xB2, new InstructionMetaData(2, 2, "RES 6, D")},
             {0xB6, new InstructionMetaData(2, 4, "RES 6, (HL)")},
             {0xB7, new InstructionMetaData(2, 2, "RES 6, A")},
             {0xB8, new InstructionMetaData(2, 2, "RES 7, B")},
             {0xB9, new InstructionMetaData(2, 2, "RES 7, C")},
+            {0xBA, new InstructionMetaData(2, 2, "RES 7, D")},
             {0xBE, new InstructionMetaData(2, 4, "RES 7, (HL)")},
             {0xBF, new InstructionMetaData(2, 2, "RES 7, A")},
             {0xC6, new InstructionMetaData(2, 4, "SET 0, (HL)")},
@@ -599,6 +606,9 @@ namespace Core
                 case 0x89:
                     RES(1, Register.C);
                     break;
+                case 0x8A:
+                    RES(1, Register.D);
+                    break;
                 case 0x8E:
                     RES_HLm(1);
                     break;
@@ -610,6 +620,9 @@ namespace Core
                     break;
                 case 0x91:
                     RES(2, Register.C);
+                    break;
+                case 0x92:
+                    RES(2, Register.D);
                     break;
                 case 0x96:
                     RES_HLm(2);
@@ -623,6 +636,9 @@ namespace Core
                 case 0x99:
                     RES(3, Register.C);
                     break;
+                case 0x9A:
+                    RES(3, Register.D);
+                    break;
                 case 0x9E:
                     RES_HLm(3);
                     break;
@@ -634,6 +650,9 @@ namespace Core
                     break;
                 case 0xA1:
                     RES(4, Register.C);
+                    break;
+                case 0xA2:
+                    RES(4, Register.D);
                     break;
                 case 0xA6:
                     RES_HLm(4);
@@ -647,6 +666,9 @@ namespace Core
                 case 0xA9:
                     RES(5, Register.C);
                     break;
+                case 0xAA:
+                    RES(5, Register.D);
+                    break;
                 case 0xAE:
                     RES_HLm(5);
                     break;
@@ -659,6 +681,9 @@ namespace Core
                 case 0xB1:
                     RES(6, Register.C);
                     break;
+                case 0xB2:
+                    RES(6, Register.D);
+                    break;
                 case 0xB6:
                     RES_HLm(6);
                     break;
@@ -670,6 +695,9 @@ namespace Core
                     break;
                 case 0xB9:
                     RES(7, Register.C);
+                    break;
+                case 0xBA:
+                    RES(7, Register.D);
                     break;
                 case 0xBE:
                     RES_HLm(7);
