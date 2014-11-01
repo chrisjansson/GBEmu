@@ -128,6 +128,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CpuTests\SET_x_HLm.cs" />
+    <Compile Include="CpuTests\SET_x_R.cs" />
     <Compile Include="CpuTests\SLA.cs" />
     <Compile Include="CpuTests\SRA.cs" />
     <Compile Include="CpuTests\SWAP.cs" />

@@ -200,6 +200,7 @@ namespace Core
             {0xBE, new InstructionMetaData(2, 4, "RES 7, (HL)")},
             {0xBF, new InstructionMetaData(2, 2, "RES 7, A")},
             {0xC6, new InstructionMetaData(2, 4, "SET 0, (HL)")},
+            {0xC7, new InstructionMetaData(2, 2, "SET 0, A")},
             {0xCE, new InstructionMetaData(2, 4, "SET 1, (HL)")},
             {0xD6, new InstructionMetaData(2, 4, "SET 2, (HL)")},
             {0xDE, new InstructionMetaData(2, 4, "SET 3, (HL)")},
@@ -793,6 +794,9 @@ namespace Core
                 case 0xC6:
                     SET_HLm(0);
                     break;
+                case 0xC7:
+                    SET(0, Register.A);
+                    break;
                 case 0xCE:
                     SET_HLm(1);
                     break;
@@ -823,6 +827,13 @@ namespace Core
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
+        }
+
+        private void SET(int bit, Register register)
+        {
+            var value = _registers[register];
+            var result = value | (1 << bit);
+            _registers[register] = (byte) result;
         }
 
         private void SET_HLm(int bit)
