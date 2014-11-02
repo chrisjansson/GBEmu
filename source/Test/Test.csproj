@@ -182,6 +182,7 @@
     <Compile Include="LD_r_n.cs" />
     <Compile Include="LD_r_r.cs" />
     <Compile Include="LD_SP_HL.cs" />
+    <Compile Include="MMuSpy.cs" />
     <Compile Include="MMU\DisplayRegisters.cs" />
     <Compile Include="MMU\FakeJoypad.cs" />
     <Compile Include="MMU\InterruptRegisters.cs" />

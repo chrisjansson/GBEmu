@@ -1,8 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Core;
-using Ploeh.AutoFixture;
 using Xunit;
 using Xunit.Extensions;
 
@@ -11,13 +9,13 @@ namespace Test
     public class AcceptanceTest
     {
         protected Cpu Sut;
-        protected Fixture Fixture;
         protected MMuSpy Mmu;
         protected Timer Timer;
+        private long _previousCycleCount;
+        private ushort _previousProgramCounter;
 
         public AcceptanceTest()
         {
-            Fixture = new Fixture();
             var mmu = new Core.MMU
             {
                 Display = new NullDisplay()
@@ -28,17 +26,6 @@ namespace Test
             mmu.Cpu = Sut;
             mmu.Timer = Timer;
             mmu.Joypad = new Joypad();
-        }
-
-        private void LoadTest(string rom)
-        {
-            var ldAcceptanceTestRom = File.ReadAllBytes(rom);
-
-            for (var i = 0; i < ldAcceptanceTestRom.Length; i++)
-            {
-                var n = ldAcceptanceTestRom[i];
-                Mmu.SetByte((ushort)i, n);
-            }
         }
 
         [Theory]
@@ -55,40 +42,62 @@ namespace Test
         [InlineData("11-op a,(hl).gb")]
         public void Passes_cpu_instructions_tests(string rom)
         {
-            LoadTest(rom);
-            Sut.ProgramCounter = 0x00;
+            LoadTestRomIntoMmu(rom);
 
-            var previewsProgramCounter = 0x00;
-            var previousProgramCounterCount = 0;
-            for (var i = 0; i < 100000000 && previousProgramCounterCount < 10000; i++)
+            var programCounterRepeatCount = 0;
+            for (var i = 0; i < 100000000 && programCounterRepeatCount < 10000; i++)
             {
-                var instruction = Mmu.GetByte(Sut.ProgramCounter);
-                var prevCycles = Sut.Cycles;
-                Sut.Execute(instruction);
-                for (var j = 0; j < Sut.Cycles - prevCycles; j++)
-                {
-                    Timer.Tick();
-                }
+                var nextInstruction = Mmu.GetByte(Sut.ProgramCounter);
+                Sut.Execute(nextInstruction);
+                RunOtherComponents();
+                SendSerialData();
 
-                if ((Mmu.GetByte(0xFF02) & 0x80) == 0x80)
+                if (Sut.ProgramCounter == _previousProgramCounter)
                 {
-                    Mmu.SetByte(0xFF02, 0);
-                }
-
-                if (Sut.ProgramCounter == previewsProgramCounter)
-                {
-                    previousProgramCounterCount++;
+                    programCounterRepeatCount++;
                 }
                 else
                 {
-                    previewsProgramCounter = Sut.ProgramCounter;
-                    previousProgramCounterCount = 0;
+                    _previousProgramCounter = Sut.ProgramCounter;
+                    programCounterRepeatCount = 0;
                 }
+                _previousCycleCount = Sut.Cycles;
             }
 
+            AssertTestRomPassed();
+        }
+
+        private void RunOtherComponents()
+        {
+            for (var j = 0; j < Sut.Cycles - _previousCycleCount; j++)
+            {
+                Timer.Tick();
+            }
+        }
+
+        private void SendSerialData()
+        {
+            if ((Mmu.GetByte(0xFF02) & 0x80) == 0x80)
+            {
+                Mmu.SetByte(0xFF02, 0);
+            }
+        }
+
+        private void AssertTestRomPassed()
+        {
             var output = Mmu.Output.Aggregate("", (x, y) => x + y);
-            Console.WriteLine(output);
             Assert.Contains("passed", output.ToLower());
+        }
+
+        private void LoadTestRomIntoMmu(string rom)
+        {
+            var ldAcceptanceTestRom = File.ReadAllBytes(rom);
+
+            for (var i = 0; i < ldAcceptanceTestRom.Length; i++)
+            {
+                var n = ldAcceptanceTestRom[i];
+                Mmu.SetByte((ushort)i, n);
+            }
         }
     }
 }

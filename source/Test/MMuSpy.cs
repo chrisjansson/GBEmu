@@ -3,15 +3,19 @@ using Core;
 
 namespace Test
 {
-    public class FakeMmu : IMmu
+    public class MMuSpy : IMmu
     {
-        public readonly byte[] Memory = new byte[ushort.MaxValue + 1];
-        public readonly List<char> Output = new List<char>(); 
-        
+        private readonly IMmu _mmu;
+        public readonly List<char> Output = new List<char>();
+
+        public MMuSpy(IMmu mmu)
+        {
+            _mmu = mmu;
+        }
 
         public byte GetByte(ushort address)
         {
-            return Memory[address];
+            return _mmu.GetByte(address);
         }
 
         public void SetByte(ushort address, byte value)
@@ -21,7 +25,7 @@ namespace Test
                 Output.Add((char) value);
             }
 
-            Memory[address] = value;
+            _mmu.SetByte(address, value);
         }
     }
 }
