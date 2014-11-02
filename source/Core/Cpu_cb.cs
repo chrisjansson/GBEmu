@@ -202,12 +202,19 @@ namespace Core
             {0xC6, new InstructionMetaData(2, 4, "SET 0, (HL)")},
             {0xC7, new InstructionMetaData(2, 2, "SET 0, A")},
             {0xCE, new InstructionMetaData(2, 4, "SET 1, (HL)")},
+            {0xCF, new InstructionMetaData(2, 2, "SET 1, A")},
             {0xD6, new InstructionMetaData(2, 4, "SET 2, (HL)")},
+            {0xD7, new InstructionMetaData(2, 2, "SET 2, A")},
             {0xDE, new InstructionMetaData(2, 4, "SET 3, (HL)")},
+            {0xDF, new InstructionMetaData(2, 2, "SET 3, A")},
             {0xE6, new InstructionMetaData(2, 4, "SET 4, (HL)")},
+            {0xE7, new InstructionMetaData(2, 2, "SET 4, A")},
             {0xEE, new InstructionMetaData(2, 4, "SET 5, (HL)")},
+            {0xEF, new InstructionMetaData(2, 2, "SET 5, A")},
             {0xF6, new InstructionMetaData(2, 4, "SET 6, (HL)")},
+            {0xF7, new InstructionMetaData(2, 2, "SET 6, A")},
             {0xFE, new InstructionMetaData(2, 4, "SET 7, (HL)")},
+            {0xFF, new InstructionMetaData(2, 2, "SET 7, A")},
         };
 
         private void CB()
@@ -800,23 +807,44 @@ namespace Core
                 case 0xCE:
                     SET_HLm(1);
                     break;
+                case 0xCF:
+                    SET(1, Register.A);
+                    break;
                 case 0xD6:
                     SET_HLm(2);
+                    break;
+                case 0xD7:
+                    SET(2, Register.A);
                     break;
                 case 0xDE:
                     SET_HLm(3);
                     break;
+                case 0xDF:
+                    SET(3, Register.A);
+                    break;
                 case 0xE6:
                     SET_HLm(4);
+                    break;
+                case 0xE7:
+                    SET(4, Register.A);
                     break;
                 case 0xEE:
                     SET_HLm(5);
                     break;
+                case 0xEF:
+                    SET(5, Register.A);
+                    break;
                 case 0xF6:
                     SET_HLm(6);
                     break;
+                case 0xF7:
+                    SET(6, Register.A);
+                    break;
                 case 0xFE:
                     SET_HLm(7);
+                    break;
+                case 0xFF:
+                    SET(7, Register.A);
                     break;
                 default:
                     throw new IllegalOpcodeException(opCode, ProgramCounter);
