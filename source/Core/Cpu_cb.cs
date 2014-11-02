@@ -1041,8 +1041,6 @@ namespace Core
                     throw new IllegalOpcodeException(opCode, ProgramCounter);
             }
 
-            if (!_cbInstructions.ContainsKey(opCode))
-                throw new IllegalOpcodeException(opCode, ProgramCounter);
             var instructionMetaData = _cbInstructions[opCode];
             ProgramCounter += instructionMetaData.Size;
             Cycles += instructionMetaData.Cycles;
@@ -1052,7 +1050,7 @@ namespace Core
         {
             var value = _registers[register];
             var result = value | (1 << bit);
-            _registers[register] = (byte) result;
+            _registers[register] = (byte)result;
         }
 
         private void SET_HLm(int bit)
@@ -1062,16 +1060,18 @@ namespace Core
             _mmu.SetByte(HL, (byte)result);
         }
 
+        private void RES(byte bit, Register register)
+        {
+            var value = _registers[register];
+            var result = value & ~(1 << bit);
+            _registers[register] = (byte) result;
+        }
+
         private void RES_HLm(int bit)
         {
             var value = _mmu.GetByte(HL);
             var mask = ~(1 << bit);
             _mmu.SetByte(HL, (byte)(value & mask));
-        }
-
-        private void RES(byte bit, Register register)
-        {
-            _registers[register] = (byte)(_registers[register] & ~(1 << bit));
         }
     }
 }
