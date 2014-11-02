@@ -199,20 +199,28 @@ namespace Core
             {0xBD, new InstructionMetaData(2, 2, "RES 7, L")},
             {0xBE, new InstructionMetaData(2, 4, "RES 7, (HL)")},
             {0xBF, new InstructionMetaData(2, 2, "RES 7, A")},
+            {0xC0, new InstructionMetaData(2, 2, "SET 0, B")},
             {0xC6, new InstructionMetaData(2, 4, "SET 0, (HL)")},
             {0xC7, new InstructionMetaData(2, 2, "SET 0, A")},
+            {0xC8, new InstructionMetaData(2, 2, "SET 1, B")},
             {0xCE, new InstructionMetaData(2, 4, "SET 1, (HL)")},
             {0xCF, new InstructionMetaData(2, 2, "SET 1, A")},
+            {0xD0, new InstructionMetaData(2, 2, "SET 2, B")},
             {0xD6, new InstructionMetaData(2, 4, "SET 2, (HL)")},
             {0xD7, new InstructionMetaData(2, 2, "SET 2, A")},
+            {0xD8, new InstructionMetaData(2, 2, "SET 3, B")},
             {0xDE, new InstructionMetaData(2, 4, "SET 3, (HL)")},
             {0xDF, new InstructionMetaData(2, 2, "SET 3, A")},
+            {0xE0, new InstructionMetaData(2, 2, "SET 4, B")},
             {0xE6, new InstructionMetaData(2, 4, "SET 4, (HL)")},
             {0xE7, new InstructionMetaData(2, 2, "SET 4, A")},
+            {0xE8, new InstructionMetaData(2, 2, "SET 5, B")},
             {0xEE, new InstructionMetaData(2, 4, "SET 5, (HL)")},
             {0xEF, new InstructionMetaData(2, 2, "SET 5, A")},
+            {0xF0, new InstructionMetaData(2, 2, "SET 6, B")},
             {0xF6, new InstructionMetaData(2, 4, "SET 6, (HL)")},
             {0xF7, new InstructionMetaData(2, 2, "SET 6, A")},
+            {0xF8, new InstructionMetaData(2, 2, "SET 7, B")},
             {0xFE, new InstructionMetaData(2, 4, "SET 7, (HL)")},
             {0xFF, new InstructionMetaData(2, 2, "SET 7, A")},
         };
@@ -798,11 +806,17 @@ namespace Core
                 case 0xBF:
                     RES(7, Register.A);
                     break;
+                case 0xC0:
+                    SET(0, Register.B);
+                    break;
                 case 0xC6:
                     SET_HLm(0);
                     break;
                 case 0xC7:
                     SET(0, Register.A);
+                    break;
+                case 0xC8:
+                    SET(1, Register.B);
                     break;
                 case 0xCE:
                     SET_HLm(1);
@@ -810,11 +824,17 @@ namespace Core
                 case 0xCF:
                     SET(1, Register.A);
                     break;
+                case 0xD0:
+                    SET(2, Register.B);
+                    break;
                 case 0xD6:
                     SET_HLm(2);
                     break;
                 case 0xD7:
                     SET(2, Register.A);
+                    break;
+                case 0xD8:
+                    SET(3, Register.B);
                     break;
                 case 0xDE:
                     SET_HLm(3);
@@ -822,11 +842,17 @@ namespace Core
                 case 0xDF:
                     SET(3, Register.A);
                     break;
+                case 0xE0:
+                    SET(4, Register.B);
+                    break;
                 case 0xE6:
                     SET_HLm(4);
                     break;
                 case 0xE7:
                     SET(4, Register.A);
+                    break;
+                case 0xE8:
+                    SET(5, Register.B);
                     break;
                 case 0xEE:
                     SET_HLm(5);
@@ -834,11 +860,17 @@ namespace Core
                 case 0xEF:
                     SET(5, Register.A);
                     break;
+                case 0xF0:
+                    SET(6, Register.B);
+                    break;
                 case 0xF6:
                     SET_HLm(6);
                     break;
                 case 0xF7:
                     SET(6, Register.A);
+                    break;
+                case 0xF8:
+                    SET(7, Register.B);
                     break;
                 case 0xFE:
                     SET_HLm(7);
