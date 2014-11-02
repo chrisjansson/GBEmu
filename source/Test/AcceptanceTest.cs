@@ -28,6 +28,16 @@ namespace Test
             mmu.Joypad = new Joypad();
         }
 
+        [Fact]
+        public void Passes_cpu_instruction_tests()
+        {
+            LoadTestRomIntoMmu("cpu_instrs.gb");
+
+            Run();
+
+            AssertTestRomPassed();
+        }
+
         [Theory]
         [InlineData("01-special.gb")]
         [InlineData("02-interrupts.gb")]
@@ -40,7 +50,7 @@ namespace Test
         [InlineData("09-op r,r.gb")]
         [InlineData("10-bit ops.gb")]
         [InlineData("11-op a,(hl).gb")]
-        public void Passes_cpu_instructions_tests(string rom)
+        public void Passes_individual_cpu_instruction_tests(string rom)
         {
             LoadTestRomIntoMmu(rom);
 
