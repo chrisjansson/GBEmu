@@ -232,6 +232,11 @@ namespace Core
             {0xDE, new InstructionMetaData(2, 4, "SET 3, (HL)")},
             {0xDF, new InstructionMetaData(2, 2, "SET 3, A")},
             {0xE0, new InstructionMetaData(2, 2, "SET 4, B")},
+            {0xE1, new InstructionMetaData(2, 2, "SET 4, C")},
+            {0xE2, new InstructionMetaData(2, 2, "SET 4, D")},
+            {0xE3, new InstructionMetaData(2, 2, "SET 4, E")},
+            {0xE4, new InstructionMetaData(2, 2, "SET 4, H")},
+            {0xE5, new InstructionMetaData(2, 2, "SET 4, L")},
             {0xE6, new InstructionMetaData(2, 4, "SET 4, (HL)")},
             {0xE7, new InstructionMetaData(2, 2, "SET 4, A")},
             {0xE8, new InstructionMetaData(2, 2, "SET 5, B")},
@@ -924,6 +929,21 @@ namespace Core
                     break;
                 case 0xE0:
                     SET(4, Register.B);
+                    break;
+                case 0xE1:
+                    SET(4, Register.C);
+                    break;
+                case 0xE2:
+                    SET(4, Register.D);
+                    break;
+                case 0xE3:
+                    SET(4, Register.E);
+                    break;
+                case 0xE4:
+                    SET(4, Register.H);
+                    break;
+                case 0xE5:
+                    SET(4, Register.L);
                     break;
                 case 0xE6:
                     SET_HLm(4);
