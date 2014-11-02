@@ -44,6 +44,13 @@ namespace Test
         {
             LoadTestRomIntoMmu(rom);
 
+            Run();
+
+            AssertTestRomPassed();
+        }
+
+        private void Run()
+        {
             var programCounterRepeatCount = 0;
             for (var i = 0; i < 100000000 && programCounterRepeatCount < 10000; i++)
             {
@@ -63,8 +70,6 @@ namespace Test
                 }
                 _previousCycleCount = Sut.Cycles;
             }
-
-            AssertTestRomPassed();
         }
 
         private void RunOtherComponents()
