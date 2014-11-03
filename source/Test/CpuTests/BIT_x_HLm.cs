@@ -21,7 +21,7 @@ namespace Test.CpuTests
             ExecutingCB(CreateOpCode(bit));
 
             AdvancedProgramCounter(2);
-            AdvancedClock(4);
+            AdvancedClock(3);
         }
 
         [Theory, PropertyData("Bits")]
