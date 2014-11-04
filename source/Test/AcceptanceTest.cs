@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Core;
 using Xunit;
@@ -28,29 +30,8 @@ namespace Test
             mmu.Joypad = new Joypad();
         }
 
-        [Fact]
-        public void Passes_cpu_instruction_tests()
-        {
-            LoadTestRomIntoMmu("cpu_instrs.gb");
-
-            Run();
-
-            AssertTestRomPassed();
-        }
-
-        [Theory]
-        [InlineData("01-special.gb")]
-        [InlineData("02-interrupts.gb")]
-        [InlineData("03-op sp,hl.gb")]
-        [InlineData("04-op r,imm.gb")]
-        [InlineData("05-op rp.gb")]
-        [InlineData("06-ld r,r.gb")]
-        [InlineData("07-jr,jp,call,ret,rst.gb")]
-        [InlineData("08-misc instrs.gb")]
-        [InlineData("09-op r,r.gb")]
-        [InlineData("10-bit ops.gb")]
-        [InlineData("11-op a,(hl).gb")]
-        public void Passes_individual_cpu_instruction_tests(string rom)
+        [Theory, PropertyData("streams")]
+        public void Passes_blarrg_test_rom(string rom)
         {
             LoadTestRomIntoMmu(rom);
 
@@ -62,7 +43,7 @@ namespace Test
         private void Run()
         {
             var programCounterRepeatCount = 0;
-            for (var i = 0; i < 100000000 && programCounterRepeatCount < 10000; i++)
+            for (var i = 0; i < 10000000 && programCounterRepeatCount < 10000; i++)
             {
                 var nextInstruction = Mmu.GetByte(Sut.ProgramCounter);
                 Sut.Execute(nextInstruction);
@@ -107,11 +88,62 @@ namespace Test
         private void LoadTestRomIntoMmu(string rom)
         {
             var ldAcceptanceTestRom = File.ReadAllBytes(rom);
+            LoadTestRomIntoMmu(ldAcceptanceTestRom);
+        }
 
-            for (var i = 0; i < ldAcceptanceTestRom.Length; i++)
+        private void LoadTestRomIntoMmu(byte[] rom)
+        {
+            for (var i = 0; i < rom.Length; i++)
             {
-                var n = ldAcceptanceTestRom[i];
+                var n = rom[i];
                 Mmu.SetByte((ushort)i, n);
+            }
+        }
+
+        public static IEnumerable<object[]> streams
+        {
+            get
+            {
+                return TestRomArchives
+                    .SelectMany(x => B(x))
+                    .Select(x => new[] { x })
+                    .ToList();
+            }
+        }
+
+        private static IEnumerable<string> B(BlarggTestSuite blarggTestSuite)
+        {
+            var directoryName = Path.GetFileNameWithoutExtension(blarggTestSuite.Archive);
+            if (!Directory.Exists(directoryName))
+            {
+                ZipFile.ExtractToDirectory(blarggTestSuite.Archive, ".");
+            }
+
+            var allRoms = Directory.EnumerateFiles(directoryName, "*.gb", SearchOption.AllDirectories);
+            return allRoms;
+        }
+
+        public class BlarggTestSuite
+        {
+            public string Archive { get; set; }
+        }
+
+        public static IEnumerable<BlarggTestSuite> TestRomArchives
+        {
+            get
+            {
+                return new[]
+                {
+                    //new BlarggTestSuite {Archive = "cgb_sound.zip",},
+                    new BlarggTestSuite {Archive = "cpu_instrs.zip",},
+                    //new BlarggTestSuite {Archive = "dmg_sound.zip",},
+                    //new BlarggTestSuite {Archive = "dmg_sound-2.zip",},
+                    //new BlarggTestSuite {Archive = "instr_timing.zip",},
+                    //new BlarggTestSuite {Archive = "mem_timing.zip",},
+                    //new BlarggTestSuite {Archive = "mem_timing-2.zip",},
+                    //new BlarggTestSuite {Archive = "oam_bug.zip",},
+                    //new BlarggTestSuite {Archive = "oam_bug-2.zip",},
+                };
             }
         }
     }
