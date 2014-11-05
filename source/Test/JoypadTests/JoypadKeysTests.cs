@@ -9,7 +9,7 @@ namespace Test.JoypadTests
 
         public JoypadKeysTests()
         {
-            _sut = new Joypad();
+            _sut = new Joypad(new FakeMmu());
         }
 
         [Fact]

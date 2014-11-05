@@ -10,7 +10,7 @@ namespace Test.JoypadTests
 
         public JoypadButtonKeysTests()
         {
-            _sut = new Joypad();
+            _sut = new Joypad(new FakeMmu());
             _sut.P1 = 0x10; //Select button keys
         }
 

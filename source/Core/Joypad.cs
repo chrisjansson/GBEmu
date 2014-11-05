@@ -4,6 +4,17 @@
     {
         private bool _selectButtonKeys;
         private bool _selectDirectionKeys;
+        private IMmu _mmu;
+        private bool _right;
+        private bool _left;
+        private bool _up;
+        private bool _down;
+
+        public Joypad(IMmu mmu)
+        {
+            _mmu = mmu;
+        }
+
         public byte P1
         {
             get
@@ -35,10 +46,56 @@
             }
         }
 
-        public bool Right { get; set; }
-        public bool Left { get; set; }
-        public bool Up { get; set; }
-        public bool Down { get; set; }
+        public bool Right
+        {
+            get { return _right; }
+            set
+            {
+                if (!_right && value)
+                    RaiseInterrupt();
+                _right = value;
+            }
+        }
+
+        public bool Left
+        {
+            get { return _left; }
+            set
+            {
+                if (!_left && value)
+                    RaiseInterrupt();
+                _left = value;
+            }
+        }
+
+        public bool Up
+        {
+            get { return _up; }
+            set
+            {
+                if (!_up && value)
+                    RaiseInterrupt();
+                _up = value;
+            }
+        }
+
+        public bool Down
+        {
+            get { return _down; }
+            set
+            {
+                if (!_down && value)
+                    RaiseInterrupt();
+                _down = value;
+            }
+        }
+
+        private void RaiseInterrupt()
+        {
+            var interruptRequest = _mmu.GetByte(RegisterAddresses.IF);
+            interruptRequest |= 0x10;
+            _mmu.SetByte(RegisterAddresses.IF, interruptRequest);
+        }
 
         public bool A { get; set; }
         public bool B { get; set; }

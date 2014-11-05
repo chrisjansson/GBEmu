@@ -10,7 +10,7 @@ namespace Test.JoypadTests
 
         public LowerHalfOfP1IsReadOnly()
         {
-            _sut = new Joypad();
+            _sut = new Joypad(new FakeMmu());
         }
 
         [Theory]

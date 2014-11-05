@@ -27,7 +27,7 @@ namespace Test
             Timer = new Timer(Mmu);
             mmu.Cpu = Sut;
             mmu.Timer = Timer;
-            mmu.Joypad = new Joypad();
+            mmu.Joypad = new Joypad(new FakeMmu());
         }
 
         //[Theory, PropertyData("streams")]
