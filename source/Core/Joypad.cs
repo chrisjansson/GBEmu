@@ -2,9 +2,9 @@
 {
     public class Joypad : IJoypad
     {
+        private readonly IMmu _mmu;
         private bool _selectButtonKeys;
         private bool _selectDirectionKeys;
-        private IMmu _mmu;
         private bool _right;
         private bool _left;
         private bool _up;
@@ -92,6 +92,9 @@
 
         private void RaiseInterrupt()
         {
+            if(!_selectDirectionKeys)
+                return;
+
             var interruptRequest = _mmu.GetByte(RegisterAddresses.IF);
             interruptRequest |= 0x10;
             _mmu.SetByte(RegisterAddresses.IF, interruptRequest);
