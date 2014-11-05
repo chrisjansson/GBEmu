@@ -26,6 +26,15 @@ namespace Test.JoypadTests
         }
 
         [Fact]
+        public void Should_not_raise_interrupt_if_input_is_reset()
+        {
+            AssertInterruptIsNotRaised(x => x.Right = false);
+            AssertInterruptIsNotRaised(x => x.Left = false);
+            AssertInterruptIsNotRaised(x => x.Up = false);
+            AssertInterruptIsNotRaised(x => x.Down = false);
+        }
+
+        [Fact]
         public void Should_not_raise_interrupt_if_buttons_are_selected()
         {
             AssertInterruptIsNotRaisedWhenButtonsAreSelected(x => x.Right = true);

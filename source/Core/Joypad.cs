@@ -51,8 +51,7 @@
             get { return _right; }
             set
             {
-                if (!_right && value)
-                    RaiseInterrupt();
+                RaiseInterrupt(_right, value, _selectDirectionKeys);
                 _right = value;
             }
         }
@@ -62,8 +61,7 @@
             get { return _left; }
             set
             {
-                if (!_left && value)
-                    RaiseInterrupt();
+                RaiseInterrupt(_left, value, _selectDirectionKeys);
                 _left = value;
             }
         }
@@ -73,8 +71,7 @@
             get { return _up; }
             set
             {
-                if (!_up && value)
-                    RaiseInterrupt();
+                RaiseInterrupt(_up, value, _selectDirectionKeys);
                 _up = value;
             }
         }
@@ -84,15 +81,16 @@
             get { return _down; }
             set
             {
-                if (!_down && value)
-                    RaiseInterrupt();
+                RaiseInterrupt(_down, value, _selectDirectionKeys);
                 _down = value;
             }
         }
 
-        private void RaiseInterrupt()
+        private void RaiseInterrupt(bool oldValue, bool newValue, bool isEnabled)
         {
-            if(!_selectDirectionKeys)
+            if (oldValue || !newValue)
+                return;
+            if (!isEnabled)
                 return;
 
             var interruptRequest = _mmu.GetByte(RegisterAddresses.IF);
