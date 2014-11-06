@@ -9,6 +9,10 @@
         private bool _left;
         private bool _up;
         private bool _down;
+        private bool _a;
+        private bool _b;
+        private bool _select;
+        private bool _start;
 
         public Joypad(IMmu mmu)
         {
@@ -86,6 +90,46 @@
             }
         }
 
+        public bool A
+        {
+            get { return _a; }
+            set
+            {
+                RaiseInterrupt(_a, value, _selectButtonKeys);
+                _a = value;
+            }
+        }
+
+        public bool B
+        {
+            get { return _b; }
+            set
+            {
+                RaiseInterrupt(_b, value, _selectButtonKeys);
+                _b = value;
+            }
+        }
+
+        public bool Select
+        {
+            get { return _select; }
+            set
+            {
+                RaiseInterrupt(_select, value, _selectButtonKeys);
+                _select = value;
+            }
+        }
+
+        public bool Start
+        {
+            get { return _start; }
+            set
+            {
+                RaiseInterrupt(_start, value, _selectButtonKeys);
+                _start = value;
+            }
+        }
+
         private void RaiseInterrupt(bool oldValue, bool newValue, bool isEnabled)
         {
             if (oldValue || !newValue)
@@ -97,10 +141,5 @@
             interruptRequest |= 0x10;
             _mmu.SetByte(RegisterAddresses.IF, interruptRequest);
         }
-
-        public bool A { get; set; }
-        public bool B { get; set; }
-        public bool Select { get; set; }
-        public bool Start { get; set; }
     }
 }
