@@ -24,4 +24,24 @@ namespace Test.JoypadTests
             Assert.Equal(_sut.P1, expected);
         }
     }
+
+    public class UpperHalfNibbleOfP1IsZero
+    {
+        private readonly Joypad _sut;
+
+        public UpperHalfNibbleOfP1IsZero()
+        {
+            _sut = new Joypad(new FakeMmu());
+        }
+
+        [Theory]
+        [InlineData(0xFF)]
+        [InlineData(0x3F)]
+        public void Bit_7_and_6_are_always_zero(int value)
+        {
+            _sut.P1 = (byte) value;
+
+            Assert.Equal(0x3F, _sut.P1);
+        }
+    }
 }
