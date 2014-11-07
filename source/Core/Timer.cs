@@ -6,6 +6,7 @@ namespace Core
     {
         private readonly IMmu _mmu;
         private int _ticks;
+        private int _divTicks;
 
         public Timer(IMmu mmu)
         {
@@ -16,8 +17,22 @@ namespace Core
         public byte TMA; //timer modulo
         public byte TAC; //timer control
 
+        private byte _div;
+        public byte DIV //Divider
+        {
+            get { return _div; }
+            set { _div = 0; }
+        }
+
         public void Tick()
         {
+            _divTicks++;
+            if (_divTicks == 64)
+            {
+                _divTicks = 0;
+                _div++;
+            }
+
             if ((TAC & 0x04) == 0)
                 return;
             _ticks++;

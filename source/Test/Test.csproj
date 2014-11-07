@@ -221,6 +221,7 @@
     <Compile Include="TimerTests\TimerTestBase.cs" />
     <Compile Include="TimerTests\Timer_262144Hz.cs" />
     <Compile Include="TimerTests\Timer_65536Hz.cs" />
+    <Compile Include="TimerTests\Timer_Divider.cs" />
     <Compile Include="XOR_HL.cs" />
     <Compile Include="XOR_n.cs" />
     <Compile Include="XOR_r.cs" />
