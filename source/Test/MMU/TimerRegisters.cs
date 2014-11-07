@@ -1,5 +1,6 @@
 ﻿using Core;
 using Ploeh.AutoFixture.Xunit;
+using Test.TimerTests;
 using Xunit;
 using Xunit.Extensions;
 
@@ -73,6 +74,26 @@ namespace Test.MMU
             var actual = _sut.GetByte(0xFF07);
 
             Assert.Equal(expectedValue, actual);
+        }
+
+        [Fact]
+        public void DIV_is_read_from_timer_through_0xFF04()
+        {
+            _timer.Tick(1233);
+
+            var actual = _sut.GetByte(0xFF04);
+
+            Assert.Equal(_timer.DIV, actual);
+        }
+
+        [Fact]
+        public void DIV_is_written_to_timer_through_0xFF04()
+        {
+            _timer.Tick(3242);
+
+            _sut.SetByte(0xFF04, 43);
+
+            Assert.Equal(0, _timer.DIV);
         }
     }
 }

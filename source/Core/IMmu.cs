@@ -54,6 +54,8 @@
                     return Timer.TMA;
                 case RegisterAddresses.TAC:
                     return Timer.TAC;
+                case RegisterAddresses.DIV:
+                    return Timer.DIV;
                 default:
                     return _memory[address];
             }
@@ -91,6 +93,9 @@
                     break;
                 case RegisterAddresses.TAC:
                     Timer.TAC = value;
+                    break;
+                case RegisterAddresses.DIV:
+                    Timer.DIV = value;
                     break;
                 default:
                     _memory[address] = value;
