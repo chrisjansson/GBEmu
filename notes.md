@@ -13,3 +13,6 @@ transfer is from $0000-DFFF not $8000-$DFFF as programming manual says
 Unimplemented differences between GB and CGB:
 
 IME shoudl be disabled when entering interrupt vector...
+
+If a gb bootstrap rom is not present load the cpu with the correct values,
+  see Gameboy CPU Manual p.17
