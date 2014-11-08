@@ -30,7 +30,7 @@ namespace Test
             mmu.Joypad = new Joypad(new FakeMmu());
         }
 
-        //[Theory, PropertyData("streams")]
+        [Theory, PropertyData("streams")]
         public void Passes_blarrg_test_rom(string rom)
         {
             LoadTestRomIntoMmu(rom);
@@ -98,6 +98,8 @@ namespace Test
                 var n = rom[i];
                 Mmu.SetByte((ushort)i, n);
             }
+
+            Sut.ProgramCounter = 0x100;
         }
 
         public static IEnumerable<object[]> streams
