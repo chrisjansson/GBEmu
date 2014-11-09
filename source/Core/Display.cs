@@ -93,18 +93,7 @@
         public void Tick()
         {
             _clock++;
-            if (_dmaCycles > 0)
-            {
-                var offset = 168 - _dmaCycles;
-                if (offset < 160)
-                {
-                    var source = ((_dma << 8) + offset);
-                    var target = 0xFE00 + offset;
-                    var value = _mmu.GetByte((ushort)source);
-                    _mmu.SetByte((ushort)target, value);
-                }
-                _dmaCycles--;
-            }
+            DMATransfer();
 
             if (_mode == 0 && _clock == HorizontalBlankingTime)
             {
@@ -143,6 +132,22 @@
                 _mode = 0;
                 _clock = 0;
                 HBlank();
+            }
+        }
+
+        private void DMATransfer()
+        {
+            if (_dmaCycles > 0)
+            {
+                var offset = 168 - _dmaCycles;
+                if (offset < 160)
+                {
+                    var source = ((_dma << 8) + offset);
+                    var target = 0xFE00 + offset;
+                    var value = _mmu.GetByte((ushort) source);
+                    _mmu.SetByte((ushort) target, value);
+                }
+                _dmaCycles--;
             }
         }
 
