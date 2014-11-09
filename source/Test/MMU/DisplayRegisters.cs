@@ -114,6 +114,7 @@ namespace Test.MMU
     public class FakeDisplay : IDisplay
     {
         public byte STAT { get; set; }
+        public byte DMA { get; set; }
         public byte BackgroundPaletteData { get; set; }
         public byte Line { get; set; }
         public byte LCDC { get; set; }

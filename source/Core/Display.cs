@@ -66,6 +66,23 @@
             }
         }
 
+        private byte _dma;
+        public byte DMA
+        {
+            get { return _dma; }
+            set
+            {
+                _dma = value;
+                _dmaCycles = 168;
+            }
+        }
+
+        private int _dmaCycles;
+        public int DMACycles
+        {
+            get { return _dmaCycles; }
+        }
+
         private const int HorizontalBlankingTime = 51;
         private const int VerticalBlankingTime = 114;
         private const int OAMScanningTime = 20;
@@ -76,6 +93,18 @@
         public void Tick()
         {
             _clock++;
+            if (_dmaCycles > 0)
+            {
+                var offset = 168 - _dmaCycles;
+                if (offset < 160)
+                {
+                    var source = ((_dma << 8) + offset);
+                    var target = 0xFE00 + offset;
+                    var value = _mmu.GetByte((ushort)source);
+                    _mmu.SetByte((ushort)target, value);
+                }
+                _dmaCycles--;
+            }
 
             if (_mode == 0 && _clock == HorizontalBlankingTime)
             {
