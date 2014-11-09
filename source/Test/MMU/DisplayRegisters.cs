@@ -109,6 +109,24 @@ namespace Test.MMU
 
             Assert.Equal(0xAB, actual);
         }
+
+        [Fact]
+        public void FF46_writes_to_DMA()
+        {
+            _sut.SetByte(0xFF46, 0xF2);
+
+            Assert.Equal(0xF2, _display.DMA);
+        }
+
+        [Fact]
+        public void FF46_reads_from_DMA()
+        {
+            _display.DMA = 0xF5;
+
+            var actual = _sut.GetByte(0xFF46);
+
+            Assert.Equal(0xF5, actual);
+        }
     }
 
     public class FakeDisplay : IDisplay

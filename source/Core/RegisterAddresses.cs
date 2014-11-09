@@ -2,6 +2,7 @@
 {
     public class RegisterAddresses
     {
+        public const ushort DMA = 0xFF46;
         public const ushort LCDSTAT = 0xFF41;
         public const ushort TAC = 0xFF07; //Timer control
         public const ushort TMA = 0xFF06; //Timer modulo

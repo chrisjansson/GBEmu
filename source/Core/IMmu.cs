@@ -19,6 +19,7 @@
         byte Line { get; }
         byte LCDC { get; set; }
         byte STAT { get; set; }
+        byte DMA { get; set; }
     }
 
     public class MMU : IMmu
@@ -56,6 +57,8 @@
                     return Timer.TAC;
                 case RegisterAddresses.DIV:
                     return Timer.DIV;
+                case RegisterAddresses.DMA:
+                    return Display.DMA;
                 default:
                     return _memory[address];
             }
@@ -96,6 +99,9 @@
                     break;
                 case RegisterAddresses.DIV:
                     Timer.DIV = value;
+                    break;
+                case RegisterAddresses.DMA:
+                    Display.DMA = value;
                     break;
                 default:
                     _memory[address] = value;
