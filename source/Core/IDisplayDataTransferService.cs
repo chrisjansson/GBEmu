@@ -74,13 +74,13 @@ namespace Core
                     var pixelX = (scrollX + x) % 256;
                     var pixelY = (scrollY + y) % 256;
 
-                    var tileX = pixelX/TileWidth;
-                    var tileY = pixelY/TileHeight;
+                    var tileX = pixelX / TileWidth;
+                    var tileY = pixelY / TileHeight;
 
-                    var tile = tiles[tileX + tileY*32];
+                    var tile = tiles[tileX + tileY * 32];
 
-                    var color = tile.Pixels[(pixelX%TileWidth) + (pixelY%TileHeight)*8];
-                    FrameBuffer[x + y*160] = color;
+                    var color = tile.Pixels[(pixelX % TileWidth) + (pixelY % TileHeight) * 8];
+                    FrameBuffer[x + y * 160] = color;
                 }
             }
         }
@@ -103,22 +103,23 @@ namespace Core
             return tiles;
         }
 
-        private struct Tile
+        public struct Tile
         {
             public byte[] Pixels;
 
             public Tile(byte[] data)
             {
                 Pixels = new byte[64];
-                for (int i = 0; i < 8; i += 2)
+                for (int y = 0; y < 8; y++)
                 {
-                    var low = data[i];
-                    var high = data[i + 1];
-                    for (int j = 0; j < 8; j++)
+                    var low = data[y * 2];
+                    var high = data[y * 2 + 1];
+
+                    for (int x = 0; x < 8; x++)
                     {
-                        var mask = 1 << j;
-                        var pixel = (high & mask) << 1 | (low & mask);
-                        Pixels[j + i * 8] = (byte)pixel;
+                        var l = (low >> (7 - x)) & 0x01;
+                        var h = (high >> (7 - x)) & 0x01;
+                        Pixels[x + y*8] = (byte) ((h << 1) | l);
                     }
                 }
             }
