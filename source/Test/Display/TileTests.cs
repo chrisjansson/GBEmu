@@ -21,7 +21,9 @@ namespace Test.Display
                 0x00, 0x00
             };
 
-            var sut = new DisplayDataTransferService.Tile(data);
+            var sut = new DisplayDataTransferService.Tile();
+            sut.Initialize();
+            sut.Update(data);
 
             AssertRow(sut, 0, new byte[] { 0, 3, 3, 3, 3, 3, 0, 0 });
             AssertRow(sut, 1, new byte[] { 2, 2, 0, 0, 0, 2, 2, 0 });

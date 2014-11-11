@@ -17,12 +17,17 @@ namespace Core
 
         private readonly IMmu _mmu;
         public byte[] FrameBuffer = new Byte[WindowWidth * WindowHeight];
+        private readonly byte[] _tileData = new byte[0x1000];
+        private readonly Tile[] _tiles = new Tile[256];
 
         public DisplayDataTransferService(IMmu mmu)
         {
             _mmu = mmu;
+            for (var i = 0; i < _tiles.Length; i++)
+            {
+                _tiles[i].Initialize();
+            }
         }
-
 
         public void TransferScanLine(int line)
         {
@@ -49,11 +54,11 @@ namespace Core
             //}
         }
 
-        private Tile[] _internalScreen = new Tile[1024];
+        private readonly Tile[] _internalScreen = new Tile[1024];
 
         public void FinishFrame()
         {
-            var tiles = GetTiles();
+            UpdateTiles();
             var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
             var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
 
@@ -62,7 +67,7 @@ namespace Core
                 for (var x = 0; x < 32; x++)
                 {
                     var charData = _mmu.GetByte((ushort)(0x9800 + x + y * 32));
-                    var tile = tiles[charData];
+                    var tile = _tiles[charData];
                     _internalScreen[x + y * 32] = tile;
                 }
             }
@@ -77,7 +82,7 @@ namespace Core
                     var tileX = pixelX / TileWidth;
                     var tileY = pixelY / TileHeight;
 
-                    var tile = tiles[tileX + tileY * 32];
+                    var tile = _internalScreen[tileX + tileY * 32];
 
                     var color = tile.Pixels[(pixelX % TileWidth) + (pixelY % TileHeight) * 8];
                     FrameBuffer[x + y * 160] = color;
@@ -85,41 +90,42 @@ namespace Core
             }
         }
 
-        private Tile[] GetTiles()
+        private void UpdateTiles()
         {
-            var data = new byte[0x1000];
-            for (var i = 0; i < 0x1000; i++)
+            for (var i = 0; i < _tileData.Length; i++)
             {
-                data[i] = _mmu.GetByte((ushort)(0x8000 + i));
+                _tileData[i] = _mmu.GetByte((ushort)(0x8000 + i));
             }
 
-            var tiles = new Tile[256];
             for (var i = 0; i < 0x1000; i += 16)
             {
                 var tileData = new byte[16];
-                Array.Copy(data, i, tileData, 0, 16);
-                tiles[i / 16] = new Tile(tileData);
+                Array.Copy(_tileData, i, tileData, 0, 16);
+                _tiles[i / 16].Update(tileData);
             }
-            return tiles;
         }
 
         public struct Tile
         {
             public byte[] Pixels;
 
-            public Tile(byte[] data)
+            public void Initialize()
             {
                 Pixels = new byte[64];
-                for (int y = 0; y < 8; y++)
+            }
+
+            public void Update(byte[] data)
+            {
+                for (var y = 0; y < 8; y++)
                 {
                     var low = data[y * 2];
                     var high = data[y * 2 + 1];
 
-                    for (int x = 0; x < 8; x++)
+                    for (var x = 0; x < 8; x++)
                     {
                         var l = (low >> (7 - x)) & 0x01;
                         var h = (high >> (7 - x)) & 0x01;
-                        Pixels[x + y*8] = (byte) ((h << 1) | l);
+                        Pixels[x + y * 8] = (byte)((h << 1) | l);
                     }
                 }
             }
