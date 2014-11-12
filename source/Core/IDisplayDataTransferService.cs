@@ -17,8 +17,6 @@ namespace Core
 
         private readonly IMmu _mmu;
         public byte[] FrameBuffer = new Byte[WindowWidth * WindowHeight];
-        private readonly byte[] _tileData = new byte[0x1000];
-        private readonly Tile[] _tiles = new Tile[256];
 
         public DisplayDataTransferService(IMmu mmu)
         {
@@ -47,7 +45,7 @@ namespace Core
                 var x = backgroundX % TileWidth;
                 var y = backgroundY % TileHeight;
 
-                var color = tile.Pixels[x + 8*y];
+                var color = tile.Pixels[x + 8 * y];
                 FrameBuffer[line * WindowWidth + i] = color;
             }
         }
@@ -57,6 +55,10 @@ namespace Core
             UpdateTileData();
         }
 
+        private const int NumberOfTiles = 256;
+        private const int TileSize = 16;
+        private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
+        private readonly Tile[] _tiles = new Tile[NumberOfTiles];
         private void UpdateTileData()
         {
             for (var i = 0; i < _tileData.Length; i++)
@@ -64,11 +66,11 @@ namespace Core
                 _tileData[i] = _mmu.GetByte((ushort)(0x8000 + i));
             }
 
-            for (var i = 0; i < 0x1000; i += 16)
+            for (var i = 0; i < NumberOfTiles; i++)
             {
-                var tileData = new byte[16];
-                Array.Copy(_tileData, i, tileData, 0, 16);
-                _tiles[i / 16].Update(tileData);
+                var tileData = new byte[TileSize];
+                Array.Copy(_tileData, i * TileSize, tileData, 0, TileSize);
+                _tiles[i].Update(tileData);
             }
         }
 
