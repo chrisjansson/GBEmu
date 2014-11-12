@@ -31,66 +31,33 @@ namespace Core
 
         public void TransferScanLine(int line)
         {
-            //var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
-            //var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
-
-            //var backgroundY = (line + scrollY) & 0xFF;
-            //for (var i = 0; i < WindowWidth; i++)
-            //{
-            //    var backgroundX = (scrollX + i) & 0xFF;
-            //    var block = backgroundX / 8 + 32 * (backgroundY / 8);
-            //    var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
-
-            //    var y = backgroundY % TileHeight;
-            //    var lower = _mmu.GetByte((ushort)(0x8000 + (tileNumber * 16) + y * 2));
-            //    var higher = _mmu.GetByte((ushort)(0x8000 + (tileNumber * 16) + 1 + y * 2));
-
-            //    var x = backgroundX % TileWidth;
-            //    var lowerPixel = (lower >> (7 - x)) & 0x01;
-            //    var higherPixel = (higher >> (6 - x)) & 0x02;
-
-            //    var color = higherPixel | lowerPixel;
-            //    FrameBuffer[line * WindowWidth + i] = (byte)color;
-            //}
-        }
-
-        private readonly Tile[] _internalScreen = new Tile[1024];
-
-        public void FinishFrame()
-        {
-            UpdateTiles();
             var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
             var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
 
-            for (var y = 0; y < 32; y++)
+            var backgroundY = (line + scrollY) & 0xFF;
+
+            for (var i = 0; i < WindowWidth; i++)
             {
-                for (var x = 0; x < 32; x++)
-                {
-                    var charData = _mmu.GetByte((ushort)(0x9800 + x + y * 32));
-                    var tile = _tiles[charData];
-                    _internalScreen[x + y * 32] = tile;
-                }
-            }
+                var backgroundX = (scrollX + i) & 0xFF;
+                var block = backgroundX / 8 + 32 * (backgroundY / 8);
+                var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
 
-            for (int y = 0; y < WindowHeight; y++)
-            {
-                for (int x = 0; x < WindowWidth; x++)
-                {
-                    var pixelX = (scrollX + x) % 256;
-                    var pixelY = (scrollY + y) % 256;
+                var tile = _tiles[tileNumber];
 
-                    var tileX = pixelX / TileWidth;
-                    var tileY = pixelY / TileHeight;
+                var x = backgroundX % TileWidth;
+                var y = backgroundY % TileHeight;
 
-                    var tile = _internalScreen[tileX + tileY * 32];
-
-                    var color = tile.Pixels[(pixelX % TileWidth) + (pixelY % TileHeight) * 8];
-                    FrameBuffer[x + y * 160] = color;
-                }
+                var color = tile.Pixels[x + 8*y];
+                FrameBuffer[line * WindowWidth + i] = color;
             }
         }
 
-        private void UpdateTiles()
+        public void FinishFrame()
+        {
+            UpdateTileData();
+        }
+
+        private void UpdateTileData()
         {
             for (var i = 0; i < _tileData.Length; i++)
             {
