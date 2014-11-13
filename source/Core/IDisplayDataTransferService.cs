@@ -29,6 +29,7 @@ namespace Core
 
         public void TransferScanLine(int line)
         {
+            UpdateTileData();
             var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
             var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
 
@@ -52,7 +53,6 @@ namespace Core
 
         public void FinishFrame()
         {
-            UpdateTileData();
         }
 
         private const int NumberOfTiles = 256;

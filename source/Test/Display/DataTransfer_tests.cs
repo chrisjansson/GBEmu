@@ -6,111 +6,91 @@ namespace Test.Display
 {
     public class DataTransfer_tests
     {
-        private DisplayDataTransferService _sut;
-        private FakeMmu _fakeMmu;
+        private readonly DisplayDataTransferService _sut;
+        private readonly FakeMmu _fakeMmu;
 
         public DataTransfer_tests()
         {
             _fakeMmu = new FakeMmu();
             _sut = new DisplayDataTransferService(_fakeMmu);
-        }
 
-        [Fact]
-        public void Copies_upper_left_corner_to_first_row()
-        {
-            _fakeMmu.Memory[0x8000] = 0x7C;
-            _fakeMmu.Memory[0x8001] = 0x7C;
-            _fakeMmu.Memory[0x8002] = 0x00;
-            _fakeMmu.Memory[0x8003] = 0xC6;
-            _fakeMmu.Memory[0x8004] = 0xC6;
-            _fakeMmu.Memory[0x8005] = 0x00;
-            _fakeMmu.Memory[0x8006] = 0x00;
-            _fakeMmu.Memory[0x8007] = 0xFE;
-            _fakeMmu.Memory[0x8008] = 0xC6;
-            _fakeMmu.Memory[0x8009] = 0xC6;
-            _fakeMmu.Memory[0x800A] = 0x00;
-            _fakeMmu.Memory[0x800B] = 0xC6;
-            _fakeMmu.Memory[0x800C] = 0xC6;
-            _fakeMmu.Memory[0x800D] = 0x00;
-            _fakeMmu.Memory[0x800E] = 0x00;
-            _fakeMmu.Memory[0x800F] = 0x00;
+            InsertTileAt(0x8000, new byte[]
+            {
+                0x7C, 0x7C, 
+                0x00, 0xC6, 
+                0xC6, 0x00, 
+                0x00, 0xFE,
+                0xC6, 0xC6,
+                0x00, 0xC6,
+                0xC6, 0x00,
+                0x00, 0x00
+            });
 
-            _fakeMmu.Memory[0x8010] = 0x3C;
-            _fakeMmu.Memory[0x8011] = 0x3C;
-            _fakeMmu.Memory[0x8012] = 0x66;
-            _fakeMmu.Memory[0x8013] = 0x66;
-            _fakeMmu.Memory[0x8014] = 0x6E;
-            _fakeMmu.Memory[0x8015] = 0x6E;
-            _fakeMmu.Memory[0x8016] = 0x76;
-            _fakeMmu.Memory[0x8017] = 0x76;
-            _fakeMmu.Memory[0x8018] = 0x66;
-            _fakeMmu.Memory[0x8019] = 0x66;
-            _fakeMmu.Memory[0x801A] = 0x66;
-            _fakeMmu.Memory[0x801B] = 0x66;
-            _fakeMmu.Memory[0x801C] = 0x3C;
-            _fakeMmu.Memory[0x801D] = 0x3C;
-            _fakeMmu.Memory[0x801E] = 0x00;
-            _fakeMmu.Memory[0x801F] = 0x00;
-
-            _fakeMmu.Memory[0x8020] = 0x7C;
-            _fakeMmu.Memory[0x8021] = 0x7C;
-            _fakeMmu.Memory[0x8022] = 0x66;
-            _fakeMmu.Memory[0x8023] = 0x66;
-            _fakeMmu.Memory[0x8024] = 0x66;
-            _fakeMmu.Memory[0x8025] = 0x66;
-            _fakeMmu.Memory[0x8026] = 0x7C;
-            _fakeMmu.Memory[0x8027] = 0x7C;
-            _fakeMmu.Memory[0x8028] = 0x66;
-            _fakeMmu.Memory[0x8029] = 0x66;
-            _fakeMmu.Memory[0x802A] = 0x66;
-            _fakeMmu.Memory[0x802B] = 0x66;
-            _fakeMmu.Memory[0x802C] = 0x7C;
-            _fakeMmu.Memory[0x802D] = 0x7C;
-            _fakeMmu.Memory[0x802E] = 0x00;
-            _fakeMmu.Memory[0x802F] = 0x00;
+            InsertTileAt(0x8010, new byte[]
+            {
+                0x3C, 0x3C, 
+                0x66, 0x66,
+                0x6E, 0x6E,
+                0x76, 0x76,
+                0x66, 0x66,
+                0x66, 0x66,
+                0x3C, 0x3C,
+                0x00, 0x00,
+            });
 
             _fakeMmu.Memory[0x9800] = 0;
             _fakeMmu.Memory[0x9801] = 1;
-            _fakeMmu.Memory[0x9802] = 3;
-            _fakeMmu.Memory[0x9803] = 3;
-            _fakeMmu.Memory[0x9820] = 2;
-            _fakeMmu.Memory[0x9820] = 2;
-            _fakeMmu.Memory[0x9821] = 3;
-            _fakeMmu.Memory[0x9822] = 3;
+            _fakeMmu.Memory[0x981F] = 0;
+        }
 
-            //_fakeMmu.Memory[RegisterAddresses.ScrollX] = 247;
-            //_fakeMmu.Memory[RegisterAddresses.ScrollY] = 247;
+        [Fact]
+        public void Copies_pixels_from_first_and_second_tile_on_first_row()
+        {
+            _sut.TransferScanLine(0);
 
-            for (int j = 0; j < 16; j++)
+            var line = GetLine(0);
+            AssertLine(line,
+                0, 3, 3, 3, 3, 3, 0, 0, //First sprite row 0
+                0, 0, 3, 3, 3, 3, 0, 0); //Second sprite row 0
+        }
+
+        [Fact]
+        public void Scrolls_x_and_wraps_around_tile_map()
+        {
+            _fakeMmu.ScrollX(251);
+
+            _sut.TransferScanLine(0);
+            
+            var line = GetLine(0);
+            AssertLine(line, 3, 3, 3, 0, 0, 0, 3, 3);
+        }
+
+        private void AssertLine(byte[] line, params byte[] colors)
+        {
+            for (var i = 0; i < colors.Length; i++)
             {
-                _sut.TransferScanLine(j);
-
-                for (int i = 0; i < 160; i++)
-                {
-                    Console.Write(Convert(_sut.FrameBuffer[j * 160 + i]));
-                }
-                Console.WriteLine();
+                Assert.Equal(colors[i], line[i]);
             }
         }
 
-        private char Convert(int color)
+        private byte[] GetLine(int i)
         {
-            if (color == 0)
+            var line = new Byte[160];
+            for (var x = 0; x < 160; x++)
             {
-                return '.';
+                line[x] = _sut.FrameBuffer[i * 160 + x];
             }
 
-            if (color == 1)
-            {
-                return '1';
-            }
+            return line;
+        }
 
-            if (color == 2)
+        private void InsertTileAt(ushort address, byte[] tile)
+        {
+            Assert.Equal(16, tile.Length);
+            for (int i = 0; i < tile.Length; i++)
             {
-                return '2';
+                _fakeMmu.Memory[address + i] = tile[i];
             }
-
-            return '3';
         }
     }
 
