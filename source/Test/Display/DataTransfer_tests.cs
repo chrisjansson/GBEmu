@@ -40,7 +40,7 @@ namespace Test.Display
 
             _fakeMmu.Memory[0x9800] = 0;
             _fakeMmu.Memory[0x9801] = 1;
-            _fakeMmu.Memory[0x981F] = 0;
+            _fakeMmu.Memory[0x981F] = 1;
         }
 
         [Fact]
@@ -57,12 +57,12 @@ namespace Test.Display
         [Fact]
         public void Scrolls_x_and_wraps_around_tile_map()
         {
-            _fakeMmu.ScrollX(251);
+            _fakeMmu.ScrollX(250);
 
             _sut.TransferScanLine(0);
             
             var line = GetLine(0);
-            AssertLine(line, 3, 3, 3, 0, 0, 0, 3, 3);
+            AssertLine(line, 3, 3, 3, 3, 0, 0, 0, 3);
         }
 
         private void AssertLine(byte[] line, params byte[] colors)
