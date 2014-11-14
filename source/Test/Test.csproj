@@ -138,7 +138,7 @@
     <Compile Include="CP_n.cs" />
     <Compile Include="CP_R.cs" />
     <Compile Include="DEC_HL.cs" />
-    <Compile Include="Display\DataTransfer_tests.cs" />
+    <Compile Include="Display\DataTransfer_TileDataSelect8000.cs" />
     <Compile Include="Display\DisplayExtensions.cs" />
     <Compile Include="Display\DMATransferTests.cs" />
     <Compile Include="Display\FakeDisplayDataTransferService.cs" />

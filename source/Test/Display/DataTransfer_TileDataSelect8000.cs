@@ -4,17 +4,17 @@ using Xunit;
 
 namespace Test.Display
 {
-    public class DataTransfer_tests
+    public abstract class DataTransferTestBase
     {
-        private readonly DisplayDataTransferService _sut;
-        private readonly FakeMmu _fakeMmu;
+        protected FakeMmu _fakeMmu;
+        protected DisplayDataTransferService _sut;
 
-        public DataTransfer_tests()
+        protected DataTransferTestBase()
         {
             _fakeMmu = new FakeMmu();
             _sut = new DisplayDataTransferService(_fakeMmu);
 
-            InsertTileAt(0x8000, new byte[]
+            InsertTile(0, new byte[]
             {
                 0x7C, 0x7C, 
                 0x00, 0xC6, 
@@ -26,7 +26,7 @@ namespace Test.Display
                 0x00, 0x00
             });
 
-            InsertTileAt(0x8010, new byte[]
+            InsertTile(1, new byte[]
             {
                 0x3C, 0x3C, 
                 0x66, 0x66,
@@ -38,11 +38,11 @@ namespace Test.Display
                 0x00, 0x00,
             });
 
-            _fakeMmu.Memory[0x9800] = 0;
-            _fakeMmu.Memory[0x9801] = 1;
-            _fakeMmu.Memory[0x981F] = 1;
-            _fakeMmu.Memory[0x9820] = 1;
-            _fakeMmu.Memory[0x9BE0] = 1;
+            SetBlockTile(0, 0);
+            SetBlockTile(1, 1);
+            SetBlockTile(0x1F, 1);
+            SetBlockTile(0x20, 1);
+            SetBlockTile(0x3E0, 1);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace Test.Display
             _fakeMmu.ScrollX(250);
 
             _sut.TransferScanLine(0);
-            
+
             var line = GetLine(0);
             AssertLine(line, 3, 3, 3, 3, 0, 0, 0, 3);
         }
@@ -90,7 +90,11 @@ namespace Test.Display
             AssertLine(GetLine(2), 0, 3, 3, 3, 3, 3, 0, 0); //wrapped around, 1st line of tile 0, tile map block 0
         }
 
-        private void AssertLine(byte[] line, params byte[] colors)
+        protected abstract void InsertTile(int tileNumber, byte[] tileData);
+        protected abstract void SetBlockTile(int block, int tile);
+
+
+        protected void AssertLine(byte[] line, params byte[] colors)
         {
             for (var i = 0; i < colors.Length; i++)
             {
@@ -98,7 +102,7 @@ namespace Test.Display
             }
         }
 
-        private byte[] GetLine(int i)
+        protected byte[] GetLine(int i)
         {
             var line = new Byte[160];
             for (var x = 0; x < 160; x++)
@@ -109,13 +113,39 @@ namespace Test.Display
             return line;
         }
 
-        private void InsertTileAt(ushort address, byte[] tile)
+        protected void InsertTileAt(ushort address, byte[] tile)
         {
             Assert.Equal(16, tile.Length);
             for (int i = 0; i < tile.Length; i++)
             {
                 _fakeMmu.Memory[address + i] = tile[i];
             }
+        }
+    }
+
+    public class DataTransfer_TileDataSelect8000 : DataTransferTestBase
+    {
+        protected override void InsertTile(int tileNumber, byte[] tileData)
+        {
+            InsertTileAt((ushort) (0x8000 + tileNumber * 16), tileData);
+        }
+
+        protected override void SetBlockTile(int block, int tile)
+        {
+            _fakeMmu.Memory[0x9800 + block] = (byte) tile;
+        }
+    }
+
+    public class DataTransfer_TileDataSelect8800 : DataTransferTestBase
+    {
+        protected override void InsertTile(int tileNumber, byte[] tileData)
+        {
+            InsertTileAt((ushort) (0x8000 + tileNumber * 16), tileData);
+        }
+
+        protected override void SetBlockTile(int block, int tile)
+        {
+            _fakeMmu.Memory[0x9800 + block] = (byte) tile;
         }
     }
 
