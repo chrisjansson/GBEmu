@@ -41,6 +41,8 @@ namespace Test.Display
             _fakeMmu.Memory[0x9800] = 0;
             _fakeMmu.Memory[0x9801] = 1;
             _fakeMmu.Memory[0x981F] = 1;
+            _fakeMmu.Memory[0x9820] = 1;
+            _fakeMmu.Memory[0x9BE0] = 1;
         }
 
         [Fact]
@@ -50,8 +52,17 @@ namespace Test.Display
 
             var line = GetLine(0);
             AssertLine(line,
-                0, 3, 3, 3, 3, 3, 0, 0, //First sprite row 0
-                0, 0, 3, 3, 3, 3, 0, 0); //Second sprite row 0
+                0, 3, 3, 3, 3, 3, 0, 0, //First tile row 0
+                0, 0, 3, 3, 3, 3, 0, 0); //Second tile row 0
+        }
+
+        [Fact]
+        public void Copies_pixels_from_first_tile_on_8th_row()
+        {
+            _sut.TransferScanLine(8);
+
+            var line = GetLine(8);
+            AssertLine(line, 0, 0, 3, 3, 3, 3, 0, 0);
         }
 
         [Fact]
@@ -63,6 +74,20 @@ namespace Test.Display
             
             var line = GetLine(0);
             AssertLine(line, 3, 3, 3, 3, 0, 0, 0, 3);
+        }
+
+        [Fact]
+        public void Scrolls_y_and_wraps_around_tile_map()
+        {
+            _fakeMmu.ScrollY(254);
+
+            _sut.TransferScanLine(0);
+            _sut.TransferScanLine(1);
+            _sut.TransferScanLine(2);
+
+            AssertLine(GetLine(0), 0, 0, 3, 3, 3, 3, 0, 0); //2nd last line of tile 1, tile map block 992
+            AssertLine(GetLine(1), 0, 0, 0, 0, 0, 0, 0, 0); //last line of tile 1, tile map block 992
+            AssertLine(GetLine(2), 0, 3, 3, 3, 3, 3, 0, 0); //wrapped around, 1st line of tile 0, tile map block 0
         }
 
         private void AssertLine(byte[] line, params byte[] colors)
