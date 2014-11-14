@@ -90,8 +90,8 @@ namespace Test.Display
             AssertLine(GetLine(2), 0, 3, 3, 3, 3, 3, 0, 0); //wrapped around, 1st line of tile 0, tile map block 0
         }
 
-        protected abstract void InsertTile(int tileNumber, byte[] tileData);
-        protected abstract void SetBlockTile(int block, int tile);
+        protected abstract void InsertTile(byte tileNumber, byte[] tileData);
+        protected abstract void SetBlockTile(int block, byte tile);
 
 
         protected void AssertLine(byte[] line, params byte[] colors)
@@ -125,27 +125,38 @@ namespace Test.Display
 
     public class DataTransfer_TileDataSelect8000 : DataTransferTestBase
     {
-        protected override void InsertTile(int tileNumber, byte[] tileData)
+        public DataTransfer_TileDataSelect8000()
         {
-            InsertTileAt((ushort) (0x8000 + tileNumber * 16), tileData);
+            _fakeMmu.SetByte(RegisterAddresses.LCDC, 0x00);
         }
 
-        protected override void SetBlockTile(int block, int tile)
+        protected override void InsertTile(byte tileNumber, byte[] tileData)
         {
-            _fakeMmu.Memory[0x9800 + block] = (byte) tile;
+            InsertTileAt((ushort)(0x8000 + tileNumber * 16), tileData);
+        }
+
+        protected override void SetBlockTile(int block, byte tile)
+        {
+            _fakeMmu.Memory[0x9800 + block] = (byte)tile;
         }
     }
 
     public class DataTransfer_TileDataSelect8800 : DataTransferTestBase
     {
-        protected override void InsertTile(int tileNumber, byte[] tileData)
+        public DataTransfer_TileDataSelect8800()
         {
-            InsertTileAt((ushort) (0x8000 + tileNumber * 16), tileData);
+            _fakeMmu.SetByte(RegisterAddresses.LCDC, 0x10);
         }
 
-        protected override void SetBlockTile(int block, int tile)
+        protected override void InsertTile(byte tileNumber, byte[] tileData)
         {
-            _fakeMmu.Memory[0x9800 + block] = (byte) tile;
+            var tileStartAddress = 0x9000 + ((sbyte)tileNumber) * 16;
+            InsertTileAt((ushort)tileStartAddress, tileData);
+        }
+
+        protected override void SetBlockTile(int block, byte tile)
+        {
+            _fakeMmu.Memory[0x9800 + block] = tile;
         }
     }
 
