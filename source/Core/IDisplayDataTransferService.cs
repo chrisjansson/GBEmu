@@ -29,7 +29,9 @@ namespace Core
 
         public void TransferScanLine(int line)
         {
-            UpdateTileData();
+            var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
+            var tileDataSelect = (lcdc & 0x10) == 0x10 ? 0x8000 : 0x8800;
+
             var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
             var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
 
@@ -39,9 +41,10 @@ namespace Core
             {
                 var backgroundX = (scrollX + i) & 0xFF;
                 var block = backgroundX / 8 + 32 * (backgroundY / 8);
-                var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
+                var tileNumberData = _mmu.GetByte((ushort)(0x9800 + block));
+                var tileIndex = tileDataSelect == 0x8000 ? tileNumberData : (sbyte)tileNumberData + 128;
 
-                var tile = _tiles[tileNumber];
+                var tile = _tiles[tileIndex];
 
                 var x = backgroundX % TileWidth;
                 var y = backgroundY % TileHeight;
@@ -53,17 +56,21 @@ namespace Core
 
         public void FinishFrame()
         {
+            var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
+            var tileDataSelect = (lcdc & 0x10) == 0x10 ? 0x8000 : 0x8800;
+
+            UpdateTileData((ushort)tileDataSelect);
         }
 
         private const int NumberOfTiles = 256;
         private const int TileSize = 16;
         private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
         private readonly Tile[] _tiles = new Tile[NumberOfTiles];
-        private void UpdateTileData()
+        private void UpdateTileData(ushort tileDataStartAddress)
         {
             for (var i = 0; i < _tileData.Length; i++)
             {
-                _tileData[i] = _mmu.GetByte((ushort)(0x8000 + i));
+                _tileData[i] = _mmu.GetByte((ushort)(tileDataStartAddress + i));
             }
 
             for (var i = 0; i < NumberOfTiles; i++)
