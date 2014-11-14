@@ -26,7 +26,7 @@ namespace Test.Display
                 0x00, 0x00
             });
 
-            InsertTile(1, new byte[]
+            InsertTile(128, new byte[]
             {
                 0x3C, 0x3C, 
                 0x66, 0x66,
@@ -39,10 +39,10 @@ namespace Test.Display
             });
 
             SetBlockTile(0, 0);
-            SetBlockTile(1, 1);
-            SetBlockTile(0x1F, 1);
-            SetBlockTile(0x20, 1);
-            SetBlockTile(0x3E0, 1);
+            SetBlockTile(1, 128);
+            SetBlockTile(0x1F, 128);
+            SetBlockTile(0x20, 128);
+            SetBlockTile(0x3E0, 128);
         }
 
         [Fact]
