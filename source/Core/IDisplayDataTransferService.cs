@@ -31,6 +31,7 @@ namespace Core
         {
             var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
             var tileDataSelect = (lcdc & 0x10) == 0x10 ? 0x8000 : 0x8800;
+            var tileMapSelect = (lcdc & 0x08) == 0x08 ? 0x9C00 : 0x9800;
 
             var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
             var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
@@ -41,7 +42,7 @@ namespace Core
             {
                 var backgroundX = (scrollX + i) & 0xFF;
                 var block = backgroundX / 8 + 32 * (backgroundY / 8);
-                var tileNumberData = _mmu.GetByte((ushort)(0x9800 + block));
+                var tileNumberData = _mmu.GetByte((ushort)(tileMapSelect + block));
                 var tileIndex = tileDataSelect == 0x8000 ? tileNumberData : (sbyte)tileNumberData + 128;
 
                 var tile = _tiles[tileIndex];

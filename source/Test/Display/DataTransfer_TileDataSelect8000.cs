@@ -48,6 +48,7 @@ namespace Test.Display
         [Fact]
         public void Copies_pixels_from_first_and_second_tile_on_first_row()
         {
+            _sut.FinishFrame();
             _sut.TransferScanLine(0);
 
             var line = GetLine(0);
@@ -59,6 +60,7 @@ namespace Test.Display
         [Fact]
         public void Copies_pixels_from_first_tile_on_8th_row()
         {
+            _sut.FinishFrame();
             _sut.TransferScanLine(8);
 
             var line = GetLine(8);
@@ -70,6 +72,7 @@ namespace Test.Display
         {
             _fakeMmu.ScrollX(250);
 
+            _sut.FinishFrame();
             _sut.TransferScanLine(0);
 
             var line = GetLine(0);
@@ -81,6 +84,7 @@ namespace Test.Display
         {
             _fakeMmu.ScrollY(254);
 
+            _sut.FinishFrame();
             _sut.TransferScanLine(0);
             _sut.TransferScanLine(1);
             _sut.TransferScanLine(2);
@@ -137,7 +141,7 @@ namespace Test.Display
 
         protected override void SetBlockTile(int block, byte tile)
         {
-            _fakeMmu.Memory[0x9800 + block] = (byte)tile;
+            _fakeMmu.Memory[0x9800 + block] = tile;
         }
     }
 
