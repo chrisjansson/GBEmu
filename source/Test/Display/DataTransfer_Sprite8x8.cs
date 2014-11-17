@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Core;
+using Xunit;
 
 namespace Test.Display
 {
@@ -6,9 +7,10 @@ namespace Test.Display
     {
         public DataTransfer_Sprite8x8()
         {
+            _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x10;
             InsertSpriteAttribute(1, new byte[]
             {
-                0x16, //y = 16, displaycoordinate + 16
+                0x10, //y = 16, displaycoordinate + 16
                 0x08, //x = 8, displaycoordinate + 8
                 0x00, //Tile number
                 0x00, //Flags
@@ -20,10 +22,12 @@ namespace Test.Display
         {
             _sut.FinishFrame();
             _sut.TransferScanLine(0);
-            _sut.TransferScanLine(1);
+            _sut.TransferScanLine(7);
 
-            var line = GetLine(0);
-            AssertLine(line, FirstTileFirstRow);
+            var first = GetLine(0);
+            var second = GetLine(7);
+            AssertLine(first, FirstTileFirstRow);
+            //AssertLine(second, 2, 2, 0, 0, 0, 2, 2, 0);
         }
 
         private void InsertSpriteAttribute(int number, byte[] o)

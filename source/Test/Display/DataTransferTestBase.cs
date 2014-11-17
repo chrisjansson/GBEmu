@@ -117,13 +117,13 @@ namespace Test.Display
         }
 
         [Fact]
-        public void Copies_pixels_from_first_tile_on_8th_row()
+        public void Copies_pixels_from_second_tile_on_8th_row()
         {
             _sut.FinishFrame();
             _sut.TransferScanLine(8);
 
             var line = GetLine(8);
-            AssertLine(line, 0, 0, 3, 3, 3, 3, 0, 0);
+            AssertLine(line, SecondTileFirstRow);
         }
 
         [Fact]

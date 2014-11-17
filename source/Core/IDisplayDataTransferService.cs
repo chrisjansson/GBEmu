@@ -53,6 +53,27 @@ namespace Core
                 var color = tile.Pixels[x + 8 * y];
                 FrameBuffer[line * WindowWidth + i] = color;
             }
+
+            for (var sprite = 0; sprite < 40; sprite++)
+            {
+                var spriteAddress = (ushort)(0xFE00 + sprite * 4);
+                var spriteY = _mmu.GetByte(spriteAddress);
+                var displayY = spriteY - 16;
+                if (displayY != line)
+                    continue;
+
+                var spriteX = _mmu.GetByte((ushort)(spriteAddress + 1));
+                var displayX = spriteX - 8;
+
+                var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
+                var tile = _tiles[tileNumber];
+
+                for (var x = 0; x < 8; x++)
+                {
+                    var color = tile.Pixels[x + line * 8];
+                    FrameBuffer[line * WindowWidth + x] = color;
+                }
+            }
         }
 
         public void FinishFrame()
