@@ -138,13 +138,17 @@
     <Compile Include="CP_n.cs" />
     <Compile Include="CP_R.cs" />
     <Compile Include="DEC_HL.cs" />
+    <Compile Include="Display\DataTransferTestBase.cs" />
     <Compile Include="Display\DataTransfer_TileDataSelect8000.cs" />
+    <Compile Include="Display\DataTransfer_TileDataSelect8800.cs" />
+    <Compile Include="Display\DataTransfer_TileMapSelect9C00.cs" />
     <Compile Include="Display\DisplayExtensions.cs" />
     <Compile Include="Display\DMATransferTests.cs" />
     <Compile Include="Display\FakeDisplayDataTransferService.cs" />
     <Compile Include="Display\HBlank_interrupt_tests.cs" />
     <Compile Include="Display\LCDC_tests.cs" />
     <Compile Include="Display\LYCompareTests.cs" />
+    <Compile Include="Display\MMUExtensions.cs" />
     <Compile Include="Display\Mode_tests.cs" />
     <Compile Include="Display\OAM_interrupt_tests.cs" />
     <Compile Include="Display\Scanline_tests.cs" />

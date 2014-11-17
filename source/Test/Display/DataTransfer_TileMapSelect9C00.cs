@@ -2,11 +2,11 @@
 
 namespace Test.Display
 {
-    public class DataTransfer_TileDataSelect8000 : DataTransferTestBase
+    public class DataTransfer_TileMapSelect9C00 : DataTransferTestBase
     {
-        public DataTransfer_TileDataSelect8000()
+        public DataTransfer_TileMapSelect9C00()
         {
-            _fakeMmu.SetByte(RegisterAddresses.LCDC, 0x10);
+            _fakeMmu.SetByte(RegisterAddresses.LCDC, 0x18);
         }
 
         protected override void InsertTile(byte tileNumber, byte[] tileData)
@@ -16,7 +16,7 @@ namespace Test.Display
 
         protected override void SetBlockTile(int block, byte tile)
         {
-            _fakeMmu.Memory[0x9800 + block] = tile;
+            _fakeMmu.Memory[0x9C00 + block] = tile;
         }
     }
 }
