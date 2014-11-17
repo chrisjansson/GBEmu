@@ -2,7 +2,7 @@
 
 namespace Test.Display
 {
-    public class DataTransfer_TileDataSelect8800 : DataTransferTestBase
+    public class DataTransfer_TileDataSelect8800 : BackgroundTestBase
     {
         public DataTransfer_TileDataSelect8800()
         {

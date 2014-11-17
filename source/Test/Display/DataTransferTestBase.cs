@@ -45,6 +45,40 @@ namespace Test.Display
             SetBlockTile(0x3E0, 128);
         }
 
+        protected abstract void InsertTile(byte tileNumber, byte[] tileData);
+        protected abstract void SetBlockTile(int block, byte tile);
+
+        protected void AssertLine(byte[] line, params byte[] colors)
+        {
+            for (var i = 0; i < colors.Length; i++)
+            {
+                Assert.Equal(colors[i], line[i]);
+            }
+        }
+
+        protected byte[] GetLine(int i)
+        {
+            var line = new Byte[160];
+            for (var x = 0; x < 160; x++)
+            {
+                line[x] = _sut.FrameBuffer[i * 160 + x];
+            }
+
+            return line;
+        }
+
+        protected void InsertTileAt(ushort address, byte[] tile)
+        {
+            Assert.Equal(16, tile.Length);
+            for (int i = 0; i < tile.Length; i++)
+            {
+                _fakeMmu.Memory[address + i] = tile[i];
+            }
+        }
+    }
+
+    public abstract class BackgroundTestBase : DataTransferTestBase
+    {
         [Fact]
         public void Copies_pixels_from_first_and_second_tile_on_first_row()
         {
@@ -92,38 +126,6 @@ namespace Test.Display
             AssertLine(GetLine(0), 0, 0, 3, 3, 3, 3, 0, 0); //2nd last line of tile 1, tile map block 992
             AssertLine(GetLine(1), 0, 0, 0, 0, 0, 0, 0, 0); //last line of tile 1, tile map block 992
             AssertLine(GetLine(2), 0, 3, 3, 3, 3, 3, 0, 0); //wrapped around, 1st line of tile 0, tile map block 0
-        }
-
-        protected abstract void InsertTile(byte tileNumber, byte[] tileData);
-        protected abstract void SetBlockTile(int block, byte tile);
-
-
-        protected void AssertLine(byte[] line, params byte[] colors)
-        {
-            for (var i = 0; i < colors.Length; i++)
-            {
-                Assert.Equal(colors[i], line[i]);
-            }
-        }
-
-        protected byte[] GetLine(int i)
-        {
-            var line = new Byte[160];
-            for (var x = 0; x < 160; x++)
-            {
-                line[x] = _sut.FrameBuffer[i * 160 + x];
-            }
-
-            return line;
-        }
-
-        protected void InsertTileAt(ushort address, byte[] tile)
-        {
-            Assert.Equal(16, tile.Length);
-            for (int i = 0; i < tile.Length; i++)
-            {
-                _fakeMmu.Memory[address + i] = tile[i];
-            }
         }
     }
 }

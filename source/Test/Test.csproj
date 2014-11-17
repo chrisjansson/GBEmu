@@ -139,6 +139,7 @@
     <Compile Include="CP_R.cs" />
     <Compile Include="DEC_HL.cs" />
     <Compile Include="Display\DataTransferTestBase.cs" />
+    <Compile Include="Display\DataTransfer_Sprite8x8.cs" />
     <Compile Include="Display\DataTransfer_TileDataSelect8000.cs" />
     <Compile Include="Display\DataTransfer_TileDataSelect8800.cs" />
     <Compile Include="Display\DataTransfer_TileMapSelect9C00.cs" />
