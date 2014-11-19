@@ -60,8 +60,12 @@ namespace Gui
                     case SDL.SDL_EventType.SDL_QUIT:
                         running = false;
                         break;
+                    case SDL.SDL_EventType.SDL_KEYUP:
+                        Up(joypad, newEvent);
+                        break;
                     case SDL.SDL_EventType.SDL_KEYDOWN:
                         running = newEvent.key.keysym.scancode != SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE;
+                        Down(joypad, newEvent);
                         break;
                 }
 
@@ -81,6 +85,54 @@ namespace Gui
             SDL.SDL_DestroyRenderer(renderer);
             SDL.SDL_DestroyWindow(window);
             SDL.SDL_Quit();
+        }
+
+        private static void Up(Joypad joypad, SDL.SDL_Event newEvent)
+        {
+            var left = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_LEFT;
+            var right = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_RIGHT;
+            var start = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_RETURN;
+            var a = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_KP_A;
+            if (left)
+            {
+                joypad.Left = false;
+            }
+            if (right)
+            {
+                joypad.Right = false;
+            }
+            if (start)
+            {
+                joypad.Start = false;
+            }
+            if (a)
+            {
+                joypad.A = false;
+            }
+        }
+
+        private static void Down(Joypad joypad, SDL.SDL_Event newEvent)
+        {
+            var left = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_LEFT;
+            var right = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_RIGHT;
+            var start = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_RETURN;
+            var a = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_KP_A;
+            if (left)
+            {
+                joypad.Left = true;
+            }
+            if (right)
+            {
+                joypad.Right = true;
+            }
+            if (start)
+            {
+                joypad.Start = true;
+            }
+            if (a)
+            {
+                joypad.A = true;
+            }
         }
 
         private static ushort[] _trace = new ushort[10000];
