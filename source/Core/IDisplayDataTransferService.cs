@@ -14,11 +14,16 @@ namespace Core
         private const int WindowHeight = 144;
         private const int TileHeight = 8;
         private const int TileWidth = 8;
+        private const int NumberOfTiles = 256;
+        private const int TileSize = 16;
 
         private readonly IMmu _mmu;
         private readonly SpriteRenderer _spriteRenderer;
 
         public readonly byte[] FrameBuffer = new Byte[WindowWidth * WindowHeight];
+        private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
+        private readonly Tile[] _tiles8000 = new Tile[NumberOfTiles];
+        private readonly Tile[] _tiles8800 = new Tile[NumberOfTiles];
 
         public DisplayDataTransferService(IMmu mmu)
         {
@@ -65,12 +70,6 @@ namespace Core
             UpdateTileData(0x8000, _tiles8000);
             UpdateTileData(0x8800, _tiles8800);
         }
-
-        private const int NumberOfTiles = 256;
-        private const int TileSize = 16;
-        private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
-        private readonly Tile[] _tiles8000 = new Tile[NumberOfTiles];
-        private readonly Tile[] _tiles8800 = new Tile[NumberOfTiles];
 
         private void UpdateTileData(ushort tileDataStartAddress, Tile[] tiles)
         {
