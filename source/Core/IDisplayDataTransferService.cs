@@ -10,7 +10,7 @@ namespace Core
 
     public class DisplayDataTransferService : IDisplayDataTransferService
     {
-        private const int WindowWidth = 160;
+        public const int WindowWidth = 160;
         private const int WindowHeight = 144;
         private const int TileHeight = 8;
         private const int TileWidth = 8;
@@ -21,6 +21,7 @@ namespace Core
         public DisplayDataTransferService(IMmu mmu)
         {
             _mmu = mmu;
+            _spriteRenderer = new SpriteRenderer(mmu);
             for (var i = 0; i < _tiles.Length; i++)
             {
                 _tiles[i].Initialize();
@@ -54,27 +55,7 @@ namespace Core
                 FrameBuffer[line * WindowWidth + i] = color;
             }
 
-            for (var sprite = 0; sprite < 40; sprite++)
-            {
-                var spriteAddress = (ushort)(0xFE00 + sprite * 4);
-                var spriteY = _mmu.GetByte(spriteAddress);
-                var displayY = spriteY - 16;
-                var spriteYCoord = line - displayY;
-                if (spriteYCoord >= 0 && spriteYCoord <= 7)
-                {
-                    var spriteX = _mmu.GetByte((ushort)(spriteAddress + 1));
-                    var displayX = spriteX - 8;
-
-                    var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
-                    var tile = _tiles[tileNumber];
-
-                    for (var x = 0; x < 8; x++)
-                    {
-                        var color = tile.Pixels[x + spriteYCoord * 8];
-                        FrameBuffer[line * WindowWidth + displayX + x] = color;
-                    }
-                }
-            }
+            _spriteRenderer.Render(line, _tiles, FrameBuffer);
         }
 
         public void FinishFrame()
@@ -89,6 +70,8 @@ namespace Core
         private const int TileSize = 16;
         private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
         private readonly Tile[] _tiles = new Tile[NumberOfTiles];
+        private SpriteRenderer _spriteRenderer;
+
         private void UpdateTileData(ushort tileDataStartAddress)
         {
             for (var i = 0; i < _tileData.Length; i++)
