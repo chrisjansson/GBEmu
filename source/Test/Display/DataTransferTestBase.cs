@@ -15,7 +15,7 @@ namespace Test.Display
         protected DataTransferTestBase()
         {
             _fakeMmu = new FakeMmu();
-            _sut = new DisplayDataTransferService(_fakeMmu);
+            _sut = new DisplayDataTransferService(_fakeMmu, new SpriteRenderer(_fakeMmu));
 
             InsertTile(0, new byte[]
             {

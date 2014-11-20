@@ -1,6 +1,11 @@
 ﻿namespace Core
 {
-    public class SpriteRenderer
+    public interface ISpriteRenderer
+    {
+        void Render(int line, DisplayDataTransferService.Tile[] tiles, byte[] frameBuffer);
+    }
+
+    public class SpriteRenderer : ISpriteRenderer
     {
         private readonly IMmu _mmu;
 

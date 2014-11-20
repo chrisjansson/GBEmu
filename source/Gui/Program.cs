@@ -31,7 +31,7 @@ namespace Gui
             fileStream.Read(rom, 0, 256);
             _mmuWithBootRom = new MMUWithBootRom(rom, _mmu);
             _cpu = new Cpu(_mmuWithBootRom);
-            _displayDataTransferService = new DisplayDataTransferService(_mmuWithBootRom);
+            _displayDataTransferService = new DisplayDataTransferService(_mmuWithBootRom, new SpriteRenderer(_mmuWithBootRom));
             _display = new Display(_mmu, _displayDataTransferService);
             _mmu.Display = _display;
             _mmu.Cpu = _cpu;

@@ -18,17 +18,17 @@ namespace Core
         private const int TileSize = 16;
 
         private readonly IMmu _mmu;
-        private readonly SpriteRenderer _spriteRenderer;
+        private readonly ISpriteRenderer _spriteRenderer;
 
         public readonly byte[] FrameBuffer = new Byte[WindowWidth * WindowHeight];
         private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
         private readonly Tile[] _tiles8000 = new Tile[NumberOfTiles];
         private readonly Tile[] _tiles8800 = new Tile[NumberOfTiles];
 
-        public DisplayDataTransferService(IMmu mmu)
+        public DisplayDataTransferService(IMmu mmu, ISpriteRenderer spriteRenderer)
         {
             _mmu = mmu;
-            _spriteRenderer = new SpriteRenderer(mmu);
+            _spriteRenderer = spriteRenderer;
             for (var i = 0; i < _tiles8000.Length; i++)
             {
                 _tiles8000[i].Initialize();
