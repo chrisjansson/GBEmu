@@ -10,20 +10,29 @@ namespace Core
 
     public class DisplayDataTransferService : IDisplayDataTransferService
     {
-        private const int WindowWidth = 160;
+        public const int WindowWidth = 160;
         private const int WindowHeight = 144;
         private const int TileHeight = 8;
         private const int TileWidth = 8;
+        private const int NumberOfTiles = 256;
+        private const int TileSize = 16;
 
         private readonly IMmu _mmu;
-        public byte[] FrameBuffer = new Byte[WindowWidth * WindowHeight];
+        private readonly ISpriteRenderer _spriteRenderer;
 
-        public DisplayDataTransferService(IMmu mmu)
+        public readonly byte[] FrameBuffer = new Byte[WindowWidth * WindowHeight];
+        private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
+        private readonly Tile[] _tiles8000 = new Tile[NumberOfTiles];
+        private readonly Tile[] _tiles8800 = new Tile[NumberOfTiles];
+
+        public DisplayDataTransferService(IMmu mmu, ISpriteRenderer spriteRenderer)
         {
             _mmu = mmu;
-            for (var i = 0; i < _tiles.Length; i++)
+            _spriteRenderer = spriteRenderer;
+            for (var i = 0; i < _tiles8000.Length; i++)
             {
-                _tiles[i].Initialize();
+                _tiles8000[i].Initialize();
+                _tiles8800[i].Initialize();
             }
         }
 
@@ -44,8 +53,7 @@ namespace Core
                 var block = backgroundX / 8 + 32 * (backgroundY / 8);
                 var tileNumberData = _mmu.GetByte((ushort)(tileMapSelect + block));
                 var tileIndex = tileDataSelect == 0x8000 ? tileNumberData : (sbyte)tileNumberData + 128;
-
-                var tile = _tiles[tileIndex];
+                var tile = tileDataSelect == 0x8000 ? _tiles8000[tileNumberData] : _tiles8800[tileIndex];
 
                 var x = backgroundX % TileWidth;
                 var y = backgroundY % TileHeight;
@@ -54,42 +62,16 @@ namespace Core
                 FrameBuffer[line * WindowWidth + i] = color;
             }
 
-            for (var sprite = 0; sprite < 40; sprite++)
-            {
-                var spriteAddress = (ushort)(0xFE00 + sprite * 4);
-                var spriteY = _mmu.GetByte(spriteAddress);
-                var displayY = spriteY - 16;
-                var spriteYCoord = line - displayY;
-                if (spriteYCoord >= 0 && spriteYCoord <= 7)
-                {
-                    var spriteX = _mmu.GetByte((ushort)(spriteAddress + 1));
-                    var displayX = spriteX - 8;
-
-                    var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
-                    var tile = _tiles[tileNumber];
-
-                    for (var x = 0; x < 8; x++)
-                    {
-                        var color = tile.Pixels[x + spriteYCoord * 8];
-                        FrameBuffer[line * WindowWidth + displayX + x] = color;
-                    }
-                }
-            }
+            _spriteRenderer.Render(line, _tiles8000, FrameBuffer);
         }
 
         public void FinishFrame()
         {
-            var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
-            var tileDataSelect = (lcdc & 0x10) == 0x10 ? 0x8000 : 0x8800;
-
-            UpdateTileData((ushort)tileDataSelect);
+            UpdateTileData(0x8000, _tiles8000);
+            UpdateTileData(0x8800, _tiles8800);
         }
 
-        private const int NumberOfTiles = 256;
-        private const int TileSize = 16;
-        private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
-        private readonly Tile[] _tiles = new Tile[NumberOfTiles];
-        private void UpdateTileData(ushort tileDataStartAddress)
+        private void UpdateTileData(ushort tileDataStartAddress, Tile[] tiles)
         {
             for (var i = 0; i < _tileData.Length; i++)
             {
@@ -100,7 +82,7 @@ namespace Core
             {
                 var tileData = new byte[TileSize];
                 Array.Copy(_tileData, i * TileSize, tileData, 0, TileSize);
-                _tiles[i].Update(tileData);
+                tiles[i].Update(tileData);
             }
         }
 
