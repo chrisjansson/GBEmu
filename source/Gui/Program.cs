@@ -44,7 +44,7 @@ namespace Gui
             ushort inPosition = 0;
             while (openRead.Position != openRead.Length)
             {
-                byte readByte = (byte) openRead.ReadByte();
+                byte readByte = (byte)openRead.ReadByte();
                 _mmu.SetByte(inPosition, readByte);
                 inPosition++;
             }
@@ -61,17 +61,17 @@ namespace Gui
                         running = false;
                         break;
                     case SDL.SDL_EventType.SDL_KEYUP:
-                        Up(joypad, newEvent);
+                        Up(joypad, KeyState.FromKeyEvent(newEvent.key));
                         break;
                     case SDL.SDL_EventType.SDL_KEYDOWN:
                         running = newEvent.key.keysym.scancode != SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE;
-                        Down(joypad, newEvent);
+                        Down(joypad, KeyState.FromKeyEvent(newEvent.key));
                         break;
                 }
 
                 const double cycleTime = 1 / 4000000.0;
                 const double frameTime = 1 / 60.0;
-                const double cyclesPerFrame = (frameTime/cycleTime) * 0.8;
+                const double cyclesPerFrame = (frameTime / cycleTime) * 0.8;
 
                 var target = (long)(_cpu.Cycles + cyclesPerFrame);
                 while (_cpu.Cycles <= target)
@@ -87,52 +87,29 @@ namespace Gui
             SDL.SDL_Quit();
         }
 
-        private static void Up(Joypad joypad, SDL.SDL_Event newEvent)
+
+        private static void Up(Joypad joypad, KeyState newEvent)
         {
-            var left = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_LEFT;
-            var right = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_RIGHT;
-            var start = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_RETURN;
-            var a = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_KP_A;
-            if (left)
-            {
-                joypad.Left = false;
-            }
-            if (right)
-            {
-                joypad.Right = false;
-            }
-            if (start)
-            {
-                joypad.Start = false;
-            }
-            if (a)
-            {
-                joypad.A = false;
-            }
+            joypad.Left = !newEvent.Left && joypad.Left;
+            joypad.Right = !newEvent.Right && joypad.Right;
+            joypad.Up = !newEvent.Up && joypad.Up;
+            joypad.Down = !newEvent.Down && joypad.Down;
+            joypad.A = !newEvent.A && joypad.A;
+            joypad.B = !newEvent.B && joypad.B;
+            joypad.Start = !newEvent.Start && joypad.Start;
+            joypad.Select = !newEvent.Select && joypad.Select;
         }
 
-        private static void Down(Joypad joypad, SDL.SDL_Event newEvent)
+        private static void Down(Joypad joypad, KeyState newEvent)
         {
-            var left = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_LEFT;
-            var right = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_RIGHT;
-            var start = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_RETURN;
-            var a = newEvent.key.keysym.scancode == SDL.SDL_Scancode.SDL_SCANCODE_KP_A;
-            if (left)
-            {
-                joypad.Left = true;
-            }
-            if (right)
-            {
-                joypad.Right = true;
-            }
-            if (start)
-            {
-                joypad.Start = true;
-            }
-            if (a)
-            {
-                joypad.A = true;
-            }
+            joypad.Left = newEvent.Left || joypad.Left;
+            joypad.Right = newEvent.Right || joypad.Right;
+            joypad.Up = newEvent.Up || joypad.Up;
+            joypad.Down = newEvent.Down || joypad.Down;
+            joypad.A = newEvent.A || joypad.A;
+            joypad.B = newEvent.B || joypad.B;
+            joypad.Start = newEvent.Start || joypad.Start;
+            joypad.Select = newEvent.Select || joypad.Select;
         }
 
         private static ushort[] _trace = new ushort[10000];
