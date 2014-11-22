@@ -44,7 +44,7 @@ namespace Gui
             ushort inPosition = 0;
             while (openRead.Position != openRead.Length)
             {
-                byte readByte = (byte) openRead.ReadByte();
+                byte readByte = (byte)openRead.ReadByte();
                 _mmu.SetByte(inPosition, readByte);
                 inPosition++;
             }
@@ -60,14 +60,18 @@ namespace Gui
                     case SDL.SDL_EventType.SDL_QUIT:
                         running = false;
                         break;
+                    case SDL.SDL_EventType.SDL_KEYUP:
+                        Up(joypad, KeyState.FromKeyEvent(newEvent.key));
+                        break;
                     case SDL.SDL_EventType.SDL_KEYDOWN:
                         running = newEvent.key.keysym.scancode != SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE;
+                        Down(joypad, KeyState.FromKeyEvent(newEvent.key));
                         break;
                 }
 
                 const double cycleTime = 1 / 4000000.0;
                 const double frameTime = 1 / 60.0;
-                const double cyclesPerFrame = (frameTime/cycleTime) * 0.8;
+                const double cyclesPerFrame = (frameTime / cycleTime) * 0.8;
 
                 var target = (long)(_cpu.Cycles + cyclesPerFrame);
                 while (_cpu.Cycles <= target)
@@ -81,6 +85,31 @@ namespace Gui
             SDL.SDL_DestroyRenderer(renderer);
             SDL.SDL_DestroyWindow(window);
             SDL.SDL_Quit();
+        }
+
+
+        private static void Up(Joypad joypad, KeyState newEvent)
+        {
+            joypad.Left = !newEvent.Left && joypad.Left;
+            joypad.Right = !newEvent.Right && joypad.Right;
+            joypad.Up = !newEvent.Up && joypad.Up;
+            joypad.Down = !newEvent.Down && joypad.Down;
+            joypad.A = !newEvent.A && joypad.A;
+            joypad.B = !newEvent.B && joypad.B;
+            joypad.Start = !newEvent.Start && joypad.Start;
+            joypad.Select = !newEvent.Select && joypad.Select;
+        }
+
+        private static void Down(Joypad joypad, KeyState newEvent)
+        {
+            joypad.Left = newEvent.Left || joypad.Left;
+            joypad.Right = newEvent.Right || joypad.Right;
+            joypad.Up = newEvent.Up || joypad.Up;
+            joypad.Down = newEvent.Down || joypad.Down;
+            joypad.A = newEvent.A || joypad.A;
+            joypad.B = newEvent.B || joypad.B;
+            joypad.Start = newEvent.Start || joypad.Start;
+            joypad.Select = newEvent.Select || joypad.Select;
         }
 
         private static ushort[] _trace = new ushort[10000];
