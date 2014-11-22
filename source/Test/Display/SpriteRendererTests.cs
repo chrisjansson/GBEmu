@@ -85,9 +85,9 @@ namespace Test.Display
                 0x00, //Tile number
                 0x00, //Flags
             });
-            _sut.Render(0, _tiles, _framebuffer);
-            _sut.Render(1, _tiles, _framebuffer);
-            _sut.Render(7, _tiles, _framebuffer);
+            RenderLine(0);
+            RenderLine(1);
+            RenderLine(7);
 
             var first = GetLine(0);
             var second = GetLine(1);
@@ -105,14 +105,15 @@ namespace Test.Display
                 0x00, //Tile number
                 0x00, //Flags
             });
-            _sut.Render(0, _tiles, _framebuffer);
-            _sut.Render(1, _tiles, _framebuffer);
+            RenderLine(0);
+            RenderLine(1);
 
             var first = GetLine(0);
             var second = GetLine(1);
             AssertLine(first, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
             AssertLine(second, _firstTileFirstRow);
         }
+
 
         [Fact]
         public void Draws_sprite_offet_by_x()
@@ -124,14 +125,18 @@ namespace Test.Display
                 0x00, //Tile number
                 0x00, //Flags
             });
-
-            _sut.Render(0, _tiles, _framebuffer);
-            _sut.Render(1, _tiles, _framebuffer);
+            RenderLine(0);
+            RenderLine(1);
 
             var first = GetLine(0);
             var second = GetLine(1);
             AssertLine(first, 0, 0, 3, 3, 3, 3, 3, 0, 0);
             AssertLine(second, 0, 2, 2, 0, 0, 0, 2, 2, 0);
+        }
+
+        private void RenderLine(int line)
+        {
+            _sut.Render(line, _tiles, _framebuffer);
         }
 
         protected void AssertLine(byte[] line, params byte[] colors)
