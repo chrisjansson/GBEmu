@@ -16,6 +16,11 @@
 
         public void Render(int line, DisplayDataTransferService.Tile[] tiles, byte[] frameBuffer)
         {
+            var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
+            var spriteEnable = (lcdc & 0x02) == 0x02;
+            if(!spriteEnable)
+                return;
+
             for (var sprite = 0; sprite < 40; sprite++)
             {
                 var spriteAddress = (ushort)(0xFE00 + sprite * 4);

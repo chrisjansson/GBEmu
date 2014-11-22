@@ -73,6 +73,8 @@ namespace Test.Display
             _tiles = new DisplayDataTransferService.Tile[256];
             _tiles[0] = _firstTile;
             _tiles[1] = _secondTile;
+
+            _mmu.SetByte(RegisterAddresses.LCDC, 0x02);
         }
 
         [Fact]
@@ -93,6 +95,24 @@ namespace Test.Display
             var second = GetLine(1);
             AssertLine(first, _firstTileFirstRow);
             AssertLine(second, 2, 2, 0, 0, 0, 2, 2, 0);
+        }
+
+        [Fact]
+        public void Does_not_draw_sprite_when_obj_display_is_disabled()
+        {
+            _mmu.SetByte(RegisterAddresses.LCDC, (byte)(_mmu.GetByte(RegisterAddresses.LCDC) & 0xFD));
+            InsertSpriteAttribute(1, new byte[]
+            {
+                0x10, //y = 16, displaycoordinate + 16
+                0x08, //x = 8, displaycoordinate + 8
+                0x00, //Tile number
+                0x00, //Flags
+            });
+
+            RenderLine(0);
+
+            var line = GetLine(0);
+            AssertLine(line, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         [Fact]
