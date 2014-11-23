@@ -183,6 +183,17 @@ namespace Test.Display
             AssertLine(one, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
+        [Fact]
+        public void Does_not_overflow_frame_ufer_when_drawing_sprite_down_to_the_right()
+        {
+            InsertSpriteAttribute(number: 1, y: 159, x: 8, flags: 0, tile: 0);
+
+            RenderLine(143);
+
+            var lastLine = GetLine(143);
+            AssertLine(lastLine, _firstTileFirstRow);
+        }
+
         private void RenderLine(int line)
         {
             _sut.Render(line, _tiles, _framebuffer);
