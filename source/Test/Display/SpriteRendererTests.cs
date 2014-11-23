@@ -206,6 +206,12 @@ namespace Test.Display
             AssertLine(line, _firstTileFirstRow.Reverse().ToArray());
         }
 
+        [Fact]
+        public void FactMethodName()
+        {
+            
+        }
+
         private void RenderLine(int line)
         {
             _sut.Render(line, _tiles, _framebuffer);

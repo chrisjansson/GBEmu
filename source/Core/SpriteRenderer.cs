@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System;
+
+namespace Core
 {
     public interface ISpriteRenderer
     {
@@ -20,6 +22,10 @@
             var spriteEnable = (lcdc & 0x02) == 0x02;
             if (!spriteEnable)
                 return;
+
+            var largeSprites = (lcdc & 0x04) == 0x04;
+            if(largeSprites)
+                throw new NotImplementedException();
 
             for (var sprite = 0; sprite < 40; sprite++)
             {
