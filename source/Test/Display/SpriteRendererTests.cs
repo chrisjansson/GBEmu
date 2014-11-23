@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core;
 using Xunit;
 
@@ -192,6 +193,17 @@ namespace Test.Display
 
             var lastLine = GetLine(143);
             AssertLine(lastLine, _firstTileFirstRow);
+        }
+
+        [Fact]
+        public void Flips_sprite_in_x_direction()
+        {
+            InsertSpriteAttribute(1, 16, 8, 0x20, 0);
+
+            RenderLine(0);
+
+            var line = GetLine(0);
+            AssertLine(line, _firstTileFirstRow.Reverse().ToArray());
         }
 
         private void RenderLine(int line)

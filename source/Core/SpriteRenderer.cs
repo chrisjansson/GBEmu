@@ -35,12 +35,16 @@
                     var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var tile = tiles[tileNumber];
 
+                    var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
+                    var flipX = (attributes & 0x20) == 0x20;
+
                     for (var x = 0; x < 8; x++)
                     {
                         var displayX = startX + x;
                         if (displayX >= 0 && displayX < 160)
                         {
-                            var color = tile.Pixels[x + spriteYCoord * 8];
+                            var sourceX = flipX ? (7 - x) : x;
+                            var color = tile.Pixels[sourceX + spriteYCoord * 8];
                             frameBuffer[line * DisplayDataTransferService.WindowWidth + displayX] = color;
                         }
                     }
