@@ -158,10 +158,10 @@ namespace Test.Display
         {
             InsertSpriteAttribute(1, new byte[]
             {
-                0x10, //y = 16, displaycoordinate + 16
-                0x07, //x = 8, displaycoordinate + 8
-                0x00, //Tile number
-                0x00, //Flags
+                0x10, 
+                0x07,
+                0x00,
+                0x00, 
             });
             RenderLine(0);
             RenderLine(1);
@@ -170,6 +170,17 @@ namespace Test.Display
             var second = GetLine(1);
             AssertLine(first, 3, 3, 3, 3, 3, 0, 0, 0);
             AssertLine(second, 2, 0, 0, 0, 2, 2, 0, 0);
+        }
+
+        [Fact]
+        public void Does_not_overflow_to_next_row_when_drawing_sprite_to_the_right()
+        {
+            InsertSpriteAttribute(number: 1, y: 16, x: 164, tile: 0, flags: 0);
+
+            RenderLine(0);
+
+            var one = GetLine(1);
+            AssertLine(one, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         private void RenderLine(int line)
@@ -215,6 +226,11 @@ namespace Test.Display
             {
                 _mmu.Memory[spriteAttributeStartAddress + number * 4 + i] = o[i];
             }
+        }
+
+        private void InsertSpriteAttribute(int number, byte y, byte x, byte flags, byte tile)
+        {
+            InsertSpriteAttribute(number, new byte[] { y, x, tile, flags });
         }
     }
 }

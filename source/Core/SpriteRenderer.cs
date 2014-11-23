@@ -37,11 +37,11 @@
 
                     for (var x = 0; x < 8; x++)
                     {
-                        var frameBufferX = startX + x;
-                        if (frameBufferX >= 0)
+                        var displayX = startX + x;
+                        if (displayX >= 0 && displayX < 160)
                         {
                             var color = tile.Pixels[x + spriteYCoord * 8];
-                            frameBuffer[line * DisplayDataTransferService.WindowWidth + frameBufferX] = color;
+                            frameBuffer[line * DisplayDataTransferService.WindowWidth + displayX] = color;
                         }
                     }
                 }
