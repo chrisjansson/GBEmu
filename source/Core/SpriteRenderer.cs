@@ -18,7 +18,7 @@
         {
             var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
             var spriteEnable = (lcdc & 0x02) == 0x02;
-            if(!spriteEnable)
+            if (!spriteEnable)
                 return;
 
             for (var sprite = 0; sprite < 40; sprite++)
@@ -30,15 +30,19 @@
                 if (spriteYCoord >= 0 && spriteYCoord <= 7)
                 {
                     var spriteX = _mmu.GetByte((ushort)(spriteAddress + 1));
-                    var displayX = spriteX - 8;
+                    var startX = spriteX - 8;
 
                     var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var tile = tiles[tileNumber];
 
                     for (var x = 0; x < 8; x++)
                     {
-                        var color = tile.Pixels[x + spriteYCoord * 8];
-                        frameBuffer[line * DisplayDataTransferService.WindowWidth + displayX + x] = color;
+                        var frameBufferX = startX + x;
+                        if (frameBufferX >= 0)
+                        {
+                            var color = tile.Pixels[x + spriteYCoord * 8];
+                            frameBuffer[line * DisplayDataTransferService.WindowWidth + frameBufferX] = color;
+                        }
                     }
                 }
             }

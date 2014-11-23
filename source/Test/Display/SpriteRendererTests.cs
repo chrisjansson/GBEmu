@@ -89,7 +89,6 @@ namespace Test.Display
             });
             RenderLine(0);
             RenderLine(1);
-            RenderLine(7);
 
             var first = GetLine(0);
             var second = GetLine(1);
@@ -152,6 +151,25 @@ namespace Test.Display
             var second = GetLine(1);
             AssertLine(first, 0, 0, 3, 3, 3, 3, 3, 0, 0);
             AssertLine(second, 0, 2, 2, 0, 0, 0, 2, 2, 0);
+        }
+
+        [Fact]
+        public void Does_not_underflow_frame_buffer_when_sprite_is_to_the_left_of_screen()
+        {
+            InsertSpriteAttribute(1, new byte[]
+            {
+                0x10, //y = 16, displaycoordinate + 16
+                0x07, //x = 8, displaycoordinate + 8
+                0x00, //Tile number
+                0x00, //Flags
+            });
+            RenderLine(0);
+            RenderLine(1);
+
+            var first = GetLine(0);
+            var second = GetLine(1);
+            AssertLine(first, 3, 3, 3, 3, 3, 0, 0, 0);
+            AssertLine(second, 2, 0, 0, 0, 2, 2, 0, 0);
         }
 
         private void RenderLine(int line)
