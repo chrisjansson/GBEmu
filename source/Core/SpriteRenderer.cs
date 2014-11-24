@@ -43,6 +43,7 @@ namespace Core
 
                     var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
                     var flipX = (attributes & 0x20) == 0x20;
+                    var flipY = (attributes & 0x40) == 0x40;
 
                     for (var x = 0; x < 8; x++)
                     {
@@ -50,7 +51,8 @@ namespace Core
                         if (displayX >= 0 && displayX < 160)
                         {
                             var sourceX = flipX ? (7 - x) : x;
-                            var color = tile.Pixels[sourceX + spriteYCoord * 8];
+                            var sourceY = flipY ? (7 - spriteYCoord) : spriteYCoord;
+                            var color = tile.Pixels[sourceX + sourceY * 8];
                             frameBuffer[line * DisplayDataTransferService.WindowWidth + displayX] = color;
                         }
                     }

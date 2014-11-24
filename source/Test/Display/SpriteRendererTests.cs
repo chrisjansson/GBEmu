@@ -216,8 +216,7 @@ namespace Test.Display
 
             var first = GetLine(6);
             var second = GetLine(7);
-            //0x7C, 0x7C, 
-            //0x00, 0xC6, 
+            AssertLine(first, 2, 2, 0, 0, 0, 2, 2, 0);
             AssertLine(second, _firstTileFirstRow);
         }
 
