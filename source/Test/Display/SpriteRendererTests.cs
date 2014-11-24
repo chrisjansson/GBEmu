@@ -7,12 +7,9 @@ namespace Test.Display
 {
     public class SpriteRendererTests
     {
-        private DisplayDataTransferService.Tile _firstTile;
-        private DisplayDataTransferService.Tile _secondTile;
         private readonly SpriteRenderer _sut;
         private readonly FakeMmu _mmu;
         private readonly byte[] _firstTileFirstRow;
-        private byte[] _secondTileFirstRow;
         private readonly byte[] _framebuffer;
         private readonly DisplayDataTransferService.Tile[] _tiles;
 
@@ -20,9 +17,9 @@ namespace Test.Display
         {
             _mmu = new FakeMmu();
             _sut = new SpriteRenderer(_mmu);
-            _firstTile = new DisplayDataTransferService.Tile();
-            _firstTile.Initialize();
-            _firstTile.Update(new byte[]
+            var firstTile = new DisplayDataTransferService.Tile();
+            firstTile.Initialize();
+            firstTile.Update(new byte[]
             {
                 0x7C, 0x7C, 
                 0x00, 0xC6, 
@@ -33,9 +30,9 @@ namespace Test.Display
                 0xC6, 0x00,
                 0x00, 0x00
             });
-            _secondTile = new DisplayDataTransferService.Tile();
-            _secondTile.Initialize();
-            _secondTile.Update(new byte[]
+            var secondTile = new DisplayDataTransferService.Tile();
+            secondTile.Initialize();
+            secondTile.Update(new byte[]
             {
                 0x3C, 0x3C,
                 0x66, 0x66,
@@ -65,15 +62,10 @@ namespace Test.Display
                 0, 3, 3, 3, 3, 3, 0, 0
             };
 
-            _secondTileFirstRow = new byte[]
-            {
-                0, 0, 3, 3, 3, 3, 0, 0
-            };
-
             _framebuffer = new byte[160 * 144];
             _tiles = new DisplayDataTransferService.Tile[256];
-            _tiles[0] = _firstTile;
-            _tiles[1] = _secondTile;
+            _tiles[0] = firstTile;
+            _tiles[1] = secondTile;
 
             _mmu.SetByte(RegisterAddresses.LCDC, 0x02);
         }
