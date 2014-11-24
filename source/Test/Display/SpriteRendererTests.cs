@@ -98,6 +98,18 @@ namespace Test.Display
         }
 
         [Fact]
+        public void Sprite_color_0_does_not_overwrite_frame_buffer_color()
+        {
+            InsertSpriteAttribute(1, 16, 8, 0, 0);
+            _framebuffer[0] = 1;
+            _framebuffer[1] = 2;
+            RenderLine(0);
+
+            var first = GetLine(0);
+            AssertLine(first, 1, 3, 3, 3, 3, 3, 0, 0);
+        }
+
+        [Fact]
         public void Does_not_draw_sprite_when_obj_display_is_disabled()
         {
             _mmu.SetByte(RegisterAddresses.LCDC, (byte)(_mmu.GetByte(RegisterAddresses.LCDC) & 0xFD));

@@ -24,7 +24,7 @@ namespace Core
                 return;
 
             var largeSprites = (lcdc & 0x04) == 0x04;
-            if(largeSprites)
+            if (largeSprites)
                 throw new NotImplementedException();
 
             for (var sprite = 0; sprite < 40; sprite++)
@@ -53,7 +53,8 @@ namespace Core
                             var sourceX = flipX ? (7 - x) : x;
                             var sourceY = flipY ? (7 - spriteYCoord) : spriteYCoord;
                             var color = tile.Pixels[sourceX + sourceY * 8];
-                            frameBuffer[line * DisplayDataTransferService.WindowWidth + displayX] = color;
+                            if (color > 0)
+                                frameBuffer[line * DisplayDataTransferService.WindowWidth + displayX] = color;
                         }
                     }
                 }
