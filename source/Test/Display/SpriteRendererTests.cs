@@ -207,9 +207,18 @@ namespace Test.Display
         }
 
         [Fact]
-        public void FactMethodName()
+        public void Flips_sprite_in_y_direction()
         {
-            
+            InsertSpriteAttribute(1, 16, 8, 0x40, 0);
+
+            RenderLine(6);
+            RenderLine(7);
+
+            var first = GetLine(6);
+            var second = GetLine(7);
+            //0x7C, 0x7C, 
+            //0x00, 0xC6, 
+            AssertLine(second, _firstTileFirstRow);
         }
 
         private void RenderLine(int line)
