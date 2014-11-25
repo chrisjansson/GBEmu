@@ -35,28 +35,34 @@ namespace Core
                 var spriteYCoord = line - displayY;
                 if (spriteYCoord >= 0 && spriteYCoord <= 7)
                 {
-                    var spriteX = _mmu.GetByte((ushort)(spriteAddress + 1));
-                    var startX = spriteX - 8;
-
                     var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
+                    var spriteX = _mmu.GetByte((ushort)(spriteAddress + 1));
+                    var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
+
                     var tile = tiles[tileNumber];
 
-                    var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
-                    var flipX = (attributes & 0x20) == 0x20;
-                    var flipY = (attributes & 0x40) == 0x40;
+                    DrawSprite(line, frameBuffer, spriteX, attributes, spriteYCoord, tile);
+                }
+            }
+        }
 
-                    for (var x = 0; x < 8; x++)
-                    {
-                        var displayX = startX + x;
-                        if (displayX >= 0 && displayX < 160)
-                        {
-                            var sourceX = flipX ? (7 - x) : x;
-                            var sourceY = flipY ? (7 - spriteYCoord) : spriteYCoord;
-                            var color = tile.Pixels[sourceX + sourceY * 8];
-                            if (color > 0)
-                                frameBuffer[line * DisplayDataTransferService.WindowWidth + displayX] = color;
-                        }
-                    }
+        private static void DrawSprite(int line, byte[] frameBuffer, byte spriteX, byte attributes, int spriteYCoord, DisplayDataTransferService.Tile tile)
+        {
+            var startX = spriteX - 8;
+
+            var flipX = (attributes & 0x20) == 0x20;
+            var flipY = (attributes & 0x40) == 0x40;
+
+            for (var x = 0; x < 8; x++)
+            {
+                var displayX = startX + x;
+                if (displayX >= 0 && displayX < 160)
+                {
+                    var sourceX = flipX ? (7 - x) : x;
+                    var sourceY = flipY ? (7 - spriteYCoord) : spriteYCoord;
+                    var color = tile.Pixels[sourceX + sourceY*8];
+                    if (color > 0)
+                        frameBuffer[line*DisplayDataTransferService.WindowWidth + displayX] = color;
                 }
             }
         }
