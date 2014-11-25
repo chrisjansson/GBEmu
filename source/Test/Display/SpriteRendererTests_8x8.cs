@@ -1,75 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Core;
 using Xunit;
 
 namespace Test.Display
 {
-    public class SpriteRendererTests_8x8
+    public class SpriteRendererTests_8x8 : SpriteRendererTestsBase
     {
-        private readonly SpriteRenderer _sut;
-        private readonly FakeMmu _mmu;
-        private readonly byte[] _firstTileFirstRow;
-        private readonly byte[] _framebuffer;
-        private readonly DisplayDataTransferService.Tile[] _tiles;
-
-        public SpriteRendererTests_8x8()
-        {
-            _mmu = new FakeMmu();
-            _sut = new SpriteRenderer(_mmu);
-            var firstTile = new DisplayDataTransferService.Tile();
-            firstTile.Initialize();
-            firstTile.Update(new byte[]
-            {
-                0x7C, 0x7C, 
-                0x00, 0xC6, 
-                0xC6, 0x00, 
-                0x00, 0xFE,
-                0xC6, 0xC6,
-                0x00, 0xC6,
-                0xC6, 0x00,
-                0x00, 0x00
-            });
-            var secondTile = new DisplayDataTransferService.Tile();
-            secondTile.Initialize();
-            secondTile.Update(new byte[]
-            {
-                0x3C, 0x3C,
-                0x66, 0x66,
-                0x6E, 0x6E,
-                0x76, 0x76,
-                0x66, 0x66,
-                0x66, 0x66,
-                0x3C, 0x3C,
-                0x00, 0x00,
-            });
-
-            _mmu.Memory[RegisterAddresses.LCDC] = 0x10;
-
-            for (var i = 0; i < 40; i++)
-            {
-                InsertSpriteAttribute(i, new byte[]
-                {
-                    0x00,
-                    0x00,
-                    0x00,
-                    0x00
-                });
-            }
-
-            _firstTileFirstRow = new byte[]
-            {
-                0, 3, 3, 3, 3, 3, 0, 0
-            };
-
-            _framebuffer = new byte[160 * 144];
-            _tiles = new DisplayDataTransferService.Tile[256];
-            _tiles[0] = firstTile;
-            _tiles[1] = secondTile;
-
-            _mmu.SetByte(RegisterAddresses.LCDC, 0x02);
-        }
-
         [Fact]
         public void Draws_sprite_at_origin()
         {
@@ -85,7 +21,7 @@ namespace Test.Display
 
             var first = GetLine(0);
             var second = GetLine(1);
-            AssertLine(first, _firstTileFirstRow);
+            AssertLine(first, FirstTileFirstRow);
             AssertLine(second, 2, 2, 0, 0, 0, 2, 2, 0);
         }
 
@@ -93,8 +29,8 @@ namespace Test.Display
         public void Sprite_color_0_does_not_overwrite_frame_buffer_color()
         {
             InsertSpriteAttribute(1, 16, 8, 0, 0);
-            _framebuffer[0] = 1;
-            _framebuffer[1] = 2;
+            Framebuffer[0] = 1;
+            Framebuffer[1] = 2;
             RenderLine(0);
 
             var first = GetLine(0);
@@ -104,7 +40,7 @@ namespace Test.Display
         [Fact]
         public void Does_not_draw_sprite_when_obj_display_is_disabled()
         {
-            _mmu.SetByte(RegisterAddresses.LCDC, (byte)(_mmu.GetByte(RegisterAddresses.LCDC) & 0xFD));
+            MMU.SetByte(RegisterAddresses.LCDC, (byte)(MMU.GetByte(RegisterAddresses.LCDC) & 0xFD));
             InsertSpriteAttribute(1, new byte[]
             {
                 0x10, //y = 16, displaycoordinate + 16
@@ -135,7 +71,7 @@ namespace Test.Display
             var first = GetLine(0);
             var second = GetLine(1);
             AssertLine(first, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-            AssertLine(second, _firstTileFirstRow);
+            AssertLine(second, FirstTileFirstRow);
         }
 
 
@@ -196,7 +132,7 @@ namespace Test.Display
             RenderLine(143);
 
             var lastLine = GetLine(143);
-            AssertLine(lastLine, _firstTileFirstRow);
+            AssertLine(lastLine, FirstTileFirstRow);
         }
 
         [Fact]
@@ -207,7 +143,7 @@ namespace Test.Display
             RenderLine(0);
 
             var line = GetLine(0);
-            AssertLine(line, _firstTileFirstRow.Reverse().ToArray());
+            AssertLine(line, FirstTileFirstRow.Reverse().ToArray());
         }
 
         [Fact]
@@ -221,57 +157,7 @@ namespace Test.Display
             var first = GetLine(6);
             var second = GetLine(7);
             AssertLine(first, 2, 2, 0, 0, 0, 2, 2, 0);
-            AssertLine(second, _firstTileFirstRow);
-        }
-
-        private void RenderLine(int line)
-        {
-            _sut.Render(line, _tiles, _framebuffer);
-        }
-
-        protected void AssertLine(byte[] line, params byte[] colors)
-        {
-            for (var i = 0; i < colors.Length; i++)
-            {
-                Assert.Equal(colors[i], line[i]);
-            }
-        }
-
-        protected void AssertLine(byte[] line, params byte[][] colors)
-        {
-            for (var i = 0; i < colors.Length; i++)
-            {
-                for (var j = 0; j < colors[i].Length; j++)
-                {
-                    Assert.Equal(colors[i][j], line[j + i * 8]);
-                }
-            }
-        }
-
-        protected byte[] GetLine(int i)
-        {
-            var line = new Byte[160];
-            for (var x = 0; x < 160; x++)
-            {
-                line[x] = _framebuffer[i * 160 + x];
-            }
-
-            return line;
-        }
-
-
-        private void InsertSpriteAttribute(int number, byte[] o)
-        {
-            const int spriteAttributeStartAddress = 0xFE00;
-            for (var i = 0; i < o.Length; i++)
-            {
-                _mmu.Memory[spriteAttributeStartAddress + number * 4 + i] = o[i];
-            }
-        }
-
-        private void InsertSpriteAttribute(int number, byte y, byte x, byte flags, byte tile)
-        {
-            InsertSpriteAttribute(number, new byte[] { y, x, tile, flags });
+            AssertLine(second, FirstTileFirstRow);
         }
     }
 }
