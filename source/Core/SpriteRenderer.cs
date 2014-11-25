@@ -24,26 +24,40 @@ namespace Core
                 return;
 
             var largeSprites = (lcdc & 0x04) == 0x04;
-            if (largeSprites)
-                throw new NotImplementedException();
-
+            var spriteSize = largeSprites ? 16 : 8;
             for (var sprite = 0; sprite < 40; sprite++)
             {
                 var spriteAddress = (ushort)(0xFE00 + sprite * 4);
                 var spriteY = _mmu.GetByte(spriteAddress);
                 var displayY = spriteY - 16;
                 var spriteYCoord = line - displayY;
-                if (spriteYCoord >= 0 && spriteYCoord <= 7)
+                if (spriteYCoord >= 0 && spriteYCoord < spriteSize)
                 {
-                    var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var spriteX = _mmu.GetByte((ushort)(spriteAddress + 1));
+                    var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
 
-                    var tile = tiles[tileNumber];
-
-                    DrawSprite(line, frameBuffer, spriteX, attributes, spriteYCoord, tile);
+                    var tile = GetTile(lcdc, tileNumber, spriteYCoord, tiles);
+                    DrawSprite(line, frameBuffer, spriteX, attributes, spriteYCoord % 8, tile);
                 }
             }
+        }
+
+        private DisplayDataTransferService.Tile GetTile(byte lcdc, byte tileNumber, int spriteYCoord, DisplayDataTransferService.Tile[] tiles)
+        {
+            var largeSprites = (lcdc & 0x04) == 0x04;
+            if (largeSprites)
+            {
+                var firstTile = spriteYCoord <= 7;
+                if (firstTile)
+                {
+                    return tiles[tileNumber & 0xFE];
+                }
+
+                return tiles[tileNumber | 0x01];
+            }
+
+            return tiles[tileNumber];
         }
 
         private static void DrawSprite(int line, byte[] frameBuffer, byte spriteX, byte attributes, int spriteYCoord, DisplayDataTransferService.Tile tile)
@@ -60,9 +74,9 @@ namespace Core
                 {
                     var sourceX = flipX ? (7 - x) : x;
                     var sourceY = flipY ? (7 - spriteYCoord) : spriteYCoord;
-                    var color = tile.Pixels[sourceX + sourceY*8];
+                    var color = tile.Pixels[sourceX + sourceY * 8];
                     if (color > 0)
-                        frameBuffer[line*DisplayDataTransferService.WindowWidth + displayX] = color;
+                        frameBuffer[line * DisplayDataTransferService.WindowWidth + displayX] = color;
                 }
             }
         }
