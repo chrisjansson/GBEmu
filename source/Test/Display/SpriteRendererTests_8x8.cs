@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Test.Display
 {
-    public class SpriteRendererTests
+    public class SpriteRendererTests_8x8
     {
         private readonly SpriteRenderer _sut;
         private readonly FakeMmu _mmu;
@@ -13,7 +13,7 @@ namespace Test.Display
         private readonly byte[] _framebuffer;
         private readonly DisplayDataTransferService.Tile[] _tiles;
 
-        public SpriteRendererTests()
+        public SpriteRendererTests_8x8()
         {
             _mmu = new FakeMmu();
             _sut = new SpriteRenderer(_mmu);
