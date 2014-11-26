@@ -30,15 +30,15 @@ namespace Core
                 var spriteAddress = (ushort)(0xFE00 + sprite * 4);
                 var yPos = _mmu.GetByte(spriteAddress);
                 var displayY = yPos - 16;
-                var spriteYCoord = line - displayY;
-                if (spriteYCoord >= 0 && spriteYCoord < spriteSize)
+                var spriteY = line - displayY;
+                if (spriteY >= 0 && spriteY < spriteSize)
                 {
                     var xPos = _mmu.GetByte((ushort)(spriteAddress + 1));
                     var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
 
-                    var tile = GetTile(lcdc, tileNumber, spriteYCoord, tiles);
-                    DrawSprite(xPos, spriteYCoord % 8, attributes, tile, line * DisplayDataTransferService.WindowWidth, frameBuffer);
+                    var tile = GetTile(lcdc, tileNumber, spriteY, tiles);
+                    DrawSprite(xPos, spriteY % 8, attributes, tile, line * DisplayDataTransferService.WindowWidth, frameBuffer);
                 }
             }
         }
@@ -60,20 +60,20 @@ namespace Core
             return tiles[tileNumber];
         }
 
-        private static void DrawSprite(byte spriteX, int spriteYCoord, byte attributes, DisplayDataTransferService.Tile tile, int framebufferOffset, byte[] frameBuffer)
+        private static void DrawSprite(byte xPos, int spriteY, byte attributes, DisplayDataTransferService.Tile tile, int framebufferOffset, byte[] frameBuffer)
         {
-            var startX = spriteX - 8;
+            var displayXstart = xPos - 8;
 
             var flipX = (attributes & 0x20) == 0x20;
             var flipY = (attributes & 0x40) == 0x40;
 
-            for (var x = 0; x < 8; x++)
+            for (var spriteX = 0; spriteX < 8; spriteX++)
             {
-                var displayX = startX + x;
+                var displayX = displayXstart + spriteX;
                 if (displayX >= 0 && displayX < DisplayDataTransferService.WindowWidth)
                 {
-                    var sourceX = flipX ? (7 - x) : x;
-                    var sourceY = flipY ? (7 - spriteYCoord) : spriteYCoord;
+                    var sourceX = flipX ? (7 - spriteX) : spriteX;
+                    var sourceY = flipY ? (7 - spriteY) : spriteY;
                     var color = tile.Pixels[sourceX + sourceY * 8];
                     if (color > 0)
                         frameBuffer[framebufferOffset + displayX] = color;
