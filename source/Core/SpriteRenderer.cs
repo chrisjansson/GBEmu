@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core
+﻿namespace Core
 {
     public interface ISpriteRenderer
     {
@@ -37,24 +35,40 @@ namespace Core
                     var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
 
-                    var tile = GetTile(lcdc, tileNumber, spriteY, tiles);
-                    DrawSprite(xPos, spriteY % 8, attributes, tile, line * DisplayDataTransferService.WindowWidth, frameBuffer);
+                    var flipY = (attributes & 0x40) == 0x40;
+                    var spriteY2 = flipY ? (spriteSize - spriteY - 1) : spriteY;
+
+                    var tile = GetTile(lcdc, tileNumber, spriteY, tiles, flipY);
+                    DrawSprite(xPos, spriteY2 % 8, attributes, tile, line * DisplayDataTransferService.WindowWidth, frameBuffer);
                 }
             }
         }
 
-        private DisplayDataTransferService.Tile GetTile(byte lcdc, byte tileNumber, int spriteYCoord, DisplayDataTransferService.Tile[] tiles)
+        private DisplayDataTransferService.Tile GetTile(byte lcdc, byte tileNumber, int spriteYCoord, DisplayDataTransferService.Tile[] tiles, bool flipY)
         {
             var largeSprites = (lcdc & 0x04) == 0x04;
             if (largeSprites)
             {
-                var firstTile = spriteYCoord <= 7;
-                if (firstTile)
+                if (flipY)
                 {
+                    var firstTile = spriteYCoord <= 7;
+                    if (firstTile)
+                    {
+                        return tiles[tileNumber | 0x01];
+                    }
+
                     return tiles[tileNumber & 0xFE];
                 }
+                else
+                {
+                    var firstTile = spriteYCoord <= 7;
+                    if (firstTile)
+                    {
+                        return tiles[tileNumber & 0xFE];
+                    }
 
-                return tiles[tileNumber | 0x01];
+                    return tiles[tileNumber | 0x01];
+                }
             }
 
             return tiles[tileNumber];
@@ -73,7 +87,7 @@ namespace Core
                 if (displayX >= 0 && displayX < DisplayDataTransferService.WindowWidth)
                 {
                     var sourceX = flipX ? (7 - spriteX) : spriteX;
-                    var sourceY = flipY ? (7 - spriteY) : spriteY;
+                    var sourceY = spriteY;//flipY ? (7 - spriteY) : spriteY;
                     var color = tile.Pixels[sourceX + sourceY * 8];
                     if (color > 0)
                         frameBuffer[framebufferOffset + displayX] = color;

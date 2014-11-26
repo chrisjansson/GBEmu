@@ -12,6 +12,7 @@ namespace Test.Display
         protected readonly byte[] Framebuffer;
         private readonly DisplayDataTransferService.Tile[] _tiles;
         protected readonly byte[] SecondTileFirstRow;
+        protected readonly byte[] SecondTileSecondLastRow;
 
         protected SpriteRendererTestsBase()
         {
@@ -66,6 +67,7 @@ namespace Test.Display
             {
                 0, 0, 3, 3, 3, 3, 0, 0
             };
+            SecondTileSecondLastRow = SecondTileFirstRow;
 
             Framebuffer = new byte[160 * 144];
             _tiles = new DisplayDataTransferService.Tile[256];

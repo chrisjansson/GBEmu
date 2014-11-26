@@ -35,6 +35,20 @@ namespace Test.Display
             var line = GetLine(8);
             AssertLine(line, SecondTileFirstRow);
         }
+
+        [Fact]
+        public void Flips_sprite_in_y_direction()
+        {
+            InsertSpriteAttribute(number: 1, y: 16, x: 8, flags: 0x40, tile: 0);
+
+            RenderLine(1);
+            RenderLine(15);
+
+            var first = GetLine(1);
+            var second = GetLine(15);
+            AssertLine(first, SecondTileSecondLastRow);
+            AssertLine(second, FirstTileFirstRow);
+        }
     }
 
     public class SpriteRendererTests_8x8 : SpriteRendererTestsBase
