@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Core
 {
@@ -41,6 +42,8 @@ namespace Core
             var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
             var tileDataSelect = (lcdc & 0x10) == 0x10 ? 0x8000 : 0x8800;
             var tileMapSelect = (lcdc & 0x08) == 0x08 ? 0x9C00 : 0x9800;
+
+            Debug.Assert((lcdc & 0x20) != 0x20, "Window display enabled is not implemented");
 
             var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
             var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
