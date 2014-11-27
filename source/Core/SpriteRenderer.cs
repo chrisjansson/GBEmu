@@ -21,14 +21,14 @@
             if (!spriteEnable)
                 return;
 
-            var largeSprites = (lcdc & 0x04) == 0x04;
-            var spriteSize = largeSprites ? 16 : 8;
             for (var sprite = 0; sprite < 40; sprite++)
             {
                 var spriteAddress = (ushort)(0xFE00 + sprite * 4);
                 var yPos = _mmu.GetByte(spriteAddress);
                 var displayY = yPos - 16;
                 var spriteY = line - displayY;
+                var largeSprites = (lcdc & 0x04) == 0x04;
+                var spriteSize = largeSprites ? 16 : 8;
                 if (spriteY >= 0 && spriteY < spriteSize)
                 {
                     var xPos = _mmu.GetByte((ushort)(spriteAddress + 1));
@@ -38,16 +38,15 @@
                     var flipY = (attributes & 0x40) == 0x40;
                     var sourceY = flipY ? (spriteSize - spriteY - 1) : spriteY;
 
-                    var tile = GetTile(lcdc, tileNumber, sourceY, tiles, flipY);
+                    var tile = GetTile(largeSprites, tileNumber, sourceY, tiles);
                     DrawSprite(xPos, sourceY % 8, attributes, tile, line * DisplayDataTransferService.WindowWidth, frameBuffer);
                 }
             }
         }
 
-        private DisplayDataTransferService.Tile GetTile(byte lcdc, byte tileNumber, int spriteYCoord, DisplayDataTransferService.Tile[] tiles, bool flipY)
+        private DisplayDataTransferService.Tile GetTile(bool useLargeSprites, byte tileNumber, int spriteYCoord, DisplayDataTransferService.Tile[] tiles)
         {
-            var largeSprites = (lcdc & 0x04) == 0x04;
-            if (largeSprites)
+            if (useLargeSprites)
             {
                 var firstTile = spriteYCoord <= 7;
                 if (firstTile)
