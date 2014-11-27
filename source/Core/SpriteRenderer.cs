@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System.Diagnostics;
+
+namespace Core
 {
     public interface ISpriteRenderer
     {
@@ -34,6 +36,8 @@
                     var xPos = _mmu.GetByte((ushort)(spriteAddress + 1));
                     var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
+
+                    Debug.Assert((lcdc & 0x80) != 0x80, "OBJ-to-BG priority is not implemented");
 
                     var flipY = (attributes & 0x40) == 0x40;
                     var sourceY = flipY ? (spriteSize - spriteY - 1) : spriteY;
