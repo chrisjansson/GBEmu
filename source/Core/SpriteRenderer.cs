@@ -36,10 +36,10 @@
                     var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
 
                     var flipY = (attributes & 0x40) == 0x40;
-                    var spriteY2 = flipY ? (spriteSize - spriteY - 1) : spriteY;
+                    var sourceY = flipY ? (spriteSize - spriteY - 1) : spriteY;
 
-                    var tile = GetTile(lcdc, tileNumber, spriteY, tiles, flipY);
-                    DrawSprite(xPos, spriteY2 % 8, attributes, tile, line * DisplayDataTransferService.WindowWidth, frameBuffer);
+                    var tile = GetTile(lcdc, tileNumber, sourceY, tiles, flipY);
+                    DrawSprite(xPos, sourceY % 8, attributes, tile, line * DisplayDataTransferService.WindowWidth, frameBuffer);
                 }
             }
         }
@@ -49,37 +49,22 @@
             var largeSprites = (lcdc & 0x04) == 0x04;
             if (largeSprites)
             {
-                if (flipY)
+                var firstTile = spriteYCoord <= 7;
+                if (firstTile)
                 {
-                    var firstTile = spriteYCoord <= 7;
-                    if (firstTile)
-                    {
-                        return tiles[tileNumber | 0x01];
-                    }
-
                     return tiles[tileNumber & 0xFE];
                 }
-                else
-                {
-                    var firstTile = spriteYCoord <= 7;
-                    if (firstTile)
-                    {
-                        return tiles[tileNumber & 0xFE];
-                    }
 
-                    return tiles[tileNumber | 0x01];
-                }
+                return tiles[tileNumber | 0x01];
             }
 
             return tiles[tileNumber];
         }
 
-        private static void DrawSprite(byte xPos, int spriteY, byte attributes, DisplayDataTransferService.Tile tile, int framebufferOffset, byte[] frameBuffer)
+        private static void DrawSprite(byte xPos, int sourceY, byte attributes, DisplayDataTransferService.Tile tile, int framebufferOffset, byte[] frameBuffer)
         {
             var displayXstart = xPos - 8;
-
             var flipX = (attributes & 0x20) == 0x20;
-            var flipY = (attributes & 0x40) == 0x40;
 
             for (var spriteX = 0; spriteX < 8; spriteX++)
             {
@@ -87,7 +72,6 @@
                 if (displayX >= 0 && displayX < DisplayDataTransferService.WindowWidth)
                 {
                     var sourceX = flipX ? (7 - spriteX) : spriteX;
-                    var sourceY = spriteY;//flipY ? (7 - spriteY) : spriteY;
                     var color = tile.Pixels[sourceX + sourceY * 8];
                     if (color > 0)
                         frameBuffer[framebufferOffset + displayX] = color;
