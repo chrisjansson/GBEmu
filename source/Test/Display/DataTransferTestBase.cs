@@ -19,9 +19,9 @@ namespace Test.Display
 
             InsertTile(0, new byte[]
             {
-                0x7C, 0x7C, 
-                0x00, 0xC6, 
-                0xC6, 0x00, 
+                0x7C, 0x7C,
+                0x00, 0xC6,
+                0xC6, 0x00,
                 0x00, 0xFE,
                 0xC6, 0xC6,
                 0x00, 0xC6,
@@ -31,7 +31,7 @@ namespace Test.Display
 
             InsertTile(128, new byte[]
             {
-                0x3C, 0x3C, 
+                0x3C, 0x3C,
                 0x66, 0x66,
                 0x6E, 0x6E,
                 0x76, 0x76,
@@ -98,6 +98,36 @@ namespace Test.Display
             {
                 _fakeMmu.Memory[address + i] = tile[i];
             }
+        }
+    }
+
+    public class WindowDataTransferTests : DataTransferTestBase
+    {
+        protected override void InsertTile(byte tileNumber, byte[] tileData)
+        {
+            InsertTileAt((ushort)(0x8000 + tileNumber * 16), tileData);
+        }
+
+        protected override void SetBlockTile(int block, byte tile)
+        {
+            _fakeMmu.SetByte((ushort)(0x9800 + block), tile);
+        }
+
+        public WindowDataTransferTests()
+        {
+            _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x30;
+        }
+
+        [Fact]
+        public void Copies_pixels_from_first_and_second_tile_on_first_row()
+        {
+            _sut.FinishFrame();
+            _sut.TransferScanLine(0);
+
+            var line = GetLine(0);
+            AssertLine(line,
+                FirstTileFirstRow,
+                SecondTileFirstRow);
         }
     }
 }
