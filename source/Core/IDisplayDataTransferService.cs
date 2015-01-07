@@ -42,27 +42,31 @@ namespace Core
             var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
             var tileDataSelect = (lcdc & 0x10) == 0x10 ? 0x8000 : 0x8800;
             var tileMapSelect = (lcdc & 0x08) == 0x08 ? 0x9C00 : 0x9800;
+            var renderBackground = (lcdc & 0x01) == 0x01;
 
             Debug.Assert((lcdc & 0x20) != 0x20, "Window display enabled is not implemented");
 
-            var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
-            var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
-
-            var backgroundY = (line + scrollY) & 0xFF;
-
-            for (var i = 0; i < WindowWidth; i++)
+            if (renderBackground)
             {
-                var backgroundX = (scrollX + i) & 0xFF;
-                var block = backgroundX / 8 + 32 * (backgroundY / 8);
-                var tileNumberData = _mmu.GetByte((ushort)(tileMapSelect + block));
-                var tileIndex = tileDataSelect == 0x8000 ? tileNumberData : (sbyte)tileNumberData + 128;
-                var tile = tileDataSelect == 0x8000 ? _tiles8000[tileNumberData] : _tiles8800[tileIndex];
+                var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
+                var scrollY = _mmu.GetByte(RegisterAddresses.ScrollY);
 
-                var x = backgroundX % TileWidth;
-                var y = backgroundY % TileHeight;
+                var backgroundY = (line + scrollY) & 0xFF;
 
-                var color = tile.Pixels[x + 8 * y];
-                FrameBuffer[line * WindowWidth + i] = color;
+                for (var i = 0; i < WindowWidth; i++)
+                {
+                    var backgroundX = (scrollX + i) & 0xFF;
+                    var block = backgroundX / 8 + 32 * (backgroundY / 8);
+                    var tileNumberData = _mmu.GetByte((ushort)(tileMapSelect + block));
+                    var tileIndex = tileDataSelect == 0x8000 ? tileNumberData : (sbyte)tileNumberData + 128;
+                    var tile = tileDataSelect == 0x8000 ? _tiles8000[tileNumberData] : _tiles8800[tileIndex];
+
+                    var x = backgroundX % TileWidth;
+                    var y = backgroundY % TileHeight;
+
+                    var color = tile.Pixels[x + 8 * y];
+                    FrameBuffer[line * WindowWidth + i] = color;
+                }
             }
 
             _spriteRenderer.Render(line, _tiles8000, FrameBuffer);

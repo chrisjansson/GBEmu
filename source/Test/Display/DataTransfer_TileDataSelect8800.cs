@@ -6,7 +6,7 @@ namespace Test.Display
     {
         public DataTransfer_TileDataSelect8800()
         {
-            _fakeMmu.SetByte(RegisterAddresses.LCDC, 0x00);
+            _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x01; 
         }
 
         protected override void InsertTile(byte tileNumber, byte[] tileData)

@@ -1,9 +1,28 @@
+using System.Linq;
+using Core;
 using Xunit;
 
 namespace Test.Display
 {
     public abstract class BackgroundTestBase : DataTransferTestBase
     {
+        protected BackgroundTestBase()
+        {
+            _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x01;
+        }
+
+        [Fact]
+        public void Does_not_write_tiles_when_background_is_disabled()
+        {
+            _fakeMmu.Memory[RegisterAddresses.LCDC] = (byte) (_fakeMmu.Memory[RegisterAddresses.LCDC] & 0xFE);
+
+            _sut.FinishFrame();
+            _sut.TransferScanLine(0);
+
+            var line = GetLine(0);
+            var emptyRow = Enumerable.Repeat((byte)0, 16).ToArray();
+            AssertLine(line, emptyRow);
+        }
 
         [Fact]
         public void Copies_pixels_from_first_and_second_tile_on_first_row()
