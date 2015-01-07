@@ -138,8 +138,10 @@
     <Compile Include="CP_n.cs" />
     <Compile Include="CP_R.cs" />
     <Compile Include="DEC_HL.cs" />
+    <Compile Include="Display\BackgroundTestBase.cs" />
     <Compile Include="Display\DataTransferTestBase.cs" />
     <Compile Include="Display\SpriteRendererTestsBase.cs" />
+    <Compile Include="Display\SpriteRendererTests_8x16.cs" />
     <Compile Include="Display\SpriteRendererTests_8x8.cs" />
     <Compile Include="Display\DataTransfer_TileDataSelect8000.cs" />
     <Compile Include="Display\DataTransfer_TileDataSelect8800.cs" />
@@ -149,7 +151,7 @@
     <Compile Include="Display\FakeDisplayDataTransferService.cs" />
     <Compile Include="Display\HBlank_interrupt_tests.cs" />
     <Compile Include="Display\LCDC_tests.cs" />
-    <Compile Include="Display\LYCompareTests.cs" />
+    <Compile Include="Display\LYCompare.cs" />
     <Compile Include="Display\MMUExtensions.cs" />
     <Compile Include="Display\Mode_tests.cs" />
     <Compile Include="Display\OAM_interrupt_tests.cs" />
