@@ -72,6 +72,7 @@ namespace Core
 
             if (renderWindow)
             {
+                var wx = _mmu.GetByte(RegisterAddresses.WX);
                 for (var i = 0; i < WindowWidth; i++)
                 {
                     var block = i / 8 + (line / 8) * 32;
@@ -79,8 +80,9 @@ namespace Core
                     var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
                     var tile = _tiles8000[tileNumber];
 
-                    byte color = tile.Pixels[i % TileWidth + (line % TileHeight) * TileWidth];
-                    FrameBuffer[i + line * WindowWidth] = color;
+                    var color = tile.Pixels[i % TileWidth + (line % TileHeight) * TileWidth];
+                    var displayX = wx - 7 + i;
+                    FrameBuffer[displayX + line * WindowWidth] = color;
                 }
             }
 

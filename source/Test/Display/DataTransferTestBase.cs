@@ -123,6 +123,7 @@ namespace Test.Display
         public WindowDataTransferTests()
         {
             _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x30;
+            _fakeMmu.Memory[RegisterAddresses.WX] = 0x07;
         }
 
         [Fact]
@@ -171,5 +172,21 @@ namespace Test.Display
             var line = GetLine(8);
             AssertLine(line, SecondTileFirstRow);
         }
+
+        [Fact]
+        public void WX_moves_window_position_horizontally()
+        {
+            _fakeMmu.Memory[RegisterAddresses.WX] = 8;
+
+            _sut.FinishFrame();
+            _sut.TransferScanLine(0);
+
+            var line = GetLine(0);
+            var expectedLine = new byte[] { 0 }.Concat(FirstTileFirstRow).ToArray();
+            AssertLine(line, expectedLine);
+        }
+
+
+        //Disable window when x and y...
     }
 }

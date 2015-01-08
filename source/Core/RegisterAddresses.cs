@@ -2,6 +2,8 @@
 {
     public class RegisterAddresses
     {
+        public const ushort WX = 0xFF4B;
+        public const ushort WY = 0xFF4A;
         public const ushort DMA = 0xFF46;
         public const ushort LCDSTAT = 0xFF41;
         public const ushort TAC = 0xFF07; //Timer control
