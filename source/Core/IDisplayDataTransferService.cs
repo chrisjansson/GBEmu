@@ -79,7 +79,7 @@ namespace Core
                     var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
                     var tile = _tiles8000[tileNumber];
 
-                    byte color = tile.Pixels[i % 8];
+                    byte color = tile.Pixels[i % TileWidth + (line % TileHeight) * TileWidth];
                     FrameBuffer[i + line * WindowWidth] = color;
                 }
             }

@@ -11,6 +11,7 @@ namespace Test.Display
         protected DisplayDataTransferService _sut;
 
         protected byte[] FirstTileFirstRow;
+        protected byte[] FirstTileSecondRow;
         protected byte[] SecondTileFirstRow;
 
         protected DataTransferTestBase()
@@ -51,6 +52,11 @@ namespace Test.Display
             FirstTileFirstRow = new byte[]
             {
                 0, 3, 3, 3, 3, 3, 0, 0
+            };
+
+            FirstTileSecondRow = new byte[]
+            {
+                2, 2, 0, 0, 0, 2, 2, 0
             };
 
             SecondTileFirstRow = new byte[]
@@ -131,7 +137,7 @@ namespace Test.Display
             _sut.TransferScanLine(0);
 
             var line = GetLine(0);
-            AssertLine(line, Enumerable.Repeat((byte) 0, 16).ToArray());
+            AssertLine(line, Enumerable.Repeat((byte)0, 16).ToArray());
         }
 
         [Fact]
@@ -144,6 +150,16 @@ namespace Test.Display
             AssertLine(line,
                 FirstTileFirstRow,
                 SecondTileFirstRow);
+        }
+
+        [Fact]
+        public void Copies_pixels_from_second_row_of_first_tile_to_second_row_of_display()
+        {
+            _sut.FinishFrame();
+            _sut.TransferScanLine(1);
+
+            var line = GetLine(1);
+            AssertLine(line, FirstTileSecondRow);
         }
 
         [Fact]
