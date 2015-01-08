@@ -43,6 +43,7 @@ namespace Core
             var tileDataSelect = (lcdc & 0x10) == 0x10 ? 0x8000 : 0x8800;
             var tileMapSelect = (lcdc & 0x08) == 0x08 ? 0x9C00 : 0x9800;
             var renderBackground = (lcdc & 0x01) == 0x01;
+            var renderWindow = (lcdc & 0x20) == 0x20;
 
             //Debug.Assert((lcdc & 0x20) != 0x20, "Window display enabled is not implemented");
 
@@ -69,15 +70,18 @@ namespace Core
                 }
             }
 
-            for (var i = 0; i < WindowWidth; i++)
+            if (renderWindow)
             {
-                var block = i / 8 + (line / 8) * 32;
+                for (var i = 0; i < WindowWidth; i++)
+                {
+                    var block = i / 8 + (line / 8) * 32;
 
-                var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
-                var tile = _tiles8000[tileNumber];
+                    var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
+                    var tile = _tiles8000[tileNumber];
 
-                byte color = tile.Pixels[i % 8];
-                FrameBuffer[i + line * WindowWidth] = color;
+                    byte color = tile.Pixels[i % 8];
+                    FrameBuffer[i + line * WindowWidth] = color;
+                }
             }
 
             _spriteRenderer.Render(line, _tiles8000, FrameBuffer);

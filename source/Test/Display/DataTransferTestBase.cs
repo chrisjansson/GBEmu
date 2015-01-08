@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core;
 using Xunit;
 
@@ -116,6 +117,21 @@ namespace Test.Display
         public WindowDataTransferTests()
         {
             _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x30;
+        }
+
+        [Fact]
+        public void Does_not_draw_window_when_window_render_is_disabled()
+        {
+            _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x00;
+
+            _sut.FinishFrame();
+            _sut.TransferScanLine(0);
+
+            _sut.FinishFrame();
+            _sut.TransferScanLine(0);
+
+            var line = GetLine(0);
+            AssertLine(line, Enumerable.Repeat((byte) 0, 16).ToArray());
         }
 
         [Fact]
