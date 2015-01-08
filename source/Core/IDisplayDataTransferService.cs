@@ -71,13 +71,13 @@ namespace Core
 
             for (var i = 0; i < WindowWidth; i++)
             {
-                var block = i / 8;
+                var block = i / 8 + (line / 8) * 32;
 
                 var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
                 var tile = _tiles8000[tileNumber];
 
-                byte color = tile.Pixels[i%8];
-                FrameBuffer[i] = color;
+                byte color = tile.Pixels[i % 8];
+                FrameBuffer[i + line * WindowWidth] = color;
             }
 
             _spriteRenderer.Render(line, _tiles8000, FrameBuffer);

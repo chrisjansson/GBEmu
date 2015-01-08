@@ -129,5 +129,15 @@ namespace Test.Display
                 FirstTileFirstRow,
                 SecondTileFirstRow);
         }
+
+        [Fact]
+        public void Copies_pixels_from_second_tile_on_8th_row()
+        {
+            _sut.FinishFrame();
+            _sut.TransferScanLine(8);
+
+            var line = GetLine(8);
+            AssertLine(line, SecondTileFirstRow);
+        }
     }
 }
