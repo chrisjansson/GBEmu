@@ -199,7 +199,7 @@ namespace Test.Display
         }
 
         [Fact]
-        public void Does_not_underdraw_window() //Dont draw window on lines above it's start line
+        public void Does_not_underdraw_window_vertically() //Dont draw window on lines above it's start line
         {
             _fakeMmu.Memory[RegisterAddresses.WY] = 1;
 
@@ -209,7 +209,6 @@ namespace Test.Display
             var line = GetLine(0);
             AssertLine(line, Enumerable.Repeat((byte)0, 16).ToArray());
         }
-
         //Render on background
         //Disable window when x and y...
     }
