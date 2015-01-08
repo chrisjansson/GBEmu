@@ -186,7 +186,31 @@ namespace Test.Display
             AssertLine(line, expectedLine);
         }
 
+        [Fact]
+        public void WY_moves_window_position_vertically()
+        {
+            _fakeMmu.Memory[RegisterAddresses.WY] = 1;
 
+            _sut.FinishFrame();
+            _sut.TransferScanLine(1);
+
+            var line = GetLine(1);
+            AssertLine(line, FirstTileFirstRow);
+        }
+
+        [Fact]
+        public void Does_not_underdraw_window() //Dont draw window on lines above it's start line
+        {
+            _fakeMmu.Memory[RegisterAddresses.WY] = 1;
+
+            _sut.FinishFrame();
+            _sut.TransferScanLine(0);
+
+            var line = GetLine(0);
+            AssertLine(line, Enumerable.Repeat((byte)0, 16).ToArray());
+        }
+
+        //Render on background
         //Disable window when x and y...
     }
 }
