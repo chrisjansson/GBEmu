@@ -209,6 +209,21 @@ namespace Test.Display
             var line = GetLine(0);
             AssertLine(line, Enumerable.Repeat((byte)0, 16).ToArray());
         }
+
+        [Fact]
+        public void Do_not_overdraw_window_horizontally_into_the_next_line()
+        {
+            _fakeMmu.Memory[RegisterAddresses.WX] = 7 + 158;
+
+            _sut.FinishFrame();
+            _sut.TransferScanLine(0);
+            _sut.TransferScanLine(1);
+
+            var firstLine = GetLine(0);
+            var secondLine = GetLine(1);
+            AssertLine(firstLine, Enumerable.Repeat((byte)0, 158).Concat(FirstTileFirstRow.Take(2)).ToArray());
+            AssertLine(secondLine, Enumerable.Repeat((byte)0, 16).ToArray());
+        }
         //Render on background
         //Disable window when x and y...
     }

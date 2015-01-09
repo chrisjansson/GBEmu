@@ -77,15 +77,17 @@ namespace Core
                 var windowLine = line - wy;
                 if (windowLine >= 0)
                 {
-                    for (var i = 0; i < WindowWidth; i++)
+                    var startX = wx - 7;
+                    var toDraw = WindowWidth - startX;
+                    for (var i = 0; i < toDraw; i++)
                     {
+                        var displayX = startX + i;
                         var block = i / 8 + (windowLine / 8) * 32;
 
                         var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
                         var tile = _tiles8000[tileNumber];
 
                         var color = tile.Pixels[i % TileWidth + (windowLine % TileHeight) * TileWidth];
-                        var displayX = wx - 7 + i;
                         FrameBuffer[displayX + line * WindowWidth] = color;
                     }
                 }
