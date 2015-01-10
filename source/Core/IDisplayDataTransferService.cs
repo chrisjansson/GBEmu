@@ -85,8 +85,9 @@ namespace Core
                         var displayX = startX + i;
                         var block = i / 8 + (windowLine / 8) * 32;
 
-                        var tileNumber = _mmu.GetByte((ushort)(windowTileMapSelect + block));
-                        var tile = _tiles8000[tileNumber];
+                        var tileNumberData = _mmu.GetByte((ushort)(windowTileMapSelect + block));
+                        var tileIndex = tileDataSelect == 0x8000 ? tileNumberData : (sbyte)tileNumberData + 128;
+                        var tile = tileDataSelect == 0x8000 ? _tiles8000[tileNumberData] : _tiles8800[tileIndex];
 
                         var color = tile.Pixels[i % TileWidth + (windowLine % TileHeight) * TileWidth];
                         FrameBuffer[displayX + line * WindowWidth] = color;
