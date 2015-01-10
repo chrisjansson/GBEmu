@@ -224,7 +224,19 @@ namespace Test.Display
             AssertLine(firstLine, Enumerable.Repeat((byte)0, 158).Concat(FirstTileFirstRow.Take(2)).ToArray());
             AssertLine(secondLine, Enumerable.Repeat((byte)0, 16).ToArray());
         }
-        //Render on background
-        //Disable window when x and y...
+
+        [Fact]
+        public void Renders_on_top_of_background()
+        {
+            _fakeMmu.Memory[RegisterAddresses.LCDC] |= 0x01;
+            _fakeMmu.Memory[RegisterAddresses.WX] = 7 + 2;
+
+            _sut.FinishFrame();
+            _sut.TransferScanLine(0);
+
+            var line = GetLine(0);
+            var expectedLine = FirstTileFirstRow.Take(2).Concat(FirstTileFirstRow).ToArray();
+            AssertLine(line, expectedLine);
+        }
     }
 }
