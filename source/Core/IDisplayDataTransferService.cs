@@ -74,6 +74,7 @@ namespace Core
             {
                 var wx = _mmu.GetByte(RegisterAddresses.WX);
                 var wy = _mmu.GetByte(RegisterAddresses.WY);
+                var windowTileMapSelect = (lcdc & 0x40) == 0x40 ? 0x9C00 : 0x9800;
                 var windowLine = line - wy;
                 if (windowLine >= 0)
                 {
@@ -84,7 +85,7 @@ namespace Core
                         var displayX = startX + i;
                         var block = i / 8 + (windowLine / 8) * 32;
 
-                        var tileNumber = _mmu.GetByte((ushort)(0x9800 + block));
+                        var tileNumber = _mmu.GetByte((ushort)(windowTileMapSelect + block));
                         var tile = _tiles8000[tileNumber];
 
                         var color = tile.Pixels[i % TileWidth + (windowLine % TileHeight) * TileWidth];

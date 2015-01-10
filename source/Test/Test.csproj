@@ -159,6 +159,7 @@
     <Compile Include="Display\TileTests.cs" />
     <Compile Include="Display\VBlank_interrupt_Tests.cs" />
     <Compile Include="Display\VBlank_lcdstat_interrupt_tests.cs" />
+    <Compile Include="Display\WindowDataTransferTestBase.cs" />
     <Compile Include="EmulatorBootstrapperTests.cs" />
     <Compile Include="INC_ss.cs" />
     <Compile Include="JoypadTests\JoypadButtonKeysTests.cs" />
