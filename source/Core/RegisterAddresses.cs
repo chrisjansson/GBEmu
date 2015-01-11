@@ -2,6 +2,7 @@
 {
     public class RegisterAddresses
     {
+        public const ushort LYC = 0xFF45;
         public const ushort WX = 0xFF4B;
         public const ushort WY = 0xFF4A;
         public const ushort DMA = 0xFF46;
