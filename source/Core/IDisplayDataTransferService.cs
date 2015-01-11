@@ -21,7 +21,7 @@ namespace Core
         private readonly IMmu _mmu;
         private readonly ISpriteRenderer _spriteRenderer;
 
-        public readonly byte[] FrameBuffer = new Byte[WindowWidth * WindowHeight];
+        public readonly byte[] FrameBuffer = new byte[WindowWidth * WindowHeight];
         private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
         private readonly Tile[] _tiles8000 = new Tile[NumberOfTiles];
         private readonly Tile[] _tiles8800 = new Tile[NumberOfTiles];

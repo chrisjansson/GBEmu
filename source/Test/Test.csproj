@@ -207,6 +207,7 @@
     <Compile Include="MMU\InterruptRegisters.cs" />
     <Compile Include="MMU\JoypadRegister.cs" />
     <Compile Include="MMU\TimerRegisters.cs" />
+    <Compile Include="NoMBCTests.cs" />
     <Compile Include="Nop.cs" />
     <Compile Include="NullDisplay.cs" />
     <Compile Include="OR_HL.cs" />
@@ -249,6 +250,10 @@
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{72ba4424-6143-4b8e-b8cf-239e829afeb8}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gui\Gui.csproj">
+      <Project>{EED5BA1C-39A5-4D3A-AEDD-AE11FED1C4EC}</Project>
+      <Name>Gui</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
