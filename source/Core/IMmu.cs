@@ -20,6 +20,7 @@
         byte LCDC { get; set; }
         byte STAT { get; set; }
         byte DMA { get; set; }
+        byte LYC { get; set; }
     }
 
     public class MMU : IMmu
@@ -45,6 +46,8 @@
                     return Display.BackgroundPaletteData;
                 case RegisterAddresses.LY:
                     return Display.Line;
+                case RegisterAddresses.LYC:
+                    return Display.LYC;
                 case RegisterAddresses.IE:
                     return Cpu.IE;
                 case RegisterAddresses.IF:
@@ -81,6 +84,9 @@
                     Display.BackgroundPaletteData = value;
                     break;
                 case RegisterAddresses.LY:
+                    break;
+                case RegisterAddresses.LYC:
+                    Display.LYC = value;
                     break;
                 case RegisterAddresses.IE:
                     Cpu.IE = value;

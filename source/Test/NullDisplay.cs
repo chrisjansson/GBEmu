@@ -9,5 +9,6 @@ namespace Test
         public byte LCDC { get; set; }
         public byte STAT { get; set; }
         public byte DMA { get; set; }
+        public byte LYC { get; set; }
     }
 }

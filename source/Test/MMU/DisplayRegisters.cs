@@ -127,10 +127,29 @@ namespace Test.MMU
 
             Assert.Equal(0xF5, actual);
         }
+
+        [Fact]
+        public void FF45_reads_from_LYC()
+        {
+            _display.LYC = 0xAB;
+
+            var actual = _sut.GetByte(0xFF45);
+
+            Assert.Equal(0xAB, actual);
+        }
+
+        [Fact]
+        public void FF45_writes_to_LYC()
+        {
+            _sut.SetByte(0xFF45, 0xAC);
+
+            Assert.Equal(0xAC, _display.LYC);
+        }
     }
 
     public class FakeDisplay : IDisplay
     {
+        public byte LYC { get; set; }
         public byte STAT { get; set; }
         public byte DMA { get; set; }
         public byte BackgroundPaletteData { get; set; }

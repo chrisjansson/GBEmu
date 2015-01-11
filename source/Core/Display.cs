@@ -14,7 +14,6 @@
         private readonly IMmu _mmu;
         private int _mode = 2;
         private int _clock;
-        public int LYC;
 
         public Display(IMmu mmu, IDisplayDataTransferService displayDataTransferService)
         {
@@ -36,6 +35,7 @@
         }
 
         public byte LCDC { get; set; }
+        public byte LYC { get; set; }
 
         private byte _coincidenceInterrupt;
         private byte _hblankInterrupt;
