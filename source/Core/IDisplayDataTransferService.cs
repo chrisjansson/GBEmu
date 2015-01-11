@@ -45,8 +45,6 @@ namespace Core
             var renderBackground = (lcdc & 0x01) == 0x01;
             var renderWindow = (lcdc & 0x20) == 0x20;
 
-            //Debug.Assert((lcdc & 0x20) != 0x20, "Window display enabled is not implemented");
-
             if (renderBackground)
             {
                 var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
