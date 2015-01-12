@@ -34,9 +34,44 @@ namespace Test
 
             for (var i = 0; i < _romSize; i++)
             {
-                var data = mc.GetByte((ushort) i);
+                var data = mc.GetByte((ushort)i);
                 var expected = rom[i];
                 Assert.Equal(expected, data);
+            }
+        }
+
+        [Fact]
+        public void Should_not_be_able_to_write_to_rom()
+        {
+            var rom = CreateFakeRom();
+            var mc = new NoMBC(rom);
+            var random = new Random();
+
+            for (var i = 0; i < _romSize; i++)
+            {
+                mc.SetByte((ushort) i, (byte) random.Next());
+            }
+
+            for (var i = 0; i < _romSize; i++)
+            {
+                var data = mc.GetByte((ushort)i);
+                var expected = rom[i];
+                Assert.Equal(expected, data);
+            }
+        }
+
+        [Fact]
+        public void Writing_to_RAM_is_always_0()
+        {
+            var rom = CreateFakeRom();
+            var mc = new NoMBC(rom);
+            var random = new Random();
+
+            for (var i = 0xA000; i < 0xC000; i++)
+            {
+                mc.SetByte((ushort) i, (byte) random.Next());
+                var actual = mc.GetByte((ushort) i);
+                Assert.Equal(0, actual);
             }
         }
 
