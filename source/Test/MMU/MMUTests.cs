@@ -9,10 +9,33 @@ namespace Test.MMU
         [Fact]
         public void Reads_0000_to_7FFF_from_MBC() //ROM
         {
+            AssertReadsRangeFromMBC(startAddress: 0, endAddress: 0x7FFF);
+        }
+
+        [Fact]
+        public void Writes_0000_to_7FFF_to_MBC() //ROM
+        {
+            AssertWritesRangeToMBC(startAddress: 0, endAddress: 0x7FFF);
+        }
+
+        [Fact]
+        public void Reads_A000_to_BFFF_from_MBC() //External RAM
+        {
+            AssertReadsRangeFromMBC(startAddress: 0xA000, endAddress: 0xBFFF);
+        }
+
+        [Fact]
+        public void Writes_A000_to_BFFF_to_MBC()
+        {
+            AssertWritesRangeToMBC(startAddress: 0xA000, endAddress: 0xBFFF);
+        }
+
+        private void AssertReadsRangeFromMBC(ushort startAddress, ushort endAddress)
+        {
             var mbc = CreateFakeMBC();
             var mmu = new Core.MMU(mbc);
 
-            for (var i = 0; i < 0x8000; i++)
+            for (int i = startAddress; i < endAddress + 1; i++)
             {
                 var expected = mbc.Memory[i];
                 var actual = mmu.GetByte((ushort) i);
@@ -20,18 +43,16 @@ namespace Test.MMU
             }
         }
 
-        [Fact]
-        public void Writes_0000_to_7FFF_to_MBC() //ROM
+        private static void AssertWritesRangeToMBC(int startAddress, int endAddress)
         {
             var mbc = CreateFakeMBC();
             var mmu = new Core.MMU(mbc);
             var random = new Random();
-
-            for (var i = 0; i < 0x8000; i++)
+            for (var i = startAddress; i < endAddress + 1; i++)
             {
-                var expected = (byte)random.Next(0, 255);
+                var expected = (byte) random.Next(0, 255);
                 mmu.SetByte((ushort) i, expected);
-                var actual = mmu.GetByte((ushort) i);
+                var actual = mbc.Memory[i];
                 Assert.Equal(expected, actual);
             }
         }

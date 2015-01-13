@@ -48,6 +48,11 @@ namespace Core
                 return _mbc.GetByte(address);
             }
 
+            if (address >= 0xA000 && address <= 0xBFFF)
+            {
+                return _mbc.GetByte(address);
+            }
+
             switch (address)
             {
                 case RegisterAddresses.P1:
@@ -84,6 +89,12 @@ namespace Core
         public void SetByte(ushort address, byte value)
         {
             if (address < 0x8000)
+            {
+                _mbc.SetByte(address, value);
+                return;
+            }
+
+            if (address >= 0xA000 && address < 0xC000)
             {
                 _mbc.SetByte(address, value);
                 return;
