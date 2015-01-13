@@ -25,9 +25,24 @@ namespace Test.MMU
         }
 
         [Fact]
-        public void Writes_A000_to_BFFF_to_MBC()
+        public void Writes_A000_to_BFFF_to_MBC() //External ram
         {
             AssertWritesRangeToMBC(startAddress: 0xA000, endAddress: 0xBFFF);
+        }
+
+        [Fact]
+        public void Read_Writes_8000_to_9FFF() //Video ram
+        {
+            var mmu = new Core.MMU(CreateFakeMBC());
+
+            var random = new Random();
+            for (int i = 0x8000; i < 0x9FFF + 1; i++)
+            {
+                var expected = (byte)random.Next(0, 255);
+                mmu.SetByte((ushort)i, expected);
+                var actual = mmu.GetByte((ushort) i);
+                Assert.Equal(expected, actual);
+            }
         }
 
         private void AssertReadsRangeFromMBC(ushort startAddress, ushort endAddress)
@@ -38,7 +53,7 @@ namespace Test.MMU
             for (int i = startAddress; i < endAddress + 1; i++)
             {
                 var expected = mbc.Memory[i];
-                var actual = mmu.GetByte((ushort) i);
+                var actual = mmu.GetByte((ushort)i);
                 Assert.Equal(expected, actual);
             }
         }
@@ -50,8 +65,8 @@ namespace Test.MMU
             var random = new Random();
             for (var i = startAddress; i < endAddress + 1; i++)
             {
-                var expected = (byte) random.Next(0, 255);
-                mmu.SetByte((ushort) i, expected);
+                var expected = (byte)random.Next(0, 255);
+                mmu.SetByte((ushort)i, expected);
                 var actual = mbc.Memory[i];
                 Assert.Equal(expected, actual);
             }
