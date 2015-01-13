@@ -45,6 +45,35 @@ namespace Test.MMU
             }
         }
 
+        [Fact]
+        public void Read_writes_C000_to_FDFF()
+        {
+            var mmu = new Core.MMU(CreateFakeMBC());
+
+            var random = new Random();
+            for (int i = 0xC000; i < 0xFDFF + 1; i++)
+            {
+                var expected = (byte)random.Next(0, 255);
+                mmu.SetByte((ushort)i, expected);
+                var actual = mmu.GetByte((ushort) i);
+                Assert.Equal(expected, actual);
+            }
+        }
+
+        [Fact]
+        public void Cannot_write_to_FEA0_to_FEFF()
+        {
+            var mmu = new Core.MMU(CreateFakeMBC());
+
+            var random = new Random();
+            for (int i = 0xFEA0; i < 0xFEFF + 1; i++)
+            {
+                mmu.SetByte((ushort)i, (byte)random.Next(0, 255));
+                var actual = mmu.GetByte((ushort) i);
+                Assert.Equal(0, actual);
+            }
+        }
+
         private void AssertReadsRangeFromMBC(ushort startAddress, ushort endAddress)
         {
             var mbc = CreateFakeMBC();

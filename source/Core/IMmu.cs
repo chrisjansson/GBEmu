@@ -100,6 +100,11 @@ namespace Core
                 return;
             }
 
+            if (address >= 0xFEA0 && address < 0xFF00)
+            {
+                return;
+            }
+
             switch (address)
             {
                 case RegisterAddresses.P1:
