@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System;
+
+namespace Core
 {
     public interface IMmu
     {
@@ -23,17 +25,29 @@
         byte LYC { get; set; }
     }
 
+    public interface IMBC
+    {
+        byte GetByte(ushort address);
+        void SetByte(ushort address, byte value);
+    }
+
     public class MMU : IMmu
     {
         private readonly byte[] _memory;
 
-        public MMU()
+        public MMU(IMBC mbc)
         {
+            _mbc = mbc;
             _memory = new byte[ushort.MaxValue + 1];
         }
 
         public byte GetByte(ushort address)
         {
+            if (address < 0x8000)
+            {
+                return _mbc.GetByte(address);
+            }
+
             switch (address)
             {
                 case RegisterAddresses.P1:
@@ -69,6 +83,12 @@
 
         public void SetByte(ushort address, byte value)
         {
+            if (address < 0x8000)
+            {
+                _mbc.SetByte(address, value);
+                return;
+            }
+
             switch (address)
             {
                 case RegisterAddresses.P1:
@@ -119,5 +139,6 @@
         public IDisplay Display;
         public Cpu Cpu;
         public IJoypad Joypad;
+        private IMBC _mbc;
     }
 }
