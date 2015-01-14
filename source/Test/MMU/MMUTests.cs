@@ -40,7 +40,7 @@ namespace Test.MMU
             {
                 var expected = (byte)random.Next(0, 255);
                 mmu.SetByte((ushort)i, expected);
-                var actual = mmu.GetByte((ushort) i);
+                var actual = mmu.GetByte((ushort)i);
                 Assert.Equal(expected, actual);
             }
         }
@@ -55,7 +55,7 @@ namespace Test.MMU
             {
                 var expected = (byte)random.Next(0, 255);
                 mmu.SetByte((ushort)i, expected);
-                var actual = mmu.GetByte((ushort) i);
+                var actual = mmu.GetByte((ushort)i);
                 Assert.Equal(expected, actual);
             }
         }
@@ -69,8 +69,23 @@ namespace Test.MMU
             for (int i = 0xFEA0; i < 0xFEFF + 1; i++)
             {
                 mmu.SetByte((ushort)i, (byte)random.Next(0, 255));
-                var actual = mmu.GetByte((ushort) i);
+                var actual = mmu.GetByte((ushort)i);
                 Assert.Equal(0, actual);
+            }
+        }
+
+        [Fact]
+        public void Read_writes_FF80_to_FFFE() //HRAM
+        {
+            var mmu = new Core.MMU(CreateFakeMBC());
+
+            var random = new Random();
+            for (int i = 0xFF80; i < 0xFFFE + 1; i++)
+            {
+                var expected = (byte)random.Next(0, 255);
+                mmu.SetByte((ushort)i, expected);
+                var actual = mmu.GetByte((ushort)i);
+                Assert.Equal(expected, actual);
             }
         }
 
