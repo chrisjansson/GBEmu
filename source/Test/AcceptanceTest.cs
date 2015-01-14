@@ -10,25 +10,12 @@ namespace Test
 {
     public class AcceptanceTest
     {
+        private readonly List<char> _serialOutput = new List<char>();
         protected Cpu Sut;
-        protected MMuSpy Mmu;
+        protected IMmu Mmu;
         protected Timer Timer;
         private long _previousCycleCount;
         private ushort _previousProgramCounter;
-
-        public AcceptanceTest()
-        {
-            var mmu = new Core.MMU
-            {
-                Display = new NullDisplay()
-            };
-            Mmu = new MMuSpy(mmu);
-            Sut = new Cpu(Mmu);
-            Timer = new Timer(Mmu);
-            mmu.Cpu = Sut;
-            mmu.Timer = Timer;
-            mmu.Joypad = new Joypad(new FakeMmu());
-        }
 
         [Theory, PropertyData("streams")]
         public void Passes_blarrg_test_rom(string rom)
@@ -75,13 +62,14 @@ namespace Test
         {
             if ((Mmu.GetByte(0xFF02) & 0x80) == 0x80)
             {
+                _serialOutput.Add((char) Mmu.GetByte(0xFF01));
                 Mmu.SetByte(0xFF02, 0);
             }
         }
 
         private void AssertTestRomPassed()
         {
-            var output = Mmu.Output.Aggregate("", (x, y) => x + y);
+            var output = _serialOutput.Aggregate("", (x, y) => x + y);
             Assert.Contains("passed", output.ToLower());
         }
 
@@ -93,13 +81,11 @@ namespace Test
 
         private void LoadTestRomIntoMmu(byte[] rom)
         {
-            for (var i = 0; i < rom.Length; i++)
-            {
-                var n = rom[i];
-                Mmu.SetByte((ushort)i, n);
-            }
-
-            Sut.ProgramCounter = 0x100;
+            var emulatorBootstrapper = new EmulatorBootstrapper();
+            var emulator = emulatorBootstrapper.LoadRom(rom);
+            Sut = emulator.Cpu;
+            Mmu = emulator.Mmu;
+            Timer = emulator.Timer;
         }
 
         public static IEnumerable<object[]> streams
