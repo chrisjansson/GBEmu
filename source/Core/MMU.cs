@@ -2,6 +2,8 @@ namespace Core
 {
     public class MMU : IMmu
     {
+        private readonly IMBC _mbc;
+
         private readonly byte[] _memory;
 
         public MMU(IMBC mbc)
@@ -9,6 +11,11 @@ namespace Core
             _mbc = mbc;
             _memory = new byte[ushort.MaxValue + 1];
         }
+
+        public Timer Timer;
+        public IDisplay Display;
+        public Cpu Cpu;
+        public IJoypad Joypad;
 
         public byte GetByte(ushort address)
         {
@@ -119,11 +126,5 @@ namespace Core
                     break;
             }
         }
-
-        public Timer Timer;
-        public IDisplay Display;
-        public Cpu Cpu;
-        public IJoypad Joypad;
-        private IMBC _mbc;
     }
 }

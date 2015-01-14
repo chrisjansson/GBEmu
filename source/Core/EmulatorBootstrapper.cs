@@ -4,6 +4,7 @@
     {
         public IMmu Mmu { get; set; }
         public Cpu Cpu { get; set; }
+        public Timer Timer { get; set; }
     }
 
     public class EmulatorBootstrapper
@@ -12,8 +13,7 @@
         {
             const int programCounterAfterInitialization = 0x100;
 
-
-            var mmu = new MMU();
+            var mmu = new MMU(new NoMBC(rom));
             var timer = new Timer(mmu);
             mmu.Timer = timer;
             var display = new Display(mmu, null);
@@ -57,6 +57,7 @@
             {
                 Cpu = cpu,
                 Mmu = mmu,
+                Timer = timer,
             };
         }
     }
