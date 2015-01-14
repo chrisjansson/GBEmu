@@ -10,7 +10,7 @@ namespace Test.MMU
 
         public DisplayRegisters()
         {
-            _sut = new Core.MMU();
+            _sut = new Core.MMU(null);
 
             _display = new FakeDisplay();
             _sut.Display = _display;

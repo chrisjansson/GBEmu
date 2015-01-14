@@ -13,7 +13,7 @@ namespace Test.MMU
         {
             _fakeJoypad = new FakeJoypad();
 
-            _sut = new Core.MMU
+            _sut = new Core.MMU(null)
             {
                 Joypad = _fakeJoypad
             };

@@ -14,7 +14,7 @@ namespace Test.MMU
 
         public InterruptRegisters()
         {
-            _mmu = new Core.MMU();
+            _mmu = new Core.MMU(null);
             _cpu = new Cpu(_mmu);
             _mmu.Cpu = _cpu;
         }
