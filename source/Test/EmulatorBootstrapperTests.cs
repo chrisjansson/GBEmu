@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Xunit;
 
 namespace Test
@@ -14,6 +15,12 @@ namespace Test
                 var sut = new EmulatorBootstrapper();
 
                 _actual = sut.LoadRom(new byte[0]);
+            }
+
+            [Fact]
+            public void Should_select_memory_bank_controller()
+            {
+                throw new NotImplementedException();
             }
 
             [Fact]
