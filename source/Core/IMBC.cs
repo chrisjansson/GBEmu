@@ -1,8 +1,6 @@
-﻿using System;
-
 namespace Core
 {
-    public interface IMmu
+    public interface IMBC
     {
         byte GetByte(ushort address);
         void SetByte(ushort address, byte value);
