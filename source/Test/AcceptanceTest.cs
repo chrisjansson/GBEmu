@@ -30,7 +30,7 @@ namespace Test
         private void Run()
         {
             var programCounterRepeatCount = 0;
-            for (var i = 0; i < 10000000 && programCounterRepeatCount < 10000; i++)
+            for (var i = 0; i < 100000000 && programCounterRepeatCount < 10000; i++)
             {
                 var nextInstruction = Mmu.GetByte(Sut.ProgramCounter);
                 Sut.Execute(nextInstruction);

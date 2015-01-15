@@ -13,7 +13,9 @@
         {
             const int programCounterAfterInitialization = 0x100;
 
-            var mmu = new MMU(new NoMBC(rom));
+            var mmu = new MMU(new MBC1(rom));
+            var joyPad = new Joypad(mmu);
+            mmu.Joypad = joyPad;
             var timer = new Timer(mmu);
             mmu.Timer = timer;
             var display = new Display(mmu, null);
