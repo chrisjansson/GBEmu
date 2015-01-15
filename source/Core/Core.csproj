@@ -68,6 +68,7 @@
     <Compile Include="IMmu.cs" />
     <Compile Include="InstructionMetaData.cs" />
     <Compile Include="Joypad.cs" />
+    <Compile Include="MBC1.cs" />
     <Compile Include="MMU.cs" />
     <Compile Include="NoMbc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

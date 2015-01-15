@@ -30,14 +30,10 @@ namespace Test
         {
             var rom = CreateFakeRom();
 
-            var mc = new NoMBC(rom);
+            var mbc = new NoMBC(rom);
 
-            for (var i = 0; i < _romSize; i++)
-            {
-                var data = mc.GetByte((ushort)i);
-                var expected = rom[i];
-                Assert.Equal(expected, data);
-            }
+            var assertion = new MBCAssertion(mbc, rom);
+            assertion.AssertRangeIsMapped(0, 0x7FFF);
         }
 
         [Fact]
@@ -49,7 +45,7 @@ namespace Test
 
             for (var i = 0; i < _romSize; i++)
             {
-                mc.SetByte((ushort) i, (byte) random.Next());
+                mc.SetByte((ushort)i, (byte)random.Next());
             }
 
             for (var i = 0; i < _romSize; i++)
@@ -69,8 +65,8 @@ namespace Test
 
             for (var i = 0xA000; i < 0xC000; i++)
             {
-                mc.SetByte((ushort) i, (byte) random.Next());
-                var actual = mc.GetByte((ushort) i);
+                mc.SetByte((ushort)i, (byte)random.Next());
+                var actual = mc.GetByte((ushort)i);
                 Assert.Equal(0, actual);
             }
         }

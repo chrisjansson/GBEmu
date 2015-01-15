@@ -2,7 +2,7 @@
 
 namespace Core
 {
-    public class NoMBC
+    public class NoMBC : IMBC
     {
         private readonly byte[] _rom;
         private const int MaxRomSize = 0x8000; //32kB
