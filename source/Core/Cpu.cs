@@ -25,6 +25,7 @@ namespace Core
             { 0x0D, new InstructionMetaData(1, 1, "DEC C")},
             { 0x0E, new InstructionMetaData(2, 2, "LD C, n")},
             { 0x0F, new InstructionMetaData(1, 1, "RRCA")},
+            { 0x10, new InstructionMetaData(1, 2, "STOP")},
             { 0x11, new InstructionMetaData(3, 3, "LD DE, nn")},
             { 0x12, new InstructionMetaData(1, 2, "LD (DE), A")},
             { 0x13, new InstructionMetaData(1, 2, "INC DE")},
@@ -395,6 +396,8 @@ namespace Core
                     break;
                 case 0x0F:
                     RRCA();
+                    break;
+                    case 0x10:
                     break;
                 case 0x11:
                     E = _mmu.GetByte((ushort)(ProgramCounter + 1));
