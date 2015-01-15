@@ -10,11 +10,10 @@ namespace Gui
 {
     class Program
     {
-        private static MMU _mmu;
         private static Cpu _cpu;
         private static DisplayDataTransferService _displayDataTransferService;
         private static Display _display;
-        private static MMUWithBootRom _mmuWithBootRom;
+        private static IMmu _mmuWithBootRom;
         private static Timer _timer;
 
         static void Main(string[] args)
@@ -24,30 +23,15 @@ namespace Gui
             var window = SDL.SDL_CreateWindow("An SDL Window", 100, 100, 640, 576, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
             var renderer = SDL.SDL_CreateRenderer(window, -1, 0);
 
-            _mmu = new MMU();
-
-            var fileStream = File.OpenRead(args[0]);
-            var rom = new byte[256];
-            fileStream.Read(rom, 0, 256);
-            _mmuWithBootRom = new MMUWithBootRom(rom, _mmu);
-            _cpu = new Cpu(_mmuWithBootRom);
-            _displayDataTransferService = new DisplayDataTransferService(_mmuWithBootRom, new SpriteRenderer(_mmuWithBootRom));
-            _display = new Display(_mmu, _displayDataTransferService);
-            _mmu.Display = _display;
-            _mmu.Cpu = _cpu;
-            _timer = new Timer(_mmu);
-            _mmu.Timer = _timer;
-            var joypad = new Joypad(_mmu);
-            _mmu.Joypad = joypad;
-
-            var openRead = File.OpenRead(args[1]);
-            ushort inPosition = 0;
-            while (openRead.Position != openRead.Length)
-            {
-                byte readByte = (byte)openRead.ReadByte();
-                _mmu.SetByte(inPosition, readByte);
-                inPosition++;
-            }
+            var emulatorBootstrapper = new EmulatorBootstrapper();
+            var readAllBytes = File.ReadAllBytes(args[1]);
+            var emulator = emulatorBootstrapper.LoadRom(readAllBytes);
+            var joypad = emulator.Joypad;
+            _mmuWithBootRom = emulator.Mmu;
+            _cpu = emulator.Cpu;
+            _timer = emulator.Timer;
+            _display = emulator.Display;
+            _displayDataTransferService = emulator.DisplayDataTransferService;
 
             var running = true;
             while (running)

@@ -5,6 +5,9 @@
         public IMmu Mmu { get; set; }
         public Cpu Cpu { get; set; }
         public Timer Timer { get; set; }
+        public Display Display { get; set; }
+        public Joypad Joypad { get; set; }
+        public DisplayDataTransferService DisplayDataTransferService { get; set; }
     }
 
     public class EmulatorBootstrapper
@@ -18,7 +21,8 @@
             mmu.Joypad = joyPad;
             var timer = new Timer(mmu);
             mmu.Timer = timer;
-            var display = new Display(mmu, null);
+            var displayDataTransferService = new DisplayDataTransferService(mmu, new SpriteRenderer(mmu));
+            var display = new Display(mmu, displayDataTransferService);
             mmu.Display = display;
             var cpu = new Cpu(mmu)
             {
@@ -60,6 +64,9 @@
                 Cpu = cpu,
                 Mmu = mmu,
                 Timer = timer,
+                Display = display,
+                DisplayDataTransferService = displayDataTransferService,
+                Joypad = joyPad,
             };
         }
     }
