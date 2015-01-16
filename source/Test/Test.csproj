@@ -82,6 +82,7 @@
     <Compile Include="Build.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="CALL_cc_nn.cs" />
+    <Compile Include="CartridgeHeaderParserTests.cs" />
     <Compile Include="CBRegisterTestBase.cs" />
     <Compile Include="CPTestBase.cs" />
     <Compile Include="CpuAssertion.cs" />
