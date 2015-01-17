@@ -8,23 +8,44 @@ namespace Core
         public CartridgeHeader Parse(byte[] header)
         {
             var cartridgeTypeValue = header[0x47];
-            if(!typeof (CartridgeHeader.CartridgeType).IsEnumDefined((int)cartridgeTypeValue))
+            if(!typeof (CartridgeHeader.CartridgeTypeEnum).IsEnumDefined((int)cartridgeTypeValue))
                 throw new NotSupportedException();
 
-            return new CartridgeHeader((CartridgeHeader.CartridgeType) cartridgeTypeValue);
+            var romSizeValue = header[0x48];
+            if(!typeof(CartridgeHeader.RomSizeEnum).IsEnumDefined((int)romSizeValue))
+                throw new NotSupportedException();
+
+            return new CartridgeHeader((CartridgeHeader.CartridgeTypeEnum) cartridgeTypeValue, (CartridgeHeader.RomSizeEnum) romSizeValue);
         }
     }
 
     public class CartridgeHeader
     {
-        public CartridgeHeader(CartridgeType mbc)
+        public CartridgeHeader(CartridgeTypeEnum mbc, RomSizeEnum romSize)
         {
             MBC = mbc;
+            ROMSize = romSize;
         }
 
-        public CartridgeType MBC { get; private set; }
+        public CartridgeTypeEnum MBC { get; private set; }
+        public  RomSizeEnum ROMSize { get; private set; }
 
-        public enum CartridgeType
+        public enum RomSizeEnum
+        {
+            _32KB,
+            _64KB,
+            _128KB,
+            _256KB,
+            _512KB,
+            _1MB,
+            _2MB,
+            _4MB,
+            _1_1MB = 0x52,
+            _1_2MB,
+            _1_5MB
+        }
+
+        public enum CartridgeTypeEnum
         {
             None,
             MBC1,
