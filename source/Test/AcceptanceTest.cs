@@ -124,7 +124,7 @@ namespace Test
                 {
                     //new BlarggTestSuite {Archive = "cgb_sound.zip",},
                     new BlarggTestSuite {Archive = "cpu_instrs.zip",},
-                    //new BlarggTestSuite {Archive = "dmg_sound.zip",},
+                    new BlarggTestSuite {Archive = "dmg_sound.zip",},
                     //new BlarggTestSuite {Archive = "dmg_sound-2.zip",},
                     new BlarggTestSuite {Archive = "instr_timing.zip",},
                     //new BlarggTestSuite {Archive = "mem_timing.zip",},

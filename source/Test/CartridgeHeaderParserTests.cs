@@ -18,6 +18,35 @@ namespace Test
         //    parser.Parse()
         //} 
 
+
+        [Theory]
+        [InlineData(0x80, CartridgeHeader.GameboyTypeEnum.CGBORDMG)]
+        [InlineData(0xC0, CartridgeHeader.GameboyTypeEnum.CGB)]
+        public void Should_parse_CGB_flag_from_43h(int value, CartridgeHeader.GameboyTypeEnum expectedType)
+        {
+            var header = new byte[0x4F];
+            header[0x43] = (byte)value;
+
+            var parser = new CartridgeHeaderParser();
+
+            var result = parser.Parse(header);
+            Assert.Equal(expectedType, result.GameboyType);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(93)]
+        public void Should_parse_CGB_flag_from_43h_as_dmg(int value)
+        {
+            var header = new byte[0x4F];
+            header[0x43] = (byte)value;
+
+            var parser = new CartridgeHeaderParser();
+
+            var result = parser.Parse(header);
+            Assert.Equal(CartridgeHeader.GameboyTypeEnum.DMG, result.GameboyType);
+        }
+
         [Theory]
         [InlineData(0, CartridgeHeader.CartridgeTypeEnum.None)]
         [InlineData(1, CartridgeHeader.CartridgeTypeEnum.MBC1)]

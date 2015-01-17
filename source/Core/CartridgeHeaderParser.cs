@@ -19,26 +19,42 @@ namespace Core
             if (!typeof(CartridgeHeader.RamSizeEnum).IsEnumDefined((int)ramSizeValue))
                 throw new NotSupportedException();
 
+            var gameboyTypeValue = header[0x43];
+            var gameboyType = (gameboyTypeValue == 0x80 || gameboyTypeValue == 0xC0)
+                ? (CartridgeHeader.GameboyTypeEnum)gameboyTypeValue
+                : CartridgeHeader.GameboyTypeEnum.DMG;
+
             return new CartridgeHeader(
-                (CartridgeHeader.CartridgeTypeEnum)cartridgeTypeValue,
-                (CartridgeHeader.RomSizeEnum)romSizeValue,
-                (CartridgeHeader.RamSizeEnum)ramSizeValue);
+                (CartridgeHeader.CartridgeTypeEnum) cartridgeTypeValue,
+                (CartridgeHeader.RomSizeEnum) romSizeValue,
+                (CartridgeHeader.RamSizeEnum) ramSizeValue,
+                gameboyType);
 
         }
     }
 
     public class CartridgeHeader
     {
-        public CartridgeHeader(CartridgeTypeEnum mbc, RomSizeEnum romSize, RamSizeEnum ramSize)
+        public CartridgeHeader(CartridgeTypeEnum mbc, RomSizeEnum romSize, RamSizeEnum ramSize, GameboyTypeEnum gameboyType)
         {
             MBC = mbc;
             ROMSize = romSize;
             RAMSize = ramSize;
+            GameboyType = gameboyType;
         }
 
         public CartridgeTypeEnum MBC { get; private set; }
         public RomSizeEnum ROMSize { get; private set; }
         public RamSizeEnum RAMSize { get; private set; }
+        public GameboyTypeEnum GameboyType { get; private set; }
+
+        public enum GameboyTypeEnum
+        {
+            //DMG,
+            CGBORDMG = 0x80,
+            CGB = 0xC0,
+            DMG
+        }
 
         public enum RamSizeEnum
         {
