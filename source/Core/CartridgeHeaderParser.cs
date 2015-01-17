@@ -33,7 +33,28 @@ namespace Core
             MBC2 = 0x05,
             MBC2BATTERY,
             ROMRAM = 0x08,
-            ROMRAMBATTERY
+            ROMRAMBATTERY,
+            MMM01 = 0x0B,
+            MMM01RAM,
+            MMM01RAMBATTERY,
+            MBC3TIMERBATTERY = 0x0F,
+            MBC3TIMERRAMBATTERY,
+            MBC3,
+            MBC3RAM,
+            MBC3RAMBATTERY,
+            MBC4 = 0x15,
+            MBC4RAM,
+            MBC4RAMBATTERY,
+            MBC5 = 0x19,
+            MBC5RAM,
+            MBC5RAMBATTERY,
+            MBC5RUMBLE,
+            MBC5RUMBLERAM,
+            MBC5RUMBLERAMBATTERY,
+            POCKETCAMERA = 0xFC,
+            BANDAITAMA5,
+            HUC3,
+            HUC1RAMBATTERY
         }
     }
 }
