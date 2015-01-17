@@ -8,27 +8,45 @@ namespace Core
         public CartridgeHeader Parse(byte[] header)
         {
             var cartridgeTypeValue = header[0x47];
-            if(!typeof (CartridgeHeader.CartridgeTypeEnum).IsEnumDefined((int)cartridgeTypeValue))
+            if (!typeof(CartridgeHeader.CartridgeTypeEnum).IsEnumDefined((int)cartridgeTypeValue))
                 throw new NotSupportedException();
 
             var romSizeValue = header[0x48];
-            if(!typeof(CartridgeHeader.RomSizeEnum).IsEnumDefined((int)romSizeValue))
+            if (!typeof(CartridgeHeader.RomSizeEnum).IsEnumDefined((int)romSizeValue))
                 throw new NotSupportedException();
 
-            return new CartridgeHeader((CartridgeHeader.CartridgeTypeEnum) cartridgeTypeValue, (CartridgeHeader.RomSizeEnum) romSizeValue);
+            var ramSizeValue = header[0x49];
+            if (!typeof(CartridgeHeader.RamSizeEnum).IsEnumDefined((int)ramSizeValue))
+                throw new NotSupportedException();
+
+            return new CartridgeHeader(
+                (CartridgeHeader.CartridgeTypeEnum)cartridgeTypeValue,
+                (CartridgeHeader.RomSizeEnum)romSizeValue,
+                (CartridgeHeader.RamSizeEnum)ramSizeValue);
+
         }
     }
 
     public class CartridgeHeader
     {
-        public CartridgeHeader(CartridgeTypeEnum mbc, RomSizeEnum romSize)
+        public CartridgeHeader(CartridgeTypeEnum mbc, RomSizeEnum romSize, RamSizeEnum ramSize)
         {
             MBC = mbc;
             ROMSize = romSize;
+            RAMSize = ramSize;
         }
 
         public CartridgeTypeEnum MBC { get; private set; }
-        public  RomSizeEnum ROMSize { get; private set; }
+        public RomSizeEnum ROMSize { get; private set; }
+        public RamSizeEnum RAMSize { get; private set; }
+
+        public enum RamSizeEnum
+        {
+            None,
+            _2KB,
+            _8KB,
+            _32KB
+        }
 
         public enum RomSizeEnum
         {

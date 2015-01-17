@@ -19,41 +19,6 @@ namespace Test
         //} 
 
         [Theory]
-        [InlineData(0, CartridgeHeader.RomSizeEnum._32KB)]
-        [InlineData(1, CartridgeHeader.RomSizeEnum._64KB)]
-        [InlineData(2, CartridgeHeader.RomSizeEnum._128KB)]
-        [InlineData(3, CartridgeHeader.RomSizeEnum._256KB)]
-        [InlineData(4, CartridgeHeader.RomSizeEnum._512KB)]
-        [InlineData(5, CartridgeHeader.RomSizeEnum._1MB)]
-        [InlineData(6, CartridgeHeader.RomSizeEnum._2MB)]
-        [InlineData(7, CartridgeHeader.RomSizeEnum._4MB)]
-        [InlineData(0x52, CartridgeHeader.RomSizeEnum._1_1MB)]
-        [InlineData(0x53, CartridgeHeader.RomSizeEnum._1_2MB)]
-        [InlineData(0x54, CartridgeHeader.RomSizeEnum._1_5MB)]
-        public void Should_parse_rom_size_from_48h(int value, CartridgeHeader.RomSizeEnum expectedSize)
-        {
-            var header = new byte[0x4F];
-            header[0x48] = (byte)value;
-
-            var parser = new CartridgeHeaderParser();
-
-            var result = parser.Parse(header);
-
-            Assert.Equal(expectedSize, result.ROMSize);
-        }
-
-        [Fact]
-        public void Should_not_support_unknown_rom_size_values()
-        {
-            var header = new byte[0x4F];
-            header[0x48] = 123;
-
-            var parser = new CartridgeHeaderParser();
-
-            Assert.Throws<NotSupportedException>(() => parser.Parse(header));
-        }
-
-        [Theory]
         [InlineData(0, CartridgeHeader.CartridgeTypeEnum.None)]
         [InlineData(1, CartridgeHeader.CartridgeTypeEnum.MBC1)]
         [InlineData(2, CartridgeHeader.CartridgeTypeEnum.MBC1RAM)]
@@ -100,6 +65,69 @@ namespace Test
         {
             var header = new byte[0x4F];
             header[0x47] = 123;
+
+            var parser = new CartridgeHeaderParser();
+
+            Assert.Throws<NotSupportedException>(() => parser.Parse(header));
+        }
+
+        [Theory]
+        [InlineData(0, CartridgeHeader.RomSizeEnum._32KB)]
+        [InlineData(1, CartridgeHeader.RomSizeEnum._64KB)]
+        [InlineData(2, CartridgeHeader.RomSizeEnum._128KB)]
+        [InlineData(3, CartridgeHeader.RomSizeEnum._256KB)]
+        [InlineData(4, CartridgeHeader.RomSizeEnum._512KB)]
+        [InlineData(5, CartridgeHeader.RomSizeEnum._1MB)]
+        [InlineData(6, CartridgeHeader.RomSizeEnum._2MB)]
+        [InlineData(7, CartridgeHeader.RomSizeEnum._4MB)]
+        [InlineData(0x52, CartridgeHeader.RomSizeEnum._1_1MB)]
+        [InlineData(0x53, CartridgeHeader.RomSizeEnum._1_2MB)]
+        [InlineData(0x54, CartridgeHeader.RomSizeEnum._1_5MB)]
+        public void Should_parse_rom_size_from_48h(int value, CartridgeHeader.RomSizeEnum expectedSize)
+        {
+            var header = new byte[0x4F];
+            header[0x48] = (byte)value;
+
+            var parser = new CartridgeHeaderParser();
+
+            var result = parser.Parse(header);
+
+            Assert.Equal(expectedSize, result.ROMSize);
+        }
+
+        [Fact]
+        public void Should_not_support_unknown_rom_size_values()
+        {
+            var header = new byte[0x4F];
+            header[0x48] = 123;
+
+            var parser = new CartridgeHeaderParser();
+
+            Assert.Throws<NotSupportedException>(() => parser.Parse(header));
+        }
+
+        [Theory]
+        [InlineData(0, CartridgeHeader.RamSizeEnum.None)]
+        [InlineData(1, CartridgeHeader.RamSizeEnum._2KB)]
+        [InlineData(2, CartridgeHeader.RamSizeEnum._8KB)]
+        [InlineData(3, CartridgeHeader.RamSizeEnum._32KB)]
+        public void Should_parse_ram_size_from_49h(int value, CartridgeHeader.RamSizeEnum expectedSize)
+        {
+            var header = new byte[0x4F];
+            header[0x49] = (byte)value;
+
+            var parser = new CartridgeHeaderParser();
+
+            var result = parser.Parse(header);
+
+            Assert.Equal(expectedSize, result.RAMSize);
+        }
+
+        [Fact]
+        public void Should_not_suport_unknown_ram_size_values()
+        {
+            var header = new byte[0x4F];
+            header[0x49] = 123;
 
             var parser = new CartridgeHeaderParser();
 
