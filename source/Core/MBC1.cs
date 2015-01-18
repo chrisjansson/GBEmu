@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-namespace Core
+﻿namespace Core
 {
     public class MBC1 : IMBC
     {
