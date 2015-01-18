@@ -29,7 +29,6 @@ namespace Core
                 (CartridgeHeader.RomSizeEnum) romSizeValue,
                 (CartridgeHeader.RamSizeEnum) ramSizeValue,
                 gameboyType);
-
         }
     }
 
