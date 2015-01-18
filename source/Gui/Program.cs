@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -34,8 +35,31 @@ namespace Gui
             _displayDataTransferService = emulator.DisplayDataTransferService;
 
             var running = true;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            const double cpuSpeed = (4194304) / 4.0;
+            const double cycleTime = 1 / cpuSpeed;
+            const double frameTime = 1 / 60.0;
+            const double cyclesPerFrame = cpuSpeed / 60.0;
+            var ticksPerSecond = TimeSpan.TicksPerSecond;
+            var cyclesPerTick = cpuSpeed / ticksPerSecond;
+            double cyclesUntilNextFrame = 0;
+            double nextFrameTime = 0;
             while (running)
             {
+                for (var i = 0; i < cyclesPerFrame; i++)
+                {
+                    EmulateCycle();
+                }
+
+                while (nextFrameTime >= stopwatch.Elapsed.TotalSeconds)
+                {
+
+                }
+
+                Draw(renderer);
+                nextFrameTime += frameTime;
+
                 SDL.SDL_Event newEvent;
                 SDL.SDL_PollEvent(out newEvent);
 
@@ -52,18 +76,6 @@ namespace Gui
                         Down(joypad, KeyState.FromKeyEvent(newEvent.key));
                         break;
                 }
-
-                const double cycleTime = 1 / 4000000.0;
-                const double frameTime = 1 / 60.0;
-                const double cyclesPerFrame = (frameTime / cycleTime) * 0.8;
-
-                var target = (long)(_cpu.Cycles + cyclesPerFrame);
-                while (_cpu.Cycles <= target)
-                {
-                    EmulateCycle();
-                }
-
-                Draw(renderer);
             }
 
             SDL.SDL_DestroyRenderer(renderer);
