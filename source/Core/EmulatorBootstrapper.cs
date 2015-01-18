@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System;
+
+namespace Core
 {
     public class Emulator
     {
@@ -16,7 +18,12 @@
         {
             const int programCounterAfterInitialization = 0x100;
 
-            var mmu = new MMU(new MBC1(rom));
+            var headerBytes = new byte[0x4F];
+            Array.Copy(rom, 0x100, headerBytes, 0, headerBytes.Length);
+            var header = new CartridgeHeaderParser().Parse(headerBytes);
+            var mbc = SelectMBC(header, rom);
+
+            var mmu = new MMU(mbc);
             var joyPad = new Joypad(mmu);
             mmu.Joypad = joyPad;
             var timer = new Timer(mmu);
@@ -68,6 +75,19 @@
                 DisplayDataTransferService = displayDataTransferService,
                 Joypad = joyPad,
             };
+        }
+
+        private IMBC SelectMBC(CartridgeHeader header, byte[] rom)
+        {
+            switch (header.MBC)
+            {
+                case CartridgeHeader.CartridgeTypeEnum.None:
+                    return new NoMBC(rom);
+                case CartridgeHeader.CartridgeTypeEnum.MBC1:
+                    return new MBC1(rom);
+                default:
+                    throw new NotSupportedException();
+            }
         }
     }
 }
