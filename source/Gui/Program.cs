@@ -14,7 +14,7 @@ namespace Gui
         private static Cpu _cpu;
         private static DisplayDataTransferService _displayDataTransferService;
         private static Display _display;
-        private static IMmu _mmuWithBootRom;
+        private static IMmu _mmu;
         private static Timer _timer;
 
         static void Main(string[] args)
@@ -28,7 +28,7 @@ namespace Gui
             var readAllBytes = File.ReadAllBytes(args[1]);
             var emulator = emulatorBootstrapper.LoadRom(readAllBytes);
             var joypad = emulator.Joypad;
-            _mmuWithBootRom = emulator.Mmu;
+            _mmu = emulator.Mmu;
             _cpu = emulator.Cpu;
             _timer = emulator.Timer;
             _display = emulator.Display;
@@ -38,27 +38,29 @@ namespace Gui
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             const double cpuSpeed = (4194304) / 4.0;
-            const double cycleTime = 1 / cpuSpeed;
-            const double frameTime = 1 / 60.0;
             const double cyclesPerFrame = cpuSpeed / 60.0;
             var ticksPerSecond = TimeSpan.TicksPerSecond;
-            var cyclesPerTick = cpuSpeed / ticksPerSecond;
             double cyclesUntilNextFrame = 0;
-            double nextFrameTime = 0;
+            long milliSeconds = 0;
+            var cyclesPerMillisecond = cpuSpeed / 1000;
             while (running)
             {
-                for (var i = 0; i < cyclesPerFrame; i++)
+                for (var i = 0; i < cyclesPerMillisecond; i++)
                 {
                     EmulateCycle();
                 }
 
-                while (nextFrameTime >= stopwatch.Elapsed.TotalSeconds)
+                while (milliSeconds > stopwatch.ElapsedMilliseconds)
                 {
-
+                    Thread.Sleep(1);
                 }
+                milliSeconds++;
 
-                Draw(renderer);
-                nextFrameTime += frameTime;
+                if (_cpu.Cycles > cyclesUntilNextFrame)
+                {
+                    Draw(renderer);
+                    cyclesUntilNextFrame += cyclesPerFrame;
+                }
 
                 SDL.SDL_Event newEvent;
                 SDL.SDL_PollEvent(out newEvent);
@@ -115,7 +117,7 @@ namespace Gui
             var next = _cpu.ProgramCounter;
             _trace[_index++] = next;
             _index = _index % _trace.Length;
-            var instruction = _mmuWithBootRom.GetByte(next);
+            var instruction = _mmu.GetByte(next);
 
             var old = _cpu.Cycles;
             _cpu.Execute(instruction);
