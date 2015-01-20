@@ -39,22 +39,24 @@ namespace Gui
             stopwatch.Start();
             const double cpuSpeed = (4194304) / 4.0;
             const double cyclesPerFrame = cpuSpeed / 60.0;
-            var ticksPerSecond = TimeSpan.TicksPerSecond;
+            var ticksPerMilliseconds = Stopwatch.Frequency / 1000;
             double cyclesUntilNextFrame = 0;
             long milliSeconds = 0;
-            var cyclesPerMillisecond = cpuSpeed / 1000;
+            int cyclesPerMillisecond = (int)(cpuSpeed / 1000);
+            long targetCycles = cyclesPerMillisecond;
             while (running)
             {
-                for (var i = 0; i < cyclesPerMillisecond; i++)
+                while (_cpu.Cycles < targetCycles)
                 {
-                    EmulateCycle();
+                    EmulateInstruction();
                 }
+                targetCycles += cyclesPerMillisecond;
 
-                while (milliSeconds > stopwatch.ElapsedMilliseconds)
+                while (milliSeconds > stopwatch.ElapsedTicks)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(0);
                 }
-                milliSeconds++;
+                milliSeconds += ticksPerMilliseconds;
 
                 if (_cpu.Cycles > cyclesUntilNextFrame)
                 {
@@ -112,7 +114,7 @@ namespace Gui
 
         private static ushort[] _trace = new ushort[10000];
         private static int _index;
-        private static void EmulateCycle()
+        private static void EmulateInstruction()
         {
             var next = _cpu.ProgramCounter;
             _trace[_index++] = next;
