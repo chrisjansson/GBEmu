@@ -8,19 +8,39 @@ namespace Test
     {
         public class WhenLoadingRom : EmulatorBootstrapperTests
         {
-            private readonly Emulator _actual;
-
-            public WhenLoadingRom()
-            {
-                var sut = new EmulatorBootstrapper();
-
-                _actual = sut.LoadRom(new byte[0]);
-            }
-
             [Fact]
             public void Should_select_memory_bank_controller()
             {
                 throw new NotImplementedException();
+            }
+
+        }
+        public abstract class InitializesHardware : EmulatorBootstrapperTests
+        {
+            private readonly Emulator _actual;
+
+            protected InitializesHardware()
+            {
+                var sut = CreateBootstrapper();
+                _actual = sut.LoadRom(new byte[0]);
+            }
+
+            protected abstract EmulatorBootstrapper CreateBootstrapper();
+
+            public class InitializesHardwareWithBios : InitializesHardware
+            {
+                protected override EmulatorBootstrapper CreateBootstrapper()
+                {
+
+                }
+            }
+
+            public class IntialziesHardwareWithoutBios : InitializesHardware
+            {
+                protected override EmulatorBootstrapper CreateBootstrapper()
+                {
+                    return new EmulatorBootstrapper();
+                }
             }
 
             [Fact]
@@ -95,11 +115,11 @@ namespace Test
                 AssertMemory(0xFF4B, 0x00); //WX
                 AssertMemory(0xFFFF, 0x00); //IE
             }
+        }
 
-            private void AssertMemory(ushort address, byte expected)
-            {
-                Assert.Equal(expected, _actual.Mmu.GetByte(address));
-            }
+        private void AssertMemory(ushort address, byte expected)
+        {
+            Assert.Equal(expected, _actual.Mmu.GetByte(address));
         }
     }
 }
