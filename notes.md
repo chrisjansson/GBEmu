@@ -16,5 +16,6 @@ IME shoudl be disabled when entering interrupt vector...
 
 If a gb bootstrap rom is not present load the cpu with the correct values,
   see Gameboy CPU Manual p.17
+  Test that bootstrapper with and without boot rom produces the same results
 
 Assert memory access when dma transfer is in progress?
