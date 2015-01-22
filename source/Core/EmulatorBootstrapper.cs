@@ -14,6 +14,37 @@ namespace Core
 
     public class EmulatorBootstrapper
     {
+        public Emulator LoadWithRom(byte[] bios, byte[] rom)
+        {
+            var headerBytes = new byte[0x4F];
+            Array.Copy(rom, 0x100, headerBytes, 0, headerBytes.Length);
+            var header = new CartridgeHeaderParser().Parse(headerBytes);
+            var mbc = SelectMBC(header, rom);
+
+            var innerMmu = new MMU(mbc);
+            var mmu = new MmuWithBootRom(bios, innerMmu);
+            var joyPad = new Joypad(mmu);
+            var timer = new Timer(mmu);
+            var displayDataTransferService = new DisplayDataTransferService(mmu, new SpriteRenderer(mmu));
+            var display = new Display(mmu, displayDataTransferService);
+            var cpu = new Cpu(mmu);
+
+            innerMmu.Display = display;
+            innerMmu.Timer = timer;
+            innerMmu.Joypad = joyPad;
+            innerMmu.Cpu = cpu;
+
+            return new Emulator
+            {
+                Cpu = cpu,
+                Mmu = mmu,
+                Timer = timer,
+                Display = display,
+                DisplayDataTransferService = displayDataTransferService,
+                Joypad = joyPad,
+            };
+        }
+
         public Emulator LoadRom(byte[] rom)
         {
             const int programCounterAfterInitialization = 0x100;

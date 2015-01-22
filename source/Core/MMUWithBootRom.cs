@@ -1,15 +1,13 @@
 ﻿using System;
-using Core;
 
-namespace Gui
+namespace Core
 {
-    public class MMUWithBootRom : IMmu
+    public class MmuWithBootRom : IMmu
     {
         private readonly IMmu _mmu;
         private readonly byte[] _rom;
-        private bool _switched;
 
-        public MMUWithBootRom(byte[] rom, IMmu mmu)
+        public MmuWithBootRom(byte[] rom, IMmu mmu)
         {
             if (rom.Length != 256)
             {
@@ -20,9 +18,11 @@ namespace Gui
             _mmu = mmu;
         }
 
+        public bool Switched { get; private set; }
+
         public byte GetByte(ushort address)
         {
-            if (address < 256 && !_switched)
+            if (address < 256 && !Switched)
             {
                 return _rom[address];
             }
@@ -32,9 +32,9 @@ namespace Gui
 
         public void SetByte(ushort address, byte value)
         {
-            if (address == 0xFF50 && !_switched)
+            if (address == 0xFF50 && !Switched)
             {
-                _switched = true;
+                Switched = true;
             }
 
             _mmu.SetByte(address, value);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Core;
 using Xunit;
 
@@ -13,33 +14,52 @@ namespace Test
             {
                 throw new NotImplementedException();
             }
-
         }
+
         public abstract class InitializesHardware : EmulatorBootstrapperTests
         {
             private readonly Emulator _actual;
 
             protected InitializesHardware()
             {
-                var sut = CreateBootstrapper();
-                _actual = sut.LoadRom(new byte[0]);
+                var rom = File.ReadAllBytes("cpu_instrs.gb");
+                _actual = CreateEmulator(rom);
             }
 
-            protected abstract EmulatorBootstrapper CreateBootstrapper();
+            protected abstract Emulator CreateEmulator(byte[] rom);
 
             public class InitializesHardwareWithBios : InitializesHardware
             {
-                protected override EmulatorBootstrapper CreateBootstrapper()
+                protected override Emulator CreateEmulator(byte[] rom)
                 {
+                    var bootstrapper = new EmulatorBootstrapper();
+                    var bios = File.ReadAllBytes("DMG_ROM.bin");
+                    var emulator = bootstrapper.LoadWithRom(bios, rom);
 
+                    while (!(emulator.Mmu as MmuWithBootRom).Switched)
+                    {
+                        var oldCycles = emulator.Cpu.Cycles;
+                        var opcode = emulator.Mmu.GetByte(emulator.Cpu.ProgramCounter);
+                        emulator.Cpu.Execute(opcode);
+
+                        var delta = emulator.Cpu.Cycles - oldCycles;
+                        for (int i = 0; i < delta; i++)
+                        {
+                            emulator.Display.Tick();
+                            emulator.Timer.Tick();
+                        }
+                    }
+
+                    return emulator;
                 }
             }
 
             public class IntialziesHardwareWithoutBios : InitializesHardware
             {
-                protected override EmulatorBootstrapper CreateBootstrapper()
+                protected override Emulator CreateEmulator(byte[] rom)
                 {
-                    return new EmulatorBootstrapper();
+                    var bootstrapper = new EmulatorBootstrapper();
+                    return bootstrapper.LoadRom(rom);
                 }
             }
 
@@ -115,11 +135,11 @@ namespace Test
                 AssertMemory(0xFF4B, 0x00); //WX
                 AssertMemory(0xFFFF, 0x00); //IE
             }
-        }
 
-        private void AssertMemory(ushort address, byte expected)
-        {
-            Assert.Equal(expected, _actual.Mmu.GetByte(address));
+            private void AssertMemory(ushort address, byte expected)
+            {
+                Assert.Equal(expected, _actual.Mmu.GetByte(address));
+            }
         }
     }
 }
