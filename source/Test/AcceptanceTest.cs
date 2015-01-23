@@ -11,10 +11,7 @@ namespace Test
     public class AcceptanceTest
     {
         private readonly List<char> _serialOutput = new List<char>();
-        protected Cpu Sut;
-        protected IMmu Mmu;
-        protected Timer Timer;
-        private long _previousCycleCount;
+        private Emulator _emulator;
         private ushort _previousProgramCounter;
 
         [Theory, PropertyData("streams")]
@@ -32,38 +29,29 @@ namespace Test
             var programCounterRepeatCount = 0;
             for (var i = 0; i < 100000000 && programCounterRepeatCount < 10000; i++)
             {
-                var nextInstruction = Mmu.GetByte(Sut.ProgramCounter);
-                Sut.Execute(nextInstruction);
-                RunOtherComponents();
+                _emulator.Tick();
                 SendSerialData();
 
-                if (Sut.ProgramCounter == _previousProgramCounter)
+                var programCounter = _emulator.Cpu.ProgramCounter;
+                if (programCounter == _previousProgramCounter)
                 {
                     programCounterRepeatCount++;
                 }
                 else
                 {
-                    _previousProgramCounter = Sut.ProgramCounter;
+                    _previousProgramCounter = programCounter;
                     programCounterRepeatCount = 0;
                 }
-                _previousCycleCount = Sut.Cycles;
-            }
-        }
-
-        private void RunOtherComponents()
-        {
-            for (var j = 0; j < Sut.Cycles - _previousCycleCount; j++)
-            {
-                Timer.Tick();
             }
         }
 
         private void SendSerialData()
         {
-            if ((Mmu.GetByte(0xFF02) & 0x80) == 0x80)
+            var mmu = _emulator.Mmu;
+            if ((mmu.GetByte(0xFF02) & 0x80) == 0x80)
             {
-                _serialOutput.Add((char) Mmu.GetByte(0xFF01));
-                Mmu.SetByte(0xFF02, 0);
+                _serialOutput.Add((char) mmu.GetByte(0xFF01));
+                mmu.SetByte(0xFF02, 0);
             }
         }
 
@@ -82,10 +70,7 @@ namespace Test
         private void LoadTestRomIntoMmu(byte[] rom)
         {
             var emulatorBootstrapper = new EmulatorBootstrapper();
-            var emulator = emulatorBootstrapper.LoadRom(rom);
-            Sut = emulator.Cpu;
-            Mmu = emulator.Mmu;
-            Timer = emulator.Timer;
+            _emulator = emulatorBootstrapper.LoadRom(rom);
         }
 
         public static IEnumerable<object[]> streams

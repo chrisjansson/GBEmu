@@ -10,6 +10,23 @@ namespace Core
         public Display Display { get; set; }
         public Joypad Joypad { get; set; }
         public DisplayDataTransferService DisplayDataTransferService { get; set; }
+
+        public void Tick()
+        {
+            var next = Cpu.ProgramCounter;
+            var instruction = Mmu.GetByte(next);
+
+            var old = Cpu.Cycles;
+            Cpu.Execute(instruction);
+            var delta = Cpu.Cycles - old;
+            for (var i = 0; i < delta; i++)
+            {
+                Display.Tick();
+                Timer.Tick();
+            }
+        }
+
+        public int CyclesLastTick { get; set; }
     }
 
     public class EmulatorBootstrapper
