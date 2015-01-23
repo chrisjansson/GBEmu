@@ -11,12 +11,6 @@ namespace Gui
 {
     class Program
     {
-        private static Cpu _cpu;
-        private static DisplayDataTransferService _displayDataTransferService;
-        private static Display _display;
-        private static IMmu _mmu;
-        private static Timer _timer;
-
         static void Main(string[] args)
         {
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO);
@@ -26,13 +20,8 @@ namespace Gui
 
             var emulatorBootstrapper = new EmulatorBootstrapper();
             var readAllBytes = File.ReadAllBytes(args[1]);
-            var emulator = emulatorBootstrapper.LoadRom(readAllBytes);
-            var joypad = emulator.Joypad;
-            _mmu = emulator.Mmu;
-            _cpu = emulator.Cpu;
-            _timer = emulator.Timer;
-            _display = emulator.Display;
-            _displayDataTransferService = emulator.DisplayDataTransferService;
+            _emulator = emulatorBootstrapper.LoadRom(readAllBytes);
+            var joypad = _emulator.Joypad;
 
             var running = true;
             var stopwatch = new Stopwatch();
@@ -46,9 +35,9 @@ namespace Gui
             long targetCycles = cyclesPerMillisecond;
             while (running)
             {
-                while (_cpu.Cycles < targetCycles)
+                while (_emulator.Cpu.Cycles < targetCycles)
                 {
-                    EmulateInstruction();
+                    _emulator.Tick();
                 }
                 targetCycles += cyclesPerMillisecond;
 
@@ -58,7 +47,7 @@ namespace Gui
                 }
                 milliSeconds += ticksPerMilliseconds;
 
-                if (_cpu.Cycles > cyclesUntilNextFrame)
+                if (_emulator.Cpu.Cycles > cyclesUntilNextFrame)
                 {
                     Draw(renderer);
                     cyclesUntilNextFrame += cyclesPerFrame;
@@ -112,33 +101,7 @@ namespace Gui
             joypad.Select = newEvent.Select || joypad.Select;
         }
 
-        private static ushort[] _trace = new ushort[10000];
-        private static int _index;
-        private static void EmulateInstruction()
-        {
-            var next = _cpu.ProgramCounter;
-            _trace[_index++] = next;
-            _index = _index % _trace.Length;
-            var instruction = _mmu.GetByte(next);
-
-            var old = _cpu.Cycles;
-            _cpu.Execute(instruction);
-            var delta = _cpu.Cycles - old;
-            for (var i = 0; i < delta; i++)
-            {
-                _display.Tick();
-                _timer.Tick();
-            }
-        }
-
-        private static void PrintTrace()
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                Console.WriteLine(_trace[_index - i].ToString("x4"));
-            }
-        }
-
+        private static Emulator _emulator;
         private static void Draw(IntPtr renderer)
         {
             var surface = CreateSurface();
@@ -157,7 +120,7 @@ namespace Gui
             {
                 for (var y = 0; y < 144; y++)
                 {
-                    var color = _displayDataTransferService.FrameBuffer[y * 160 + x];
+                    var color = _emulator.DisplayDataTransferService.FrameBuffer[y * 160 + x];
                     buffer[y * 160 + x] = GetColor(color);
                 }
             }
