@@ -1,3 +1,12 @@
+Performance notes:
+MBC bank selection can be computed on set
+Display, invalidate tiles on writes instead of every frame...
+
+
+MBCS:
+MBC1
+	Does 1MB and 2MB roms contain 64 and 128 banks of data or just 63 and 125?
+
 Does special registers that do not take up 8bits need to be masked?
 TAC
 IE and IF?

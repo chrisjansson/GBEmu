@@ -127,7 +127,7 @@ namespace Test
         public void Should_be_able_to_map_all_rom_banks_to_4000_7FFF()
         {
             var memoryBanks = Enumerable.Range(1, 127)
-                .Except(new[] { 20, 40, 60 })
+                .Except(new[] { 0x20, 0x40, 0x60 })
                 .ToList();
             Assert.Equal(124, memoryBanks.Count);
 
