@@ -19,8 +19,8 @@ namespace Gui
             var renderer = SDL.SDL_CreateRenderer(window, -1, 0);
 
             var emulatorBootstrapper = new EmulatorBootstrapper();
-            var readAllBytes = File.ReadAllBytes(args[1]);
-            _emulator = emulatorBootstrapper.LoadRom(readAllBytes);
+            var romBytes = File.ReadAllBytes(args[0]);
+            _emulator = emulatorBootstrapper.LoadRom(romBytes);
             var joypad = _emulator.Joypad;
 
             var running = true;
