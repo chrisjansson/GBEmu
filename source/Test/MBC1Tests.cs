@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core;
 using Xunit;
@@ -8,28 +9,8 @@ namespace Test
 {
     public class MBC1Tests
     {
-
-        //        0148 - ROM Size
-        //Specifies the ROM Size of the cartridge.Typically calculated as "32KB shl N".
-        //  00h -  32KByte(no ROM banking)
-        //  01h -  64KByte(4 banks)
-        //  02h - 128KByte(8 banks)
-        //  03h - 256KByte(16 banks)
-        //  04h - 512KByte(32 banks)
-        //  05h -   1MByte(64 banks)  - only 63 banks used by MBC1
-        //  06h -   2MByte(128 banks) - only 125 banks used by MBC1
-        //  07h -   4MByte(256 banks)
-        //  52h - 1.1MByte(72 banks)
-        //  53h - 1.2MByte(80 banks)
-        //  54h - 1.5MByte(96 banks)
         [Theory]
-        [InlineData(32, CartridgeHeader.RomSizeEnum._32KB)]
-        [InlineData(64, CartridgeHeader.RomSizeEnum._64KB)]
-        [InlineData(128, CartridgeHeader.RomSizeEnum._128KB)]
-        [InlineData(256, CartridgeHeader.RomSizeEnum._256KB)]
-        [InlineData(512, CartridgeHeader.RomSizeEnum._512KB)]
-        [InlineData(1008, CartridgeHeader.RomSizeEnum._1MB)]
-        [InlineData(2000, CartridgeHeader.RomSizeEnum._2MB)]
+        [PropertyData("SupportedRomConfigurations", PropertyType = typeof(RomConfigurations))]
         public void Should_accept_rom_size_that_matches_the_configured_rom_size(int kB, CartridgeHeader.RomSizeEnum romSize)
         {
             var rom = new byte[kB * 1024];
@@ -38,16 +19,19 @@ namespace Test
         }
 
         [Theory]
-        [InlineData(32, CartridgeHeader.RomSizeEnum._32KB)]
-        [InlineData(64, CartridgeHeader.RomSizeEnum._64KB)]
-        [InlineData(128, CartridgeHeader.RomSizeEnum._128KB)]
-        [InlineData(256, CartridgeHeader.RomSizeEnum._256KB)]
-        [InlineData(512, CartridgeHeader.RomSizeEnum._512KB)]
-        [InlineData(1008, CartridgeHeader.RomSizeEnum._1MB)]
-        [InlineData(2000, CartridgeHeader.RomSizeEnum._2MB)]
+        [PropertyData("SupportedRomConfigurations", PropertyType = typeof(RomConfigurations))]
         public void Should_reject_rom_size_that_does_not_match_the_configured_rom_size(int kB, CartridgeHeader.RomSizeEnum romSize)
         {
             var rom = new byte[kB * 1024 + 1];
+
+            Assert.Throws<InvalidOperationException>(() => new MBC1(rom, romSize));
+        }
+
+        [Theory]
+        [PropertyData("UnspportedRomConfigurations", PropertyType = typeof(RomConfigurations))]
+        public void Should_reject_unsupported_rom_configurations(CartridgeHeader.RomSizeEnum romSize)
+        {
+            var rom = new byte[32 * 1024];
 
             Assert.Throws<InvalidOperationException>(() => new MBC1(rom, romSize));
         }
@@ -189,6 +173,40 @@ namespace Test
             random.NextBytes(rom);
 
             return rom;
+        }
+
+        public class RomConfigurations
+        {
+            public static IEnumerable<object[]> SupportedRomConfigurations
+            {
+                get
+                {
+                    return new[]
+                    {
+                        new object[] { 32, CartridgeHeader.RomSizeEnum._32KB},
+                        new object[] { 64, CartridgeHeader.RomSizeEnum._64KB},
+                        new object[] { 128, CartridgeHeader.RomSizeEnum._128KB},
+                        new object[] { 256, CartridgeHeader.RomSizeEnum._256KB},
+                        new object[] { 512, CartridgeHeader.RomSizeEnum._512KB},
+                        new object[] { 1008, CartridgeHeader.RomSizeEnum._1MB},
+                        new object[] { 2000, CartridgeHeader.RomSizeEnum._2MB},
+                    };
+                }
+            }
+
+            public static IEnumerable<object[]> UnspportedRomConfigurations
+            {
+                get
+                {
+                    var supportedRomSizes = SupportedRomConfigurations
+                        .Select(x => (CartridgeHeader.RomSizeEnum)x[1]);
+                    return typeof(CartridgeHeader.RomSizeEnum)
+                        .GetEnumValues()
+                        .Cast<CartridgeHeader.RomSizeEnum>()
+                        .Except(supportedRomSizes)
+                        .Select(x => new object[] { x });
+                }
+            }
         }
     }
 }
