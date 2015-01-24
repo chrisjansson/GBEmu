@@ -63,9 +63,9 @@ namespace Core
                 throw new InvalidOperationException();
             if (romSize == CartridgeHeader.RomSizeEnum._512KB && rom.Length != 512.KB())
                 throw new InvalidOperationException();
-            if (romSize == CartridgeHeader.RomSizeEnum._1MB && rom.Length != 1008.KB())
+            if (romSize == CartridgeHeader.RomSizeEnum._1MB && rom.Length != 1024.KB())
                 throw new InvalidOperationException();
-            if (romSize == CartridgeHeader.RomSizeEnum._2MB && rom.Length != 2000.KB())
+            if (romSize == CartridgeHeader.RomSizeEnum._2MB && rom.Length != 2048.KB())
                 throw new InvalidOperationException();
             if(romSize == CartridgeHeader.RomSizeEnum._1_1MB || romSize == CartridgeHeader.RomSizeEnum._1_2MB || romSize == CartridgeHeader.RomSizeEnum._1_5MB || romSize == CartridgeHeader.RomSizeEnum._4MB)
                 throw new InvalidOperationException();

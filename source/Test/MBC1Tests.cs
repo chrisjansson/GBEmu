@@ -169,7 +169,7 @@ namespace Test
 
         private byte[] CreateFakeRom()
         {
-            var rom = new byte[2000 * 1024];
+            var rom = new byte[2048 * 1024];
             var random = new Random();
             random.NextBytes(rom);
 
@@ -189,8 +189,8 @@ namespace Test
                         new object[] { 128, CartridgeHeader.RomSizeEnum._128KB},
                         new object[] { 256, CartridgeHeader.RomSizeEnum._256KB},
                         new object[] { 512, CartridgeHeader.RomSizeEnum._512KB},
-                        new object[] { 1008, CartridgeHeader.RomSizeEnum._1MB},
-                        new object[] { 2000, CartridgeHeader.RomSizeEnum._2MB},
+                        new object[] { 1024, CartridgeHeader.RomSizeEnum._1MB},
+                        new object[] { 2048, CartridgeHeader.RomSizeEnum._2MB},
                     };
                 }
             }
