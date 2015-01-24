@@ -101,9 +101,10 @@ namespace Test
             var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
 
             var memoryBank = 3 + 252;
+            mbc.SetByte(0x2000, 0xE1);
             mbc.SetByte(0x4000, (byte)memoryBank);
 
-            var offset = 0x4000 * 96; // two lowest bits are bit 5-6 in bank select
+            var offset = 0x4000 * 97; // two lowest bits are bit 5-6 in bank select
             var assertion = new MBCAssertion(mbc, rom);
             assertion.AssertRangeIsMapped(0x4000, 0x7FFF, romOffset: offset);
         }
