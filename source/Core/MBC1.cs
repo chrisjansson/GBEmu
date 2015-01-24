@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System;
+
+namespace Core
 {
     public class MBC1 : IMBC
     {
@@ -6,8 +8,10 @@
         private byte _lowRomSelect;
         private byte _highRomSelect;
 
-        public MBC1(byte[] rom)
+        public MBC1(byte[] rom, CartridgeHeader.RomSizeEnum romSize)
         {
+            AssertRomSize(rom, romSize);
+
             _rom = rom;
         }
 
@@ -45,6 +49,24 @@
                 _lowRomSelect = value;
             if (address == 0x4000)
                 _highRomSelect = value;
+        }
+
+        private static void AssertRomSize(byte[] rom, CartridgeHeader.RomSizeEnum romSize)
+        {
+            if (romSize == CartridgeHeader.RomSizeEnum._32KB && rom.Length != 32.KB())
+                throw new InvalidOperationException();
+            if (romSize == CartridgeHeader.RomSizeEnum._64KB && rom.Length != 64.KB())
+                throw new InvalidOperationException();
+            if (romSize == CartridgeHeader.RomSizeEnum._128KB && rom.Length != 128.KB())
+                throw new InvalidOperationException();
+            if (romSize == CartridgeHeader.RomSizeEnum._256KB && rom.Length != 256.KB())
+                throw new InvalidOperationException();
+            if (romSize == CartridgeHeader.RomSizeEnum._512KB && rom.Length != 512.KB())
+                throw new InvalidOperationException();
+            if (romSize == CartridgeHeader.RomSizeEnum._1MB && rom.Length != 1008.KB())
+                throw new InvalidOperationException();
+            if (romSize == CartridgeHeader.RomSizeEnum._2MB && rom.Length != 2000.KB())
+                throw new InvalidOperationException();
         }
     }
 }

@@ -132,7 +132,7 @@ namespace Core
                 case CartridgeHeader.CartridgeTypeEnum.None:
                     return new NoMBC(rom);
                 case CartridgeHeader.CartridgeTypeEnum.MBC1:
-                    return new MBC1(rom);
+                    return new MBC1(rom, header.ROMSize);
                 default:
                     throw new NotSupportedException();
             }
