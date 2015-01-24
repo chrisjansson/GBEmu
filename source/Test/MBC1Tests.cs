@@ -168,7 +168,7 @@ namespace Test
 
         private byte[] CreateFakeRom()
         {
-            var rom = new byte[0x8000 * 128];
+            var rom = new byte[2000 * 1024];
             var random = new Random();
             random.NextBytes(rom);
 
