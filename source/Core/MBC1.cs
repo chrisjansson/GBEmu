@@ -58,9 +58,9 @@ namespace Core
                 _ramEnable = (byte) (value & 0x0A);
             }
 
-            if (address == 0x2000)
+            if (address >= 0x2000 && address < 0x4000)
                 _lowRomSelect = value;
-            if (address == 0x4000)
+            if (address >= 0x4000 && address < 0x6000)
                 _highRomSelect = value;
 
             if (address >= 0xA000 && address < 0xC000)

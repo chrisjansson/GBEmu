@@ -23,6 +23,31 @@ namespace Gui
             _emulator = emulatorBootstrapper.LoadRom(romBytes);
             var joypad = _emulator.Joypad;
 
+            try
+            {
+                Emulate(renderer, joypad);
+            }
+            catch (Exception)
+            {
+                File.Delete("trace");
+                var file = File.Open("trace", FileMode.CreateNew);
+                var sw = new StreamWriter(file);
+                foreach (var instruction in _emulator.Trace)
+                {
+                    sw.WriteLine("{0:x} {1:x}", instruction.Item1, instruction.Item2);
+                }
+                sw.Flush();
+                sw.Close();
+                throw;
+            }
+
+            SDL.SDL_DestroyRenderer(renderer);
+            SDL.SDL_DestroyWindow(window);
+            SDL.SDL_Quit();
+        }
+
+        private static void Emulate(IntPtr renderer, Joypad joypad)
+        {
             var running = true;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -70,10 +95,6 @@ namespace Gui
                         break;
                 }
             }
-
-            SDL.SDL_DestroyRenderer(renderer);
-            SDL.SDL_DestroyWindow(window);
-            SDL.SDL_Quit();
         }
 
 
