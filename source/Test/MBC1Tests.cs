@@ -7,7 +7,77 @@ using Xunit.Extensions;
 
 namespace Test
 {
-    public class MBC1Tests
+    public partial class MBC1Tests
+    {
+        public class MBC1_with_ram
+        {
+            public class RamConfigurations
+            {
+                public IEnumerable<object[]> SupportedRamConfigurations
+                {
+                    get
+                    {
+                        return new[]
+                        {
+                            new object[]
+                            {
+                                0, CartridgeHeader.RamSizeEnum.None,
+                                2, CartridgeHeader.RamSizeEnum._2KB,
+                                8, CartridgeHeader.RamSizeEnum._8KB,
+                                32, CartridgeHeader.RamSizeEnum._32KB
+                            }
+                        };
+                    }
+                }
+            }
+
+            [Fact]
+            public void Should_read_and_write_A000_BFFF_to_RAM()
+            {
+                var rom = CreateFakeRom();
+                var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._8KB);
+                mbc.SetByte(0x0000, 0xFA);
+
+                var assertion = new MBCAssertion(mbc, rom);
+                assertion.AssertRangeIsReadWrite(0xA000, 0xBFFF);
+            }
+
+            [Fact]
+            public void Should_always_return_zero_when_ram_is_disabled()
+            {
+                var rom = CreateFakeRom();
+                var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._8KB);
+
+                var assertion = new MBCAssertion(mbc, rom);
+                assertion.AssertRangeIsNotMapped(0xA000, 0xBFFF);
+            }
+
+            [Fact]
+            public void Should_not_write_to_ram_when_ram_is_disabled()
+            {
+                var rom = CreateFakeRom();
+                var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._8KB);
+
+                mbc.SetByte(0xA000, 123);
+                mbc.SetByte(0x000, 0xFA);
+
+                Assert.Equal(0, mbc.GetByte(0xA000));
+            }
+
+            [Fact]
+            public void Should_always_return_zero_when_there_is_no_ram()
+            {
+                var rom = CreateFakeRom();
+                var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
+                mbc.SetByte(0x0000, 0xFA);
+
+                var assertion = new MBCAssertion(mbc, rom);
+                assertion.AssertRangeIsNotMapped(0xA000, 0xBFFF);
+            }
+        }
+    }
+
+    public partial class MBC1Tests
     {
         [Theory]
         [PropertyData("SupportedRomConfigurations", PropertyType = typeof(RomConfigurations))]
@@ -15,7 +85,7 @@ namespace Test
         {
             var rom = new byte[kB * 1024];
 
-            Assert.DoesNotThrow(() => new MBC1(rom, romSize));
+            Assert.DoesNotThrow(() => new MBC1(rom, romSize, CartridgeHeader.RamSizeEnum.None));
         }
 
         [Theory]
@@ -24,7 +94,7 @@ namespace Test
         {
             var rom = new byte[kB * 1024 + 1];
 
-            Assert.Throws<InvalidOperationException>(() => new MBC1(rom, romSize));
+            Assert.Throws<InvalidOperationException>(() => new MBC1(rom, romSize, CartridgeHeader.RamSizeEnum.None));
         }
 
         [Theory]
@@ -33,14 +103,14 @@ namespace Test
         {
             var rom = new byte[32 * 1024];
 
-            Assert.Throws<InvalidOperationException>(() => new MBC1(rom, romSize));
+            Assert.Throws<InvalidOperationException>(() => new MBC1(rom, romSize, CartridgeHeader.RamSizeEnum.None));
         }
 
         [Fact]
         public void Should_read_0000_to_3FFF_from_rom()
         {
             var rom = CreateFakeRom();
-            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
+            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
 
             var assertion = new MBCAssertion(mbc, rom);
             assertion.AssertRangeIsMapped(0, 0x3FFF);
@@ -50,27 +120,17 @@ namespace Test
         public void Should_not_persist_writes_to_ROM_bank_0()
         {
             var rom = CreateFakeRom();
-            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
+            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
 
             var assertion = new MBCAssertion(mbc, rom);
             assertion.AssertRangeIsReadOnly(0, 0x3FFF);
         }
 
         [Fact]
-        public void Should_always_return_zero_when_ram_is_disabled()
-        {
-            var rom = CreateFakeRom();
-            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
-
-            var assertion = new MBCAssertion(mbc, rom);
-            assertion.AssertRangeIsNotMapped(0xA000, 0xBFFF);
-        }
-
-        [Fact]
         public void Should_map_selected_rom_bank_to_4000_7FFF()
         {
             var rom = CreateFakeRom();
-            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
+            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
 
             var memoryBank = 15;
             mbc.SetByte(0x2000, (byte)memoryBank);
@@ -84,7 +144,7 @@ namespace Test
         public void Should_only_use_lower_5bits_from_lower_bank_select()
         {
             var rom = CreateFakeRom();
-            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
+            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
 
             var memoryBank = 15 + 224;
             mbc.SetByte(0x2000, (byte)memoryBank);
@@ -98,7 +158,7 @@ namespace Test
         public void Should_use_upper_2_bits_from_upper_bank_select()
         {
             var rom = CreateFakeRom();
-            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
+            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
 
             var memoryBank = 3 + 252;
             mbc.SetByte(0x2000, 0xE1);
@@ -113,7 +173,7 @@ namespace Test
         public void Should_combine_upper_and_lower_bank_select()
         {
             var rom = CreateFakeRom();
-            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
+            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
 
             var memoryBank = 122;
             SelectMemoryBank(mbc, memoryBank);
@@ -134,7 +194,7 @@ namespace Test
             foreach (var memoryBank in memoryBanks)
             {
                 var rom = CreateFakeRom();
-                var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
+                var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
 
                 SelectMemoryBank(mbc, memoryBank);
 
@@ -152,7 +212,7 @@ namespace Test
         public void Should_automatically_select_next_bank_for_special_bank_number(int bankNumber)
         {
             var rom = CreateFakeRom();
-            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB);
+            var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum.None);
 
             SelectMemoryBank(mbc, bankNumber);
 
@@ -167,7 +227,7 @@ namespace Test
             mbc.SetByte(0x4000, (byte)(memoryBank >> 5));
         }
 
-        private byte[] CreateFakeRom()
+        private static byte[] CreateFakeRom()
         {
             var rom = new byte[2048 * 1024];
             var random = new Random();

@@ -32,7 +32,7 @@ namespace Test
             for (int i = startAddress; i < endAddress + 1; i++)
             {
                 var expected = _mbc.GetByte((ushort)i);
-                _mbc.SetByte((ushort) i, (byte) random.Next(0, 255));
+                _mbc.SetByte((ushort)i, (byte)random.Next(0, 255));
                 var actual = _mbc.GetByte((ushort)i);
                 Assert.Equal(expected, actual);
             }
@@ -42,8 +42,21 @@ namespace Test
         {
             for (int i = startAddress; i < endAddress + 1; i++)
             {
+                _mbc.SetByte((ushort)i, 123);
                 var actual = _mbc.GetByte((ushort)i);
                 Assert.Equal(0, actual);
+            }
+        }
+
+        public void AssertRangeIsReadWrite(int startAddress, int endAddress)
+        {
+            var random = new Random();
+            for (int i = startAddress; i < endAddress + 1; i++)
+            {
+                var expected = (byte)random.Next(0, 255);
+                _mbc.SetByte((ushort)i, expected);
+                var actual = _mbc.GetByte((ushort)i);
+                Assert.Equal(expected, actual);
             }
         }
     }

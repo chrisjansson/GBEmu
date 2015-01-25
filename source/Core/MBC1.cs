@@ -4,12 +4,16 @@ namespace Core
 {
     public class MBC1 : IMBC
     {
+        private readonly CartridgeHeader.RamSizeEnum _ramSize;
         private readonly byte[] _rom;
+        private readonly byte[] _ram = new byte[0x2000];
         private byte _lowRomSelect;
         private byte _highRomSelect;
+        private byte _ramEnable;
 
-        public MBC1(byte[] rom, CartridgeHeader.RomSizeEnum romSize)
+        public MBC1(byte[] rom, CartridgeHeader.RomSizeEnum romSize, CartridgeHeader.RamSizeEnum ramSize)
         {
+            _ramSize = ramSize;
             AssertRomSize(rom, romSize);
 
             _rom = rom;
@@ -37,7 +41,11 @@ namespace Core
 
             if (address >= 0xA000 && address < 0xC000)
             {
-                return 0;
+                if (((_ramEnable) != 0x0A) || _ramSize == CartridgeHeader.RamSizeEnum.None)
+                    return 0;
+
+                var ramAddress = address - 0xA000;
+                return _ram[ramAddress];
             }
 
             return _rom[address];
@@ -45,10 +53,26 @@ namespace Core
 
         public void SetByte(ushort address, byte value)
         {
+            if (address < 0x2000)
+            {
+                _ramEnable = (byte) (value & 0x0A);
+            }
+
             if (address == 0x2000)
                 _lowRomSelect = value;
             if (address == 0x4000)
                 _highRomSelect = value;
+
+            if (address >= 0xA000 && address < 0xC000)
+            {
+                if (_ramEnable != 0x0A)
+                {
+                    return;
+                }
+
+                var ramAddress = address - 0xA000;
+                _ram[ramAddress] = value;
+            }
         }
 
         private static void AssertRomSize(byte[] rom, CartridgeHeader.RomSizeEnum romSize)
