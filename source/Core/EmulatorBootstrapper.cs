@@ -25,8 +25,6 @@ namespace Core
                 Timer.Tick();
             }
         }
-
-        public int CyclesLastTick { get; set; }
     }
 
     public class EmulatorBootstrapper
