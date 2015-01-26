@@ -6,14 +6,33 @@ namespace Core
     {
         private readonly CartridgeHeader.RamSizeEnum _ramSize;
         private readonly byte[] _rom;
-        private readonly byte[] _ram = new byte[0x2000];
+        private readonly byte[] _ram;
         private byte _lowRomSelect;
         private byte _highRomSelect;
         private byte _ramEnable;
+        private byte _ramSelect;
 
         public MBC1(byte[] rom, CartridgeHeader.RomSizeEnum romSize, CartridgeHeader.RamSizeEnum ramSize)
         {
             _ramSize = ramSize;
+
+            var ramBytes = 0;
+            switch (ramSize)
+            {
+                case CartridgeHeader.RamSizeEnum._8KB:
+                    ramBytes = 8 * 1024;
+                    break;
+                case CartridgeHeader.RamSizeEnum._2KB:
+                    ramBytes = 2 * 1024;
+                    break;
+                case CartridgeHeader.RamSizeEnum._32KB:
+                    ramBytes = 32 * 1024;
+                    break;
+                default:
+                    ramBytes = 0;
+                    break;
+            }
+            _ram = new byte[ramBytes];
             AssertRomSize(rom, romSize);
 
             _rom = rom;
@@ -44,7 +63,7 @@ namespace Core
                 if (((_ramEnable) != 0x0A) || _ramSize == CartridgeHeader.RamSizeEnum.None)
                     return 0;
 
-                var ramAddress = address - 0xA000;
+                var ramAddress = (address - 0xA000) + _ramSelect * 0x2000;
                 return _ram[ramAddress];
             }
 
@@ -55,13 +74,16 @@ namespace Core
         {
             if (address < 0x2000)
             {
-                _ramEnable = (byte) (value & 0x0A);
+                _ramEnable = (byte)(value & 0x0A);
             }
 
             if (address >= 0x2000 && address < 0x4000)
                 _lowRomSelect = value;
             if (address >= 0x4000 && address < 0x6000)
+            {
                 _highRomSelect = value;
+                _ramSelect = value;
+            }
 
             if (address >= 0xA000 && address < 0xC000)
             {
@@ -70,7 +92,7 @@ namespace Core
                     return;
                 }
 
-                var ramAddress = address - 0xA000;
+                var ramAddress = (address - 0xA000) + 0x2000 * _ramSelect;
                 _ram[ramAddress] = value;
             }
         }
@@ -91,7 +113,7 @@ namespace Core
                 throw new InvalidOperationException();
             if (romSize == CartridgeHeader.RomSizeEnum._2MB && rom.Length != 2048.KB())
                 throw new InvalidOperationException();
-            if(romSize == CartridgeHeader.RomSizeEnum._1_1MB || romSize == CartridgeHeader.RomSizeEnum._1_2MB || romSize == CartridgeHeader.RomSizeEnum._1_5MB || romSize == CartridgeHeader.RomSizeEnum._4MB)
+            if (romSize == CartridgeHeader.RomSizeEnum._1_1MB || romSize == CartridgeHeader.RomSizeEnum._1_2MB || romSize == CartridgeHeader.RomSizeEnum._1_5MB || romSize == CartridgeHeader.RomSizeEnum._4MB)
                 throw new InvalidOperationException();
         }
     }

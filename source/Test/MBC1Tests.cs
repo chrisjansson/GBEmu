@@ -11,6 +11,60 @@ namespace Test
     {
         public class WhenAccessingRam
         {
+            public class WhenSwitchingRamBankInRamMode
+            {
+                [Fact]
+                public void Selects_active_ram_bank_from_4000_to_5FFF()
+                {
+                    var rom = CreateFakeRom();
+                    var ramContent = CreateFakeRamContent();
+                    var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._32KB);
+                    mbc.SetByte(0x0000, 0xA);
+
+                    WriteToRamBank(mbc, 0, ramContent.Bank0);
+                    WriteToRamBank(mbc, 1, ramContent.Bank1);
+                    WriteToRamBank(mbc, 2, ramContent.Bank2);
+                    WriteToRamBank(mbc, 3, ramContent.Bank3);
+
+                    var assertion = new MBCAssertion(mbc, ramContent.Bank0);
+
+                    mbc.SetByte(0x4000, 0);
+                    assertion.AssertRangeIsMapped(0xA000, 0xBFFF, romOffset: 0);
+                    mbc.SetByte(0x4000, 1);
+                    assertion.AssertRangeIsMapped(0xA000, 0xBFFF, romOffset: 0x2000);
+                }
+
+                private void WriteToRamBank(MBC1 mbc, int ramBank, byte[] ram, int sourceOffset)
+                {
+                    mbc.SetByte(0x4000, (byte)ramBank);
+
+                    for (int i = 0; i < 0x2000; i++)
+                    {
+                        mbc.SetByte((ushort)(0xA000 + i), ram[i + sourceOffset]);
+                    }
+                }
+
+                private ExpectedRamContent CreateFakeRamContent()
+                {
+                    var fakeRom = CreateFakeRom();
+                    return new ExpectedRamContent
+                    {
+                        Bank0 = fakeRom.Take(0x2000).ToArray(),
+                        Bank1 = fakeRom.Skip(0x2000).Take(0x2000).ToArray(),
+                        Bank2 = fakeRom.Skip(0x4000).Take(0x6000).ToArray(),
+                        Bank3 = fakeRom.Skip(0x6000).Take(0x8000).ToArray(),
+                    };
+                }
+
+                private class ExpectedRamContent
+                {
+                    public byte[] Bank0 { get; set; }
+                    public byte[] Bank1 { get; set; }
+                    public byte[] Bank2 { get; set; }
+                    public byte[] Bank3 { get; set; }
+                }
+            }
+
             [Fact]
             public void Should_read_and_write_A000_BFFF_to_RAM()
             {
