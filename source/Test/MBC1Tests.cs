@@ -9,28 +9,8 @@ namespace Test
 {
     public partial class MBC1Tests
     {
-        public class MBC1_with_ram
+        public class WhenAccessingRam
         {
-            public class RamConfigurations
-            {
-                public IEnumerable<object[]> SupportedRamConfigurations
-                {
-                    get
-                    {
-                        return new[]
-                        {
-                            new object[]
-                            {
-                                0, CartridgeHeader.RamSizeEnum.None,
-                                2, CartridgeHeader.RamSizeEnum._2KB,
-                                8, CartridgeHeader.RamSizeEnum._8KB,
-                                32, CartridgeHeader.RamSizeEnum._32KB
-                            }
-                        };
-                    }
-                }
-            }
-
             [Fact]
             public void Should_read_and_write_A000_BFFF_to_RAM()
             {
