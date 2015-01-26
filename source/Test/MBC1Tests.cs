@@ -21,47 +21,44 @@ namespace Test
                     var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._32KB);
                     mbc.SetByte(0x0000, 0xA);
 
-                    WriteToRamBank(mbc, 0, ramContent.Bank0);
-                    WriteToRamBank(mbc, 1, ramContent.Bank1);
-                    WriteToRamBank(mbc, 2, ramContent.Bank2);
-                    WriteToRamBank(mbc, 3, ramContent.Bank3);
+                    WriteToRamBank(mbc, 0, ramContent);
+                    WriteToRamBank(mbc, 1, ramContent);
+                    WriteToRamBank(mbc, 2, ramContent);
+                    WriteToRamBank(mbc, 3, ramContent);
 
-                    var assertion = new MBCAssertion(mbc, ramContent.Bank0);
-
-                    mbc.SetByte(0x4000, 0);
-                    assertion.AssertRangeIsMapped(0xA000, 0xBFFF, romOffset: 0);
-                    mbc.SetByte(0x4000, 1);
-                    assertion.AssertRangeIsMapped(0xA000, 0xBFFF, romOffset: 0x2000);
+                    AssertBankIsMapped(mbc, 0, ramContent);
+                    AssertBankIsMapped(mbc, 1, ramContent);
+                    AssertBankIsMapped(mbc, 2, ramContent);
+                    AssertBankIsMapped(mbc, 3, ramContent);
                 }
 
-                private void WriteToRamBank(MBC1 mbc, int ramBank, byte[] ram, int sourceOffset)
+                private static void AssertBankIsMapped(MBC1 mbc, int bank, byte[][] ramContent)
+                {
+                    var assertion = new MBCAssertion(mbc, ramContent[bank]);
+                    mbc.SetByte(0x4000, (byte) bank);
+                    assertion.AssertRangeIsMapped(0xA000, 0xBFFF);
+                }
+
+                private void WriteToRamBank(MBC1 mbc, int ramBank, byte[][] ram)
                 {
                     mbc.SetByte(0x4000, (byte)ramBank);
 
                     for (int i = 0; i < 0x2000; i++)
                     {
-                        mbc.SetByte((ushort)(0xA000 + i), ram[i + sourceOffset]);
+                        mbc.SetByte((ushort)(0xA000 + i), ram[ramBank][i]);
                     }
                 }
 
-                private ExpectedRamContent CreateFakeRamContent()
+                private byte[][] CreateFakeRamContent()
                 {
                     var fakeRom = CreateFakeRom();
-                    return new ExpectedRamContent
+                    return new[]
                     {
-                        Bank0 = fakeRom.Take(0x2000).ToArray(),
-                        Bank1 = fakeRom.Skip(0x2000).Take(0x2000).ToArray(),
-                        Bank2 = fakeRom.Skip(0x4000).Take(0x6000).ToArray(),
-                        Bank3 = fakeRom.Skip(0x6000).Take(0x8000).ToArray(),
+                        fakeRom.Take(0x2000).ToArray(),
+                        fakeRom.Skip(0x2000).Take(0x2000).ToArray(),
+                        fakeRom.Skip(0x4000).Take(0x6000).ToArray(),
+                        fakeRom.Skip(0x6000).Take(0x8000).ToArray(),
                     };
-                }
-
-                private class ExpectedRamContent
-                {
-                    public byte[] Bank0 { get; set; }
-                    public byte[] Bank1 { get; set; }
-                    public byte[] Bank2 { get; set; }
-                    public byte[] Bank3 { get; set; }
                 }
             }
 
