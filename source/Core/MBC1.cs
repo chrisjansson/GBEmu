@@ -11,6 +11,7 @@ namespace Core
         private byte _highRomSelect;
         private byte _ramEnable;
         private byte _ramSelect;
+        private byte _romRamModeSelect;
 
         public MBC1(byte[] rom, CartridgeHeader.RomSizeEnum romSize, CartridgeHeader.RamSizeEnum ramSize)
         {
@@ -49,7 +50,7 @@ namespace Core
             if (address >= 0x4000 && address < 0x8000)
             {
                 var lowerSelect = (_lowRomSelect & 0x1F);
-                var upperSelect = (_highRomSelect & 0x03);
+                var upperSelect = _romRamModeSelect == 0 ? (_highRomSelect & 0x03) : 0;
                 var bank = (upperSelect << 5) | lowerSelect;
                 if (bank == 0 || bank == 0x20 || bank == 0x40 || bank == 0x60)
                     bank++;
@@ -63,7 +64,8 @@ namespace Core
                 if (((_ramEnable) != 0x0A) || _ramSize == CartridgeHeader.RamSizeEnum.None)
                     return 0;
 
-                var ramAddress = (address - 0xA000) + _ramSelect * 0x2000;
+                var ramBank = _romRamModeSelect == 0 ? 0 : _ramSelect;
+                var ramAddress = (address - 0xA000) + ramBank * 0x2000;
                 return _ram[ramAddress];
             }
 
@@ -84,6 +86,8 @@ namespace Core
                 _highRomSelect = value;
                 _ramSelect = value;
             }
+            if (address >= 0x6000 && address < 0x8000)
+                _romRamModeSelect = (byte)(value & 0x01);
 
             if (address >= 0xA000 && address < 0xC000)
             {
@@ -92,7 +96,8 @@ namespace Core
                     return;
                 }
 
-                var ramAddress = (address - 0xA000) + 0x2000 * _ramSelect;
+                var ramBank = _romRamModeSelect == 0 ? 0 : _ramSelect;
+                var ramAddress = (address - 0xA000) + 0x2000 * ramBank;
                 _ram[ramAddress] = value;
             }
         }

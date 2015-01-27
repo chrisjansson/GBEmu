@@ -20,6 +20,7 @@ namespace Test
                     var ramContent = CreateFakeRamContent();
                     var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._32KB);
                     mbc.SetByte(0x0000, 0xA);
+                    mbc.SetByte(0x6000, 1);
 
                     WriteToRamBank(mbc, 0, ramContent);
                     WriteToRamBank(mbc, 1, ramContent);
@@ -32,33 +33,74 @@ namespace Test
                     AssertBankContains(mbc, 3, ramContent);
                 }
 
-                private static void AssertBankContains(MBC1 mbc, int bank, byte[][] ramContent)
+                [Fact]
+                public void Only_uses_lower_rom_bank_selection_when_ram_mode_is_selected()
                 {
-                    var assertion = new MBCAssertion(mbc, ramContent[bank]);
-                    mbc.SetByte(0x4000, (byte) bank);
+                    var rom = CreateFakeRom();
+                    var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._32KB);
+                    mbc.SetByte(0x0000, 0xA);
+                    mbc.SetByte(0x6000, 1);
+
+                    mbc.SetByte(0x2000, 0xFF); //select bank 0x1F
+                    mbc.SetByte(0x4000, 0x03); //selects ram bank in this mode
+
+                    var assertion = new MBCAssertion(mbc, rom);
+                    assertion.AssertRangeIsMapped(0x4000, 0x7FFF, 0x1F * 0x4000);
+                }
+            }
+
+            public class WhenSwitchingRamBankInRomMode
+            {
+                [Fact]
+                public void Always_read_from_ram_bank_0_when_rom_mode_is_selected()
+                {
+                    var rom = CreateFakeRom();
+                    var ramContent = CreateFakeRamContent();
+                    var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._32KB);
+                    mbc.SetByte(0x0000, 0xA);
+                    mbc.SetByte(0x6000, 1);
+                    WriteToRamBank(mbc, 0, ramContent);
+                    WriteToRamBank(mbc, 1, ramContent);
+
+                    mbc.SetByte(0x4000, 1);
+                    mbc.SetByte(0x6000, 0);
+
+                    var assertion = new MBCAssertion(mbc, ramContent[0]);
                     assertion.AssertRangeIsMapped(0xA000, 0xBFFF);
                 }
 
-                private void WriteToRamBank(MBC1 mbc, int ramBank, byte[][] ram)
+                [Fact]
+                public void Always_write_to_ram_bank_0_when_rom_mode_is_selected()
                 {
-                    mbc.SetByte(0x4000, (byte)ramBank);
+                    var rom = CreateFakeRom();
+                    var ramContent = CreateFakeRamContent();
+                    var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._32KB);
+                    mbc.SetByte(0x0000, 0xA);
+                    mbc.SetByte(0x6000, 0);
+                    WriteToRamBank(mbc, 1, ramContent);
 
-                    for (int i = 0; i < 0x2000; i++)
-                    {
-                        mbc.SetByte((ushort)(0xA000 + i), ram[ramBank][i]);
-                    }
+                    mbc.SetByte(0x6000, 1);
+
+                    mbc.SetByte(0x4000, 0);
+                    var assertion = new MBCAssertion(mbc, ramContent[1]);
+                    assertion.AssertRangeIsMapped(0xA000, 0xBFFF);
                 }
 
-                private byte[][] CreateFakeRamContent()
+                [Fact]
+                public void Bank_1_is_empty_after_writing_to_bank_1_in_rom_mode()
                 {
-                    var fakeRom = CreateFakeRom();
-                    return new[]
-                    {
-                        fakeRom.Take(0x2000).ToArray(),
-                        fakeRom.Skip(0x2000).Take(0x2000).ToArray(),
-                        fakeRom.Skip(0x4000).Take(0x6000).ToArray(),
-                        fakeRom.Skip(0x6000).Take(0x8000).ToArray(),
-                    };
+                    var rom = CreateFakeRom();
+                    var ramContent = CreateFakeRamContent();
+                    var mbc = new MBC1(rom, CartridgeHeader.RomSizeEnum._2MB, CartridgeHeader.RamSizeEnum._32KB);
+                    mbc.SetByte(0x0000, 0xA);
+                    mbc.SetByte(0x6000, 0);
+                    WriteToRamBank(mbc, 1, ramContent);
+
+                    mbc.SetByte(0x6000, 1);
+
+                    mbc.SetByte(0x4000, 1);
+                    var assertion = new MBCAssertion(mbc, new byte[0x2000]);
+                    assertion.AssertRangeIsMapped(0xA000, 0xBFFF);
                 }
             }
 
@@ -104,6 +146,35 @@ namespace Test
 
                 var assertion = new MBCAssertion(mbc, rom);
                 assertion.AssertRangeIsNotMapped(0xA000, 0xBFFF);
+            }
+
+            private static void AssertBankContains(MBC1 mbc, int bank, byte[][] ramContent)
+            {
+                var assertion = new MBCAssertion(mbc, ramContent[bank]);
+                mbc.SetByte(0x4000, (byte)bank);
+                assertion.AssertRangeIsMapped(0xA000, 0xBFFF);
+            }
+
+            private static void WriteToRamBank(MBC1 mbc, int ramBank, byte[][] ram)
+            {
+                mbc.SetByte(0x4000, (byte)ramBank);
+
+                for (int i = 0; i < 0x2000; i++)
+                {
+                    mbc.SetByte((ushort)(0xA000 + i), ram[ramBank][i]);
+                }
+            }
+
+            private static byte[][] CreateFakeRamContent()
+            {
+                var fakeRom = CreateFakeRom();
+                return new[]
+                    {
+                        fakeRom.Take(0x2000).ToArray(),
+                        fakeRom.Skip(0x2000).Take(0x2000).ToArray(),
+                        fakeRom.Skip(0x4000).Take(0x6000).ToArray(),
+                        fakeRom.Skip(0x6000).Take(0x8000).ToArray(),
+                    };
             }
         }
     }
