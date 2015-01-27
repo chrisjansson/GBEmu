@@ -22,7 +22,7 @@ namespace Gui
                 Left = scanCode == SDL.SDL_Scancode.SDL_SCANCODE_LEFT,
                 Right = scanCode == SDL.SDL_Scancode.SDL_SCANCODE_RIGHT,
                 Up = scanCode == SDL.SDL_Scancode.SDL_SCANCODE_UP,
-                Down = scanCode == SDL.SDL_Scancode.SDL_SCANCODE_UP,
+                Down = scanCode == SDL.SDL_Scancode.SDL_SCANCODE_DOWN,
                 A = scanCode == SDL.SDL_Scancode.SDL_SCANCODE_X,
                 B = scanCode == SDL.SDL_Scancode.SDL_SCANCODE_Z,
                 Start = scanCode == SDL.SDL_Scancode.SDL_SCANCODE_RETURN,
