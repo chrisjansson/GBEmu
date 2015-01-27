@@ -16,24 +16,7 @@ namespace Core
         public MBC1(byte[] rom, CartridgeHeader.RomSizeEnum romSize, CartridgeHeader.RamSizeEnum ramSize)
         {
             _ramSize = ramSize;
-
-            var ramBytes = 0;
-            switch (ramSize)
-            {
-                case CartridgeHeader.RamSizeEnum._8KB:
-                    ramBytes = 8 * 1024;
-                    break;
-                case CartridgeHeader.RamSizeEnum._2KB:
-                    ramBytes = 2 * 1024;
-                    break;
-                case CartridgeHeader.RamSizeEnum._32KB:
-                    ramBytes = 32 * 1024;
-                    break;
-                default:
-                    ramBytes = 0;
-                    break;
-            }
-            _ram = new byte[ramBytes];
+            _ram = new byte[ramSize.ToKB()];
             AssertRomSize(rom, romSize);
 
             _rom = rom;
