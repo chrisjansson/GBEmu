@@ -4,8 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Core;
-using SDL2;
-using Timer = Core.Timer;
+using SDL2.SDL;
 
 namespace Gui
 {
@@ -13,10 +12,10 @@ namespace Gui
     {
         static void Main(string[] args)
         {
-            SDL.SDL_Init(SDL.SDL_INIT_VIDEO);
+            SDL_Init(SDL_INIT_VIDEO);
 
-            var window = SDL.SDL_CreateWindow("An SDL Window", 100, 100, 640, 576, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
-            var renderer = SDL.SDL_CreateRenderer(window, -1, 0);
+            var window = SDL_CreateWindow("An SDL Window", 100, 100, 640, 576, SDL_WindowFlags.SDL_WINDOW_SHOWN);
+            var renderer = SDL_CreateRenderer(window, -1, 0);
 
             var emulatorBootstrapper = new EmulatorBootstrapper();
             var romBytes = File.ReadAllBytes(args[0]);
@@ -41,9 +40,9 @@ namespace Gui
                 throw;
             }
 
-            SDL.SDL_DestroyRenderer(renderer);
-            SDL.SDL_DestroyWindow(window);
-            SDL.SDL_Quit();
+            SDL_DestroyRenderer(renderer);
+            SDL_DestroyWindow(window);
+            SDL_Quit();
         }
 
         private static void Emulate(IntPtr renderer, Joypad joypad)
@@ -78,19 +77,19 @@ namespace Gui
                     cyclesUntilNextFrame += cyclesPerFrame;
                 }
 
-                SDL.SDL_Event newEvent;
-                SDL.SDL_PollEvent(out newEvent);
+                SDL_Event newEvent;
+                SDL_PollEvent(out newEvent);
 
                 switch (newEvent.type)
                 {
-                    case SDL.SDL_EventType.SDL_QUIT:
+                    case SDL_EventType.SDL_QUIT:
                         running = false;
                         break;
-                    case SDL.SDL_EventType.SDL_KEYUP:
+                    case SDL_EventType.SDL_KEYUP:
                         Up(joypad, KeyState.FromKeyEvent(newEvent.key));
                         break;
-                    case SDL.SDL_EventType.SDL_KEYDOWN:
-                        running = newEvent.key.keysym.scancode != SDL.SDL_Scancode.SDL_SCANCODE_ESCAPE;
+                    case SDL_EventType.SDL_KEYDOWN:
+                        running = newEvent.key.keysym.scancode != SDL_Scancode.SDL_SCANCODE_ESCAPE;
                         Down(joypad, KeyState.FromKeyEvent(newEvent.key));
                         break;
                 }
@@ -126,12 +125,12 @@ namespace Gui
         private static void Draw(IntPtr renderer)
         {
             var surface = CreateSurface();
-            var texture = SDL.SDL_CreateTextureFromSurface(renderer, surface);
+            var texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-            SDL.SDL_RenderCopy(renderer, texture, (IntPtr)null, (IntPtr)null);
-            SDL.SDL_RenderPresent(renderer);
-            SDL.SDL_DestroyTexture(texture);
-            SDL.SDL_FreeSurface(surface);
+            SDL_RenderCopy(renderer, texture, (IntPtr)null, (IntPtr)null);
+            SDL_RenderPresent(renderer);
+            SDL_DestroyTexture(texture);
+            SDL_FreeSurface(surface);
         }
 
         private static IntPtr CreateSurface()
@@ -149,7 +148,7 @@ namespace Gui
             var gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
             var address = gcHandle.AddrOfPinnedObject();
 
-            var surface = SDL.SDL_CreateRGBSurfaceFrom(address, 160, 144, 32, 160 * 4, 0, 0, 0, 0x000000FF);
+            var surface = SDL_CreateRGBSurfaceFrom(address, 160, 144, 32, 160 * 4, 0, 0, 0, 0x000000FF);
             gcHandle.Free();
             return surface;
         }
