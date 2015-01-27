@@ -26,13 +26,13 @@ namespace Test
                     WriteToRamBank(mbc, 2, ramContent);
                     WriteToRamBank(mbc, 3, ramContent);
 
-                    AssertBankIsMapped(mbc, 0, ramContent);
-                    AssertBankIsMapped(mbc, 1, ramContent);
-                    AssertBankIsMapped(mbc, 2, ramContent);
-                    AssertBankIsMapped(mbc, 3, ramContent);
+                    AssertBankContains(mbc, 0, ramContent);
+                    AssertBankContains(mbc, 1, ramContent);
+                    AssertBankContains(mbc, 2, ramContent);
+                    AssertBankContains(mbc, 3, ramContent);
                 }
 
-                private static void AssertBankIsMapped(MBC1 mbc, int bank, byte[][] ramContent)
+                private static void AssertBankContains(MBC1 mbc, int bank, byte[][] ramContent)
                 {
                     var assertion = new MBCAssertion(mbc, ramContent[bank]);
                     mbc.SetByte(0x4000, (byte) bank);
