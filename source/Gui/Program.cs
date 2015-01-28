@@ -135,22 +135,43 @@ namespace Gui
 
         private static IntPtr CreateSurface()
         {
-            var buffer = new uint[160 * 144];
-            for (var x = 0; x < 160; x++)
+            var screenWidth = 160;
+            var screenHeight = 144;
+
+            var frameBuffer = _emulator.DisplayDataTransferService.FrameBuffer;
+            var bitmap = ConvertFramebufferToBitmap(screenWidth, screenHeight, frameBuffer);
+            var gcHandle = GCHandle.Alloc(bitmap, GCHandleType.Pinned);
+            var address = gcHandle.AddrOfPinnedObject();
+
+            var surface = SDL.SDL_CreateRGBSurfaceFrom(
+                address,
+                screenWidth,
+                screenHeight,
+                8 * sizeof(uint),
+                screenWidth * sizeof(uint),
+                Rmask: 0,
+                Gmask: 0,
+                Bmask: 0,
+                Amask: 0x000000FF);
+            gcHandle.Free();
+
+            return surface;
+        }
+
+        private static uint[] ConvertFramebufferToBitmap(int width, int height, byte[] framebuffer)
+        {
+            var buffer = new uint[width * height];
+
+            for (var x = 0; x < width; x++)
             {
-                for (var y = 0; y < 144; y++)
+                for (var y = 0; y < height; y++)
                 {
-                    var color = _emulator.DisplayDataTransferService.FrameBuffer[y * 160 + x];
-                    buffer[y * 160 + x] = GetColor(color);
+                    var color = framebuffer[y * width + x];
+                    buffer[y * width + x] = GetColor(color);
                 }
             }
 
-            var gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-            var address = gcHandle.AddrOfPinnedObject();
-
-            var surface = SDL.SDL_CreateRGBSurfaceFrom(address, 160, 144, 32, 160 * 4, 0, 0, 0, 0x000000FF);
-            gcHandle.Free();
-            return surface;
+            return buffer;
         }
 
         private static uint GetColor(byte color)
