@@ -61,6 +61,7 @@
     <Compile Include="Cpu.cs" />
     <Compile Include="Cpu_cb.cs" />
     <Compile Include="Display.cs" />
+    <Compile Include="Emulator.cs" />
     <Compile Include="EmulatorBootstrapper.cs" />
     <Compile Include="IDisplay.cs" />
     <Compile Include="IDisplayDataTransferService.cs" />
