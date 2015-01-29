@@ -12,7 +12,7 @@ namespace Test
         public TestBase()
         {
             Fixture = new Fixture();
-            FakeMmu = new Core.MMU(null);
+            FakeMmu = new Core.MMU(new ReadWriteMBC(new byte[32.KB()]));
             Sut = new Cpu(FakeMmu);
         }
     }
