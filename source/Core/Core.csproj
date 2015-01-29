@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CartridgeHeaderParser.cs" />
+    <Compile Include="CartridgeLoader.cs" />
     <Compile Include="Cpu.cs" />
     <Compile Include="Cpu_cb.cs" />
     <Compile Include="Display.cs" />
