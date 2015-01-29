@@ -124,7 +124,7 @@ namespace Gui
         private static Emulator _emulator;
         private static void Draw(IntPtr renderer)
         {
-            var surface = CreateSurface();
+            var surface = CreateSurface(_emulator.DisplayDataTransferService.FrameBuffer);
             var texture = SDL.SDL_CreateTextureFromSurface(renderer, surface);
 
             SDL.SDL_RenderCopy(renderer, texture, (IntPtr)null, (IntPtr)null);
@@ -133,12 +133,11 @@ namespace Gui
             SDL.SDL_FreeSurface(surface);
         }
 
-        private static IntPtr CreateSurface()
+        private static IntPtr CreateSurface(byte[] frameBuffer)
         {
             var screenWidth = 160;
             var screenHeight = 144;
 
-            var frameBuffer = _emulator.DisplayDataTransferService.FrameBuffer;
             var bitmap = ConvertFramebufferToBitmap(screenWidth, screenHeight, frameBuffer);
             var gcHandle = GCHandle.Alloc(bitmap, GCHandleType.Pinned);
             var address = gcHandle.AddrOfPinnedObject();
