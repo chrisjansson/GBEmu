@@ -12,11 +12,14 @@ namespace Core
 
             switch (header.MBC)
             {
+                case CartridgeHeader.CartridgeTypeEnum.MBC1:
+                case CartridgeHeader.CartridgeTypeEnum.MBC1RAM:
                 case CartridgeHeader.CartridgeTypeEnum.MBC1RAMBATTERY:
                     return new MBC1(rom, header.ROMSize, header.RAMSize);
+                default:
+                    throw new NotSupportedException();
             }
 
-            return null;
         }
     }
 }

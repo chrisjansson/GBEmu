@@ -17,6 +17,39 @@ namespace Test
 
         public class WhenLoadingAnMBC1Cartridge
         {
+            public class WhenLoadingDifferentConfigurationsOfMBC1Cartridges
+            {
+                [Fact]
+                public void Loads_MBC1_cartridge()
+                {
+                    AssertThatMBC1VariantIsLoadedAsMBC1(CartridgeHeader.CartridgeTypeEnum.MBC1);
+                }
+
+                [Fact]
+                public void Loads_MBC1_cartridge_with_ram()
+                {
+                    AssertThatMBC1VariantIsLoadedAsMBC1(CartridgeHeader.CartridgeTypeEnum.MBC1RAM);
+                }
+
+                [Fact]
+                public void Loads_MBC1_cartridge_with_ram_and_battery()
+                {
+                    AssertThatMBC1VariantIsLoadedAsMBC1(CartridgeHeader.CartridgeTypeEnum.MBC1RAMBATTERY);
+                }
+
+                private static void AssertThatMBC1VariantIsLoadedAsMBC1(CartridgeHeader.CartridgeTypeEnum cartridgeTypeEnum)
+                {
+                    var rom = CreateFakeRom(
+                        CartridgeHeader.RomSizeEnum._2MB,
+                        CartridgeHeader.RamSizeEnum.None,
+                        cartridgeTypeEnum);
+
+                    var mbc = LoadCartridge(rom);
+
+                    Assert.IsType<MBC1>(mbc);
+                }
+            }
+
             public class WhenAccessingRam
             {
                 public class WhenSwitchingRamBankInRamMode
@@ -371,14 +404,17 @@ namespace Test
                 }
             }
 
-            private static byte[] CreateFakeRom(CartridgeHeader.RomSizeEnum romSize, CartridgeHeader.RamSizeEnum ramSize)
+            private static byte[] CreateFakeRom(
+                CartridgeHeader.RomSizeEnum romSize,
+                CartridgeHeader.RamSizeEnum ramSize,
+                CartridgeHeader.CartridgeTypeEnum cartridgeType = CartridgeHeader.CartridgeTypeEnum.MBC1RAMBATTERY)
             {
                 var rom = new byte[2048 * 1024];
                 var random = new Random();
                 random.NextBytes(rom);
 
                 var cartridgeTypeOffset = 0x147;
-                rom[cartridgeTypeOffset] = (byte)CartridgeHeader.CartridgeTypeEnum.MBC1RAMBATTERY;
+                rom[cartridgeTypeOffset] = (byte)cartridgeType;
 
                 var romSizeOffset = 0x148;
                 rom[romSizeOffset] = (byte)romSize;
