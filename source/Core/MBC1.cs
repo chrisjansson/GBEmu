@@ -74,7 +74,7 @@ namespace Core
 
             if (address >= 0xA000 && address < 0xC000)
             {
-                if (_ramEnable != 0x0A)
+                if (_ramEnable != 0x0A || _ramSize == CartridgeHeader.RamSizeEnum.None)
                 {
                     return;
                 }
