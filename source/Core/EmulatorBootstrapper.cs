@@ -6,11 +6,7 @@ namespace Core
     {
         public Emulator LoadWithRom(byte[] bios, byte[] rom)
         {
-            var headerBytes = new byte[0x4F];
-            Array.Copy(rom, 0x100, headerBytes, 0, headerBytes.Length);
-            var header = new CartridgeHeaderParser().Parse(headerBytes);
-            var mbc = SelectMBC(header, rom);
-
+            var mbc = new CartridgeLoader().Load(rom);
             var innerMmu = new MMU(mbc);
             var mmu = new MmuWithBootRom(bios, innerMmu);
             var joyPad = new Joypad(mmu);
@@ -39,10 +35,7 @@ namespace Core
         {
             const int programCounterAfterInitialization = 0x100;
 
-            var headerBytes = new byte[0x4F];
-            Array.Copy(rom, 0x100, headerBytes, 0, headerBytes.Length);
-            var header = new CartridgeHeaderParser().Parse(headerBytes);
-            var mbc = SelectMBC(header, rom);
+            var mbc = new CartridgeLoader().Load(rom);
 
             var mmu = new MMU(mbc);
             var joyPad = new Joypad(mmu);
@@ -96,21 +89,6 @@ namespace Core
                 DisplayDataTransferService = displayDataTransferService,
                 Joypad = joyPad,
             };
-        }
-
-        private IMBC SelectMBC(CartridgeHeader header, byte[] rom)
-        {
-            switch (header.MBC)
-            {
-                case CartridgeHeader.CartridgeTypeEnum.None:
-                    return new NoMBC(rom);
-                case CartridgeHeader.CartridgeTypeEnum.MBC1:
-                    return new MBC1(rom, header.ROMSize, header.RAMSize);
-                case CartridgeHeader.CartridgeTypeEnum.MBC1RAMBATTERY:
-                    return new MBC1(rom, header.ROMSize, header.RAMSize);
-                default:
-                    throw new NotSupportedException();
-            }
         }
     }
 }
