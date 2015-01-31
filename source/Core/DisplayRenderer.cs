@@ -102,7 +102,7 @@ namespace Core
                         var tile = tileDataSelect == 0x8000 ? _tiles8000[tileNumberData] : _tiles8800[tileIndex];
 
                         var color = tile.Pixels[i % TileWidth + (windowLine % TileHeight) * TileWidth];
-                        FrameBuffer[displayX + line * WindowWidth] = new Pixel(color, DisplayShades.White);
+                        FrameBuffer[displayX + line * WindowWidth] = new Pixel(color, shades[color]);
                     }
                 }
             }

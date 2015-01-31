@@ -166,24 +166,24 @@ namespace Gui
                 for (var y = 0; y < height; y++)
                 {
                     var color = framebuffer[y * width + x];
-                    buffer[y * width + x] = GetColor(color.Color);
+                    buffer[y * width + x] = GetColor(color.Shade);
                 }
             }
 
             return buffer;
         }
 
-        private static uint GetColor(byte color)
+        private static uint GetColor(DisplayShades color)
         {
             switch (color)
             {
-                case 0:
+                case DisplayShades.White:
                     return 0xFFFFFFFF;
-                case 1:
+                case DisplayShades.LightGray:
                     return 0xD3D3D3FF;
-                case 2:
+                case DisplayShades.DarkGray:
                     return 0xA9A9A9FF;
-                case 3:
+                case DisplayShades.Black:
                     return 0;
                 default:
                     throw new NotImplementedException();

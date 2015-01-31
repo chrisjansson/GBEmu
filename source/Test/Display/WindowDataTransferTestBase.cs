@@ -10,6 +10,7 @@ namespace Test.Display
         {
             _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x20;
             _fakeMmu.Memory[RegisterAddresses.WX] = 0x07;
+            _fakeMmu.Memory[RegisterAddresses.BGP] = 0xB4;
         }
 
         [Fact]
@@ -24,7 +25,7 @@ namespace Test.Display
             _sut.TransferScanLine(0);
 
             var line = GetLine(0);
-            AssertLine(line, Enumerable.Repeat((byte)0, 16).ToArray());
+            AssertLineIsEmpty(line);
         }
 
         [Fact]
