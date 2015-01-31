@@ -10,4 +10,12 @@ namespace Core
         byte DMA { get; set; }
         byte LYC { get; set; }
     }
+
+    public enum DisplayShades
+    {
+        White = 0,
+        LightGray = 1,
+        DarkGray = 2,
+        Black = 3
+    }
 }
