@@ -2,6 +2,18 @@
 
 namespace Core
 {
+    public struct Pixel
+    {
+        public Pixel(byte color, DisplayShades shade)
+        {
+            Color = color;
+            Shade = shade;
+        }
+
+        public readonly byte Color;
+        public readonly DisplayShades Shade;
+    }
+
     public class DisplayRenderer : IDisplayRenderer
     {
         public const int WindowWidth = 160;
@@ -14,7 +26,7 @@ namespace Core
         private readonly IMmu _mmu;
         private readonly ISpriteRenderer _spriteRenderer;
 
-        public readonly byte[] FrameBuffer = new byte[WindowWidth * WindowHeight];
+        public readonly Pixel[] FrameBuffer = new Pixel[WindowWidth * WindowHeight];
         private readonly byte[] _tileData = new byte[NumberOfTiles * TileSize];
         private readonly Tile[] _tiles8000 = new Tile[NumberOfTiles];
         private readonly Tile[] _tiles8800 = new Tile[NumberOfTiles];
@@ -38,6 +50,15 @@ namespace Core
             var renderBackground = (lcdc & 0x01) == 0x01;
             var renderWindow = (lcdc & 0x20) == 0x20;
 
+            var bgp = _mmu.GetByte(RegisterAddresses.BGP);
+            var shades = new DisplayShades[]
+            {
+                (DisplayShades) (bgp & 0x3),
+                (DisplayShades) ((bgp >> 2) & 0x3),
+                (DisplayShades) ((bgp >> 4) & 0x3),
+                (DisplayShades) ((bgp >> 6) & 0x3),
+            };
+
             if (renderBackground)
             {
                 var scrollX = _mmu.GetByte(RegisterAddresses.ScrollX);
@@ -57,7 +78,7 @@ namespace Core
                     var y = backgroundY % TileHeight;
 
                     var color = tile.Pixels[x + 8 * y];
-                    FrameBuffer[line * WindowWidth + i] = color;
+                    FrameBuffer[line * WindowWidth + i] = new Pixel(color, shades[color]);
                 }
             }
 
@@ -81,12 +102,12 @@ namespace Core
                         var tile = tileDataSelect == 0x8000 ? _tiles8000[tileNumberData] : _tiles8800[tileIndex];
 
                         var color = tile.Pixels[i % TileWidth + (windowLine % TileHeight) * TileWidth];
-                        FrameBuffer[displayX + line * WindowWidth] = color;
+                        FrameBuffer[displayX + line * WindowWidth] = new Pixel(color, DisplayShades.White);
                     }
                 }
             }
 
-            _spriteRenderer.Render(line, _tiles8000, FrameBuffer);
+            //_spriteRenderer.Render(line, _tiles8000, FrameBuffer);
         }
 
         public void FinishFrame()

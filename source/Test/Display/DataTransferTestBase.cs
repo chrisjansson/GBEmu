@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using Core;
 using Xunit;
 
@@ -67,28 +67,62 @@ namespace Test.Display
         protected abstract void InsertTile(byte tileNumber, byte[] tileData);
         protected abstract void SetBlockTile(int block, byte tile);
 
-        protected void AssertLine(byte[] line, params byte[] colors)
+        protected void AssertLine(Pixel[] actualPixels, params byte[][] colors)
         {
-            for (var i = 0; i < colors.Length; i++)
-            {
-                Assert.Equal(colors[i], line[i]);
-            }
+            var expected = colors
+                .SelectMany(x => x)
+                .ToArray();
+
+            AssertLine(actualPixels, expected);
         }
 
-        protected void AssertLine(byte[] line, params byte[][] colors)
+        protected void AssertLine(Pixel[] actual, params byte[] colors)
         {
-            for (var i = 0; i < colors.Length; i++)
-            {
-                for (var j = 0; j < colors[i].Length; j++)
-                {
-                    Assert.Equal(colors[i][j], line[j + i * 8]);
-                }
-            }
+            var shades = ExtractShades();
+
+            var expectedShades = colors
+                .Select(x => shades[x])
+                .ToArray();
+
+            var actualColors = actual
+                .Select(x => x.Color)
+                .Take(colors.Length)
+                .ToArray();
+
+            var actualShades = actual
+                .Select(x => x.Shade)
+                .Take(colors.Length)
+                .ToArray();
+
+            Assert.Equal(colors, actualColors);
+            Assert.Equal(expectedShades, actualShades);
         }
 
-        protected byte[] GetLine(int i)
+        protected void AssertLineIsEmpty(Pixel[] actualPixels)
         {
-            var line = new Byte[160];
+            var expected = Enumerable.Range(0, actualPixels.Length)
+                .Select(x => new Pixel(0, DisplayShades.White))
+                .ToArray();
+
+            Assert.Equal(expected, actualPixels);
+        }
+
+        private DisplayShades[] ExtractShades()
+        {
+            var bgp = _fakeMmu.GetByte(0xFF47);
+            var shades = new[]
+            {
+                (DisplayShades) (bgp & 0x3),
+                (DisplayShades) ((bgp >> 2) & 0x3),
+                (DisplayShades) ((bgp >> 4) & 0x3),
+                (DisplayShades) ((bgp >> 6) & 0x3),
+            };
+            return shades;
+        }
+
+        protected Pixel[] GetLine(int i)
+        {
+            var line = new Pixel[160];
             for (var x = 0; x < 160; x++)
             {
                 line[x] = _sut.FrameBuffer[i * 160 + x];

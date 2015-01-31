@@ -133,7 +133,7 @@ namespace Gui
             SDL.SDL_FreeSurface(surface);
         }
 
-        private static IntPtr CreateSurface(byte[] frameBuffer)
+        private static IntPtr CreateSurface(Pixel[] frameBuffer)
         {
             var screenWidth = 160;
             var screenHeight = 144;
@@ -157,7 +157,7 @@ namespace Gui
             return surface;
         }
 
-        private static uint[] ConvertFramebufferToBitmap(int width, int height, byte[] framebuffer)
+        private static uint[] ConvertFramebufferToBitmap(int width, int height, Pixel[] framebuffer)
         {
             var buffer = new uint[width * height];
 
@@ -166,7 +166,7 @@ namespace Gui
                 for (var y = 0; y < height; y++)
                 {
                     var color = framebuffer[y * width + x];
-                    buffer[y * width + x] = GetColor(color);
+                    buffer[y * width + x] = GetColor(color.Color);
                 }
             }
 

@@ -1,4 +1,3 @@
-using System.Linq;
 using Core;
 using Xunit;
 
@@ -9,6 +8,7 @@ namespace Test.Display
         protected BackgroundTestBase()
         {
             _fakeMmu.Memory[RegisterAddresses.LCDC] = 0x01;
+            _fakeMmu.Memory[RegisterAddresses.BGP] = 0xB1;
         }
 
         [Fact]
@@ -20,8 +20,7 @@ namespace Test.Display
             _sut.TransferScanLine(0);
 
             var line = GetLine(0);
-            var emptyRow = Enumerable.Repeat((byte)0, 16).ToArray();
-            AssertLine(line, emptyRow);
+            AssertLineIsEmpty(line);
         }
 
         [Fact]
