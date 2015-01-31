@@ -12,6 +12,8 @@ namespace Core
 
             switch (header.MBC)
             {
+                case CartridgeHeader.CartridgeTypeEnum.None:
+                    return new NoMBC(rom);
                 case CartridgeHeader.CartridgeTypeEnum.MBC1:
                 case CartridgeHeader.CartridgeTypeEnum.MBC1RAM:
                 case CartridgeHeader.CartridgeTypeEnum.MBC1RAMBATTERY:

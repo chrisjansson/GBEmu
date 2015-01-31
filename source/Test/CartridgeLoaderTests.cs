@@ -15,6 +15,23 @@ namespace Test
             return loader.Load(rom);
         }
 
+        public class WhenLoadingACartridgeWithoutAnMBC
+        {
+            [Fact]
+            public void Loads_cartridge_with_no_mbc_into_no_mbc()
+            {
+                var rom = CreateFakeRom(
+                    CartridgeHeader.RomSizeEnum._32KB,
+                    CartridgeHeader.RamSizeEnum.None,
+                    CartridgeHeader.CartridgeTypeEnum.None,
+                    romLength: 32);
+
+                var mbc = LoadCartridge(rom);
+
+                Assert.IsType<NoMBC>(mbc);
+            }
+        }
+
         public class WhenLoadingAnMBC1Cartridge
         {
             public class WhenLoadingDifferentConfigurationsOfMBC1Cartridges
@@ -404,26 +421,28 @@ namespace Test
                 }
             }
 
-            private static byte[] CreateFakeRom(
-                CartridgeHeader.RomSizeEnum romSize,
-                CartridgeHeader.RamSizeEnum ramSize,
-                CartridgeHeader.CartridgeTypeEnum cartridgeType = CartridgeHeader.CartridgeTypeEnum.MBC1RAMBATTERY)
-            {
-                var rom = new byte[2048 * 1024];
-                var random = new Random();
-                random.NextBytes(rom);
+        }
 
-                var cartridgeTypeOffset = 0x147;
-                rom[cartridgeTypeOffset] = (byte)cartridgeType;
+        private static byte[] CreateFakeRom(
+            CartridgeHeader.RomSizeEnum romSize,
+            CartridgeHeader.RamSizeEnum ramSize,
+            CartridgeHeader.CartridgeTypeEnum cartridgeType = CartridgeHeader.CartridgeTypeEnum.MBC1RAMBATTERY,
+            int romLength = 2048)
+        {
+            var rom = new byte[romLength * 1024];
+            var random = new Random();
+            random.NextBytes(rom);
 
-                var romSizeOffset = 0x148;
-                rom[romSizeOffset] = (byte)romSize;
+            var cartridgeTypeOffset = 0x147;
+            rom[cartridgeTypeOffset] = (byte)cartridgeType;
 
-                var ramSizeOffset = 0x149;
-                rom[ramSizeOffset] = (byte)ramSize;
+            var romSizeOffset = 0x148;
+            rom[romSizeOffset] = (byte)romSize;
 
-                return rom;
-            }
+            var ramSizeOffset = 0x149;
+            rom[ramSizeOffset] = (byte)ramSize;
+
+            return rom;
         }
     }
 }
