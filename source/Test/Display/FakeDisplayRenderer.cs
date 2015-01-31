@@ -4,9 +4,9 @@ using Core;
 
 namespace Test.Display
 {
-    public class FakeDisplayDataTransferService : IDisplayDataTransferService
+    public class FakeDisplayRenderer : IDisplayRenderer
     {
-        public FakeDisplayDataTransferService()
+        public FakeDisplayRenderer()
         {
             TransferedScanLines = new List<int>();
         }

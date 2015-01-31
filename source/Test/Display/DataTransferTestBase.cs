@@ -7,7 +7,7 @@ namespace Test.Display
     public abstract class DataTransferTestBase
     {
         protected FakeMmu _fakeMmu;
-        protected DisplayDataTransferService _sut;
+        protected DisplayRenderer _sut;
 
         protected byte[] FirstTileFirstRow;
         protected byte[] FirstTileSecondRow;
@@ -16,7 +16,7 @@ namespace Test.Display
         protected DataTransferTestBase()
         {
             _fakeMmu = new FakeMmu();
-            _sut = new DisplayDataTransferService(_fakeMmu, new SpriteRenderer(_fakeMmu));
+            _sut = new DisplayRenderer(_fakeMmu, new SpriteRenderer(_fakeMmu));
 
             InsertTile(0, new byte[]
             {

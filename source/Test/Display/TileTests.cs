@@ -21,7 +21,7 @@ namespace Test.Display
                 0x00, 0x00
             };
 
-            var sut = new DisplayDataTransferService.Tile();
+            var sut = new DisplayRenderer.Tile();
             sut.Initialize();
             sut.Update(data);
 
@@ -29,7 +29,7 @@ namespace Test.Display
             AssertRow(sut, 1, new byte[] { 2, 2, 0, 0, 0, 2, 2, 0 });
         }
 
-        public void AssertRow(DisplayDataTransferService.Tile sut, int row, byte[] pixels)
+        public void AssertRow(DisplayRenderer.Tile sut, int row, byte[] pixels)
         {
             for (int i = 0; i < 8; i++)
             {

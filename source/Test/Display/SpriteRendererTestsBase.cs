@@ -10,7 +10,7 @@ namespace Test.Display
         protected readonly FakeMmu MMU;
         protected readonly byte[] FirstTileFirstRow;
         protected readonly byte[] Framebuffer;
-        private readonly DisplayDataTransferService.Tile[] _tiles;
+        private readonly DisplayRenderer.Tile[] _tiles;
         protected readonly byte[] SecondTileFirstRow;
         protected readonly byte[] SecondTileSecondLastRow;
 
@@ -18,7 +18,7 @@ namespace Test.Display
         {
             MMU = new FakeMmu();
             _sut = new SpriteRenderer(MMU);
-            var firstTile = new DisplayDataTransferService.Tile();
+            var firstTile = new DisplayRenderer.Tile();
             firstTile.Initialize();
             firstTile.Update(new byte[]
             {
@@ -31,7 +31,7 @@ namespace Test.Display
                 0xC6, 0x00,
                 0x00, 0x00
             });
-            var secondTile = new DisplayDataTransferService.Tile();
+            var secondTile = new DisplayRenderer.Tile();
             secondTile.Initialize();
             secondTile.Update(new byte[]
             {
@@ -70,7 +70,7 @@ namespace Test.Display
             SecondTileSecondLastRow = SecondTileFirstRow;
 
             Framebuffer = new byte[160 * 144];
-            _tiles = new DisplayDataTransferService.Tile[256];
+            _tiles = new DisplayRenderer.Tile[256];
             _tiles[0] = firstTile;
             _tiles[1] = secondTile;
 

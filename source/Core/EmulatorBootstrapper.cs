@@ -11,7 +11,7 @@ namespace Core
             var mmu = new MmuWithBootRom(bios, innerMmu);
             var joyPad = new Joypad(mmu);
             var timer = new Timer(mmu);
-            var displayDataTransferService = new DisplayDataTransferService(mmu, new SpriteRenderer(mmu));
+            var displayDataTransferService = new DisplayRenderer(mmu, new SpriteRenderer(mmu));
             var display = new Display(mmu, displayDataTransferService);
             var cpu = new Cpu(mmu);
 
@@ -26,7 +26,7 @@ namespace Core
                 Mmu = mmu,
                 Timer = timer,
                 Display = display,
-                DisplayDataTransferService = displayDataTransferService,
+                DisplayRenderer = displayDataTransferService,
                 Joypad = joyPad,
             };
         }
@@ -42,7 +42,7 @@ namespace Core
             mmu.Joypad = joyPad;
             var timer = new Timer(mmu);
             mmu.Timer = timer;
-            var displayDataTransferService = new DisplayDataTransferService(mmu, new SpriteRenderer(mmu));
+            var displayDataTransferService = new DisplayRenderer(mmu, new SpriteRenderer(mmu));
             var display = new Display(mmu, displayDataTransferService);
             mmu.Display = display;
             var cpu = new Cpu(mmu)
@@ -86,7 +86,7 @@ namespace Core
                 Mmu = mmu,
                 Timer = timer,
                 Display = display,
-                DisplayDataTransferService = displayDataTransferService,
+                DisplayRenderer = displayDataTransferService,
                 Joypad = joyPad,
             };
         }

@@ -12,7 +12,7 @@ namespace Test.Display
         public VBlank_interrupt_Tests()
         {
             _mmu = new FakeMmu();
-            _sut = new Core.Display(_mmu, new FakeDisplayDataTransferService());
+            _sut = new Core.Display(_mmu, new FakeDisplayRenderer());
         }
 
         [Fact]

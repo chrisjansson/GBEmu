@@ -9,7 +9,7 @@ namespace Test.Display
         public LCDC_tests()
         {
             var mmu = new FakeMmu();
-            _sut = new Core.Display(mmu, new FakeDisplayDataTransferService());
+            _sut = new Core.Display(mmu, new FakeDisplayRenderer());
         }
 
         [Fact]

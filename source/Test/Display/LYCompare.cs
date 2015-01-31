@@ -11,7 +11,7 @@ namespace Test.Display
         public LYCompare()
         {
             _fakeMmu = new FakeMmu();
-            _sut = new Core.Display(_fakeMmu, new FakeDisplayDataTransferService());
+            _sut = new Core.Display(_fakeMmu, new FakeDisplayRenderer());
         }
 
         [Fact]

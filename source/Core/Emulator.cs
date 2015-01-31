@@ -11,7 +11,7 @@ namespace Core
         public Timer Timer { get; set; }
         public Display Display { get; set; }
         public Joypad Joypad { get; set; }
-        public DisplayDataTransferService DisplayDataTransferService { get; set; }
+        public DisplayRenderer DisplayRenderer { get; set; }
 
         public void Tick()
         {

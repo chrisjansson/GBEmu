@@ -2,7 +2,7 @@
 
 namespace Core
 {
-    public class DisplayDataTransferService : IDisplayDataTransferService
+    public class DisplayRenderer : IDisplayRenderer
     {
         public const int WindowWidth = 160;
         private const int WindowHeight = 144;
@@ -19,7 +19,7 @@ namespace Core
         private readonly Tile[] _tiles8000 = new Tile[NumberOfTiles];
         private readonly Tile[] _tiles8800 = new Tile[NumberOfTiles];
 
-        public DisplayDataTransferService(IMmu mmu, ISpriteRenderer spriteRenderer)
+        public DisplayRenderer(IMmu mmu, ISpriteRenderer spriteRenderer)
         {
             _mmu = mmu;
             _spriteRenderer = spriteRenderer;

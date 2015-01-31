@@ -4,13 +4,13 @@ namespace Test.Display
 {
     public class Scanline_tests
     {
-        private readonly FakeDisplayDataTransferService _fakeDisplayDataTransferService;
+        private readonly FakeDisplayRenderer _fakeDisplayRenderer;
         private readonly Core.Display _sut;
 
         public Scanline_tests()
         {
-            _fakeDisplayDataTransferService = new FakeDisplayDataTransferService();
-            _sut = new Core.Display(new FakeMmu(), _fakeDisplayDataTransferService);
+            _fakeDisplayRenderer = new FakeDisplayRenderer();
+            _sut = new Core.Display(new FakeMmu(), _fakeDisplayRenderer);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace Test.Display
         {
             _sut.AdvanceScanLine();
 
-            Assert.Equal(1, _fakeDisplayDataTransferService.TransferedScanLines.Count);
+            Assert.Equal(1, _fakeDisplayRenderer.TransferedScanLines.Count);
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace Test.Display
             _sut.AdvanceScanLine();
             _sut.AdvanceScanLine();
 
-            Assert.Equal(2, _fakeDisplayDataTransferService.TransferedScanLines.Count);
+            Assert.Equal(2, _fakeDisplayRenderer.TransferedScanLines.Count);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Test.Display
             _sut.AdvanceScanLine();
             _sut.AdvanceScanLine();
 
-            Assert.Equal(1, _fakeDisplayDataTransferService.LastTransferedScanLine);
+            Assert.Equal(1, _fakeDisplayRenderer.LastTransferedScanLine);
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace Test.Display
 
             _sut.Tick();
 
-            Assert.Equal(4, _fakeDisplayDataTransferService.LastTransferedScanLine);
+            Assert.Equal(4, _fakeDisplayRenderer.LastTransferedScanLine);
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace Test.Display
                 _sut.AdvanceFrame();
             }
 
-            Assert.Equal(5, _fakeDisplayDataTransferService.FinishedFrames);
+            Assert.Equal(5, _fakeDisplayRenderer.FinishedFrames);
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace Test.Display
                 _sut.AdvanceScanLine();
             }
 
-            Assert.Equal(1, _fakeDisplayDataTransferService.FinishedFrames);
+            Assert.Equal(1, _fakeDisplayRenderer.FinishedFrames);
         }
     }
 }

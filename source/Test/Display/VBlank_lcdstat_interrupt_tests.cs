@@ -11,7 +11,7 @@ namespace Test.Display
         public VBlank_lcdstat_interrupt_tests()
         {
             _fakeMmu = new FakeMmu();
-            _sut = new Core.Display(_fakeMmu, new FakeDisplayDataTransferService());
+            _sut = new Core.Display(_fakeMmu, new FakeDisplayRenderer());
         }
 
         [Fact]

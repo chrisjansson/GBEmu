@@ -4,7 +4,7 @@ namespace Core
 {
     public interface ISpriteRenderer
     {
-        void Render(int line, DisplayDataTransferService.Tile[] tiles, byte[] frameBuffer);
+        void Render(int line, DisplayRenderer.Tile[] tiles, byte[] frameBuffer);
     }
 
     public class SpriteRenderer : ISpriteRenderer
@@ -16,7 +16,7 @@ namespace Core
             _mmu = mmu;
         }
 
-        public void Render(int line, DisplayDataTransferService.Tile[] tiles, byte[] frameBuffer)
+        public void Render(int line, DisplayRenderer.Tile[] tiles, byte[] frameBuffer)
         {
             var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
             var spriteEnable = (lcdc & 0x02) == 0x02;
@@ -43,12 +43,12 @@ namespace Core
                     var sourceY = flipY ? (spriteSize - spriteY - 1) : spriteY;
 
                     var tile = GetTile(largeSprites, tileNumber, sourceY, tiles);
-                    DrawSprite(xPos, sourceY % 8, attributes, tile, line * DisplayDataTransferService.WindowWidth, frameBuffer);
+                    DrawSprite(xPos, sourceY % 8, attributes, tile, line * DisplayRenderer.WindowWidth, frameBuffer);
                 }
             }
         }
 
-        private DisplayDataTransferService.Tile GetTile(bool useLargeSprites, byte tileNumber, int spriteYCoord, DisplayDataTransferService.Tile[] tiles)
+        private DisplayRenderer.Tile GetTile(bool useLargeSprites, byte tileNumber, int spriteYCoord, DisplayRenderer.Tile[] tiles)
         {
             if (useLargeSprites)
             {
@@ -64,7 +64,7 @@ namespace Core
             return tiles[tileNumber];
         }
 
-        private static void DrawSprite(byte xPos, int sourceY, byte attributes, DisplayDataTransferService.Tile tile, int framebufferOffset, byte[] frameBuffer)
+        private static void DrawSprite(byte xPos, int sourceY, byte attributes, DisplayRenderer.Tile tile, int framebufferOffset, byte[] frameBuffer)
         {
             var displayXstart = xPos - 8;
             var flipX = (attributes & 0x20) == 0x20;
@@ -72,7 +72,7 @@ namespace Core
             for (var spriteX = 0; spriteX < 8; spriteX++)
             {
                 var displayX = displayXstart + spriteX;
-                if (displayX >= 0 && displayX < DisplayDataTransferService.WindowWidth)
+                if (displayX >= 0 && displayX < DisplayRenderer.WindowWidth)
                 {
                     var sourceX = flipX ? (7 - spriteX) : spriteX;
                     var color = tile.Pixels[sourceX + sourceY * 8];

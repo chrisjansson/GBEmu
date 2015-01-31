@@ -124,7 +124,7 @@ namespace Gui
         private static Emulator _emulator;
         private static void Draw(IntPtr renderer)
         {
-            var surface = CreateSurface(_emulator.DisplayDataTransferService.FrameBuffer);
+            var surface = CreateSurface(_emulator.DisplayRenderer.FrameBuffer);
             var texture = SDL.SDL_CreateTextureFromSurface(renderer, surface);
 
             SDL.SDL_RenderCopy(renderer, texture, (IntPtr)null, (IntPtr)null);

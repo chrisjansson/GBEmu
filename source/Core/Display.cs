@@ -10,15 +10,15 @@
     //0xFF4B - WX - Window X Position minus 7 (R/W)
     public class Display : IDisplay
     {
-        private readonly IDisplayDataTransferService _displayDataTransferService;
+        private readonly IDisplayRenderer _displayRenderer;
         private readonly IMmu _mmu;
         private int _mode = 2;
         private int _clock;
 
-        public Display(IMmu mmu, IDisplayDataTransferService displayDataTransferService)
+        public Display(IMmu mmu, IDisplayRenderer displayRenderer)
         {
             _mmu = mmu;
-            _displayDataTransferService = displayDataTransferService;
+            _displayRenderer = displayRenderer;
         }
 
         public byte BackgroundPaletteData { get; set; }
@@ -159,7 +159,7 @@
                 newIf = newIf | 0x02;
             }
             _mmu.SetByte(RegisterAddresses.IF, (byte)newIf);
-            _displayDataTransferService.FinishFrame();
+            _displayRenderer.FinishFrame();
         }
 
         private void OAM()
@@ -174,7 +174,7 @@
 
         private void HBlank()
         {
-            _displayDataTransferService.TransferScanLine(Line);
+            _displayRenderer.TransferScanLine(Line);
             if (_hblankInterrupt == 0)
             {
                 return;

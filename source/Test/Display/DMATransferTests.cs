@@ -11,7 +11,7 @@ namespace Test.Display
         public DMATransferTests()
         {
             _mmu = new FakeMmu();
-            _sut = new Core.Display(_mmu, new FakeDisplayDataTransferService());
+            _sut = new Core.Display(_mmu, new FakeDisplayRenderer());
         }
 
         private static byte[] GenerateSourceValues()
