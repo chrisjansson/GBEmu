@@ -28,3 +28,6 @@ If a gb bootstrap rom is not present load the cpu with the correct values,
   Test that bootstrapper with and without boot rom produces the same results
 
 Assert memory access when dma transfer is in progress?
+
+SpriteRenderTests
+8x8 and 16x8

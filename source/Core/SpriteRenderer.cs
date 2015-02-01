@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Core
+﻿namespace Core
 {
     public interface ISpriteRenderer
     {
