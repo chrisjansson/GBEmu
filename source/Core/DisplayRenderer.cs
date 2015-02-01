@@ -100,7 +100,7 @@ namespace Core
                 }
             }
 
-            //_spriteRenderer.Render(line, _tiles8000, FrameBuffer);
+            _spriteRenderer.Render(line, _tiles8000, FrameBuffer);
         }
 
         public void FinishFrame()

@@ -4,7 +4,7 @@ namespace Core
 {
     public interface ISpriteRenderer
     {
-        void Render(int line, DisplayRenderer.Tile[] tiles, byte[] frameBuffer);
+        void Render(int line, DisplayRenderer.Tile[] tiles, Pixel[] frameBuffer);
     }
 
     public class SpriteRenderer : ISpriteRenderer
@@ -16,7 +16,7 @@ namespace Core
             _mmu = mmu;
         }
 
-        public void Render(int line, DisplayRenderer.Tile[] tiles, byte[] frameBuffer)
+        public void Render(int line, DisplayRenderer.Tile[] tiles, Pixel[] frameBuffer)
         {
             var lcdc = _mmu.GetByte(RegisterAddresses.LCDC);
             var spriteEnable = (lcdc & 0x02) == 0x02;
@@ -37,7 +37,7 @@ namespace Core
                     var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
 
-                    Debug.Assert((lcdc & 0x80) != 0x80, "OBJ-to-BG priority is not implemented");
+                    //Debug.Assert((lcdc & 0x80) != 0x80, "OBJ-to-BG priority is not implemented");
 
                     var flipY = (attributes & 0x40) == 0x40;
                     var sourceY = flipY ? (spriteSize - spriteY - 1) : spriteY;
@@ -64,7 +64,7 @@ namespace Core
             return tiles[tileNumber];
         }
 
-        private static void DrawSprite(byte xPos, int sourceY, byte attributes, DisplayRenderer.Tile tile, int framebufferOffset, byte[] frameBuffer)
+        private static void DrawSprite(byte xPos, int sourceY, byte attributes, DisplayRenderer.Tile tile, int framebufferOffset, Pixel[] frameBuffer)
         {
             var displayXstart = xPos - 8;
             var flipX = (attributes & 0x20) == 0x20;
@@ -77,7 +77,7 @@ namespace Core
                     var sourceX = flipX ? (7 - spriteX) : spriteX;
                     var color = tile.Pixels[sourceX + sourceY * 8];
                     if (color > 0)
-                        frameBuffer[framebufferOffset + displayX] = color;
+                        frameBuffer[framebufferOffset + displayX] = new Pixel(color, DisplayShades.White);
                 }
             }
         }

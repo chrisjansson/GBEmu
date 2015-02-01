@@ -7,7 +7,7 @@ namespace Test.Display
     {
         public SpriteRendererTests_8x16()
         {
-            MMU.Memory[RegisterAddresses.LCDC] |= 0x04;
+            Mmu.Memory[RegisterAddresses.LCDC] |= 0x04;
         }
 
         [Fact]

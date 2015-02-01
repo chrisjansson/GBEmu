@@ -78,7 +78,7 @@ namespace Test.Display
 
         protected void AssertLine(Pixel[] actual, params byte[] colors)
         {
-            var shades = ExtractShades();
+            var shades = _fakeMmu.ExtractShades();
 
             var expectedShades = colors
                 .Select(x => shades[x])
@@ -105,19 +105,6 @@ namespace Test.Display
                 .ToArray();
 
             Assert.Equal(expected, actualPixels);
-        }
-
-        private DisplayShades[] ExtractShades()
-        {
-            var bgp = _fakeMmu.GetByte(0xFF47);
-            var shades = new[]
-            {
-                (DisplayShades) (bgp & 0x3),
-                (DisplayShades) ((bgp >> 2) & 0x3),
-                (DisplayShades) ((bgp >> 4) & 0x3),
-                (DisplayShades) ((bgp >> 6) & 0x3),
-            };
-            return shades;
         }
 
         protected Pixel[] GetLine(int i)

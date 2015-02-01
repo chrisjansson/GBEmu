@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core;
 using Xunit;
 
@@ -7,17 +8,17 @@ namespace Test.Display
     public abstract class SpriteRendererTestsBase
     {
         private readonly SpriteRenderer _sut;
-        protected readonly FakeMmu MMU;
+        protected readonly FakeMmu Mmu;
         protected readonly byte[] FirstTileFirstRow;
-        protected readonly byte[] Framebuffer;
+        protected readonly Pixel[] Framebuffer;
         private readonly DisplayRenderer.Tile[] _tiles;
         protected readonly byte[] SecondTileFirstRow;
         protected readonly byte[] SecondTileSecondLastRow;
 
         protected SpriteRendererTestsBase()
         {
-            MMU = new FakeMmu();
-            _sut = new SpriteRenderer(MMU);
+            Mmu = new FakeMmu();
+            _sut = new SpriteRenderer(Mmu);
             var firstTile = new DisplayRenderer.Tile();
             firstTile.Initialize();
             firstTile.Update(new byte[]
@@ -45,7 +46,7 @@ namespace Test.Display
                 0x00, 0x00,
             });
 
-            MMU.Memory[RegisterAddresses.LCDC] = 0x10;
+            Mmu.Memory[RegisterAddresses.LCDC] = 0x10;
 
             for (var i = 0; i < 40; i++)
             {
@@ -69,12 +70,12 @@ namespace Test.Display
             };
             SecondTileSecondLastRow = SecondTileFirstRow;
 
-            Framebuffer = new byte[160 * 144];
+            Framebuffer = new Pixel[160 * 144];
             _tiles = new DisplayRenderer.Tile[256];
             _tiles[0] = firstTile;
             _tiles[1] = secondTile;
 
-            MMU.SetByte(RegisterAddresses.LCDC, 0x02);
+            Mmu.SetByte(RegisterAddresses.LCDC, 0x02);
         }
 
         protected void RenderLine(int line)
@@ -82,28 +83,40 @@ namespace Test.Display
             _sut.Render(line, _tiles, Framebuffer);
         }
 
-        protected void AssertLine(byte[] line, params byte[] colors)
+        protected void AssertLine(Pixel[] actualPixels, params byte[][] colors)
         {
-            for (var i = 0; i < colors.Length; i++)
-            {
-                Assert.Equal(colors[i], line[i]);
-            }
+            var expected = colors
+                .SelectMany(x => x)
+                .ToArray();
+
+            AssertLine(actualPixels, expected);
         }
 
-        protected void AssertLine(byte[] line, params byte[][] colors)
+        protected void AssertLine(Pixel[] actual, params byte[] colors)
         {
-            for (var i = 0; i < colors.Length; i++)
-            {
-                for (var j = 0; j < colors[i].Length; j++)
-                {
-                    Assert.Equal(colors[i][j], line[j + i * 8]);
-                }
-            }
+            var shades = Mmu.ExtractShades();
+
+            var expectedShades = colors
+                .Select(x => shades[x])
+                .ToArray();
+
+            var actualColors = actual
+                .Select(x => x.Color)
+                .Take(colors.Length)
+                .ToArray();
+
+            var actualShades = actual
+                .Select(x => x.Shade)
+                .Take(colors.Length)
+                .ToArray();
+
+            Assert.Equal(colors, actualColors);
+            Assert.Equal(expectedShades, actualShades);
         }
 
-        protected byte[] GetLine(int i)
+        protected Pixel[] GetLine(int i)
         {
-            var line = new Byte[160];
+            var line = new Pixel[160];
             for (var x = 0; x < 160; x++)
             {
                 line[x] = Framebuffer[i * 160 + x];
@@ -118,7 +131,7 @@ namespace Test.Display
             const int spriteAttributeStartAddress = 0xFE00;
             for (var i = 0; i < o.Length; i++)
             {
-                MMU.Memory[spriteAttributeStartAddress + number * 4 + i] = o[i];
+                Mmu.Memory[spriteAttributeStartAddress + number * 4 + i] = o[i];
             }
         }
 

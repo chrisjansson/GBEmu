@@ -29,8 +29,8 @@ namespace Test.Display
         public void Sprite_color_0_does_not_overwrite_frame_buffer_color()
         {
             InsertSpriteAttribute(1, 16, 8, 0, 0);
-            Framebuffer[0] = 1;
-            Framebuffer[1] = 2;
+            Framebuffer[0] = new Pixel(1, DisplayShades.White);
+            Framebuffer[1] = new Pixel(2, DisplayShades.White);
             RenderLine(0);
 
             var first = GetLine(0);
@@ -40,7 +40,7 @@ namespace Test.Display
         [Fact]
         public void Does_not_draw_sprite_when_obj_display_is_disabled()
         {
-            MMU.SetByte(RegisterAddresses.LCDC, (byte)(MMU.GetByte(RegisterAddresses.LCDC) & 0xFD));
+            Mmu.SetByte(RegisterAddresses.LCDC, (byte)(Mmu.GetByte(RegisterAddresses.LCDC) & 0xFD));
             InsertSpriteAttribute(1, new byte[]
             {
                 0x10, //y = 16, displaycoordinate + 16
