@@ -71,6 +71,7 @@
     <Compile Include="KeyState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SdlAudio.cs" />
     <Compile Include="SDL\LPUtf8StrMarshaler.cs" />
     <Compile Include="SDL\SDL2.cs" />
     <Compile Include="SDL\SDL2_image.cs" />

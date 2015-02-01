@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Core;
@@ -12,7 +13,10 @@ namespace Gui
     {
         static void Main(string[] args)
         {
-            SDL.SDL_Init(SDL.SDL_INIT_VIDEO);
+            SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_AUDIO);
+
+            //_device = new SdlAudio().GetPlaybackDevies().First();
+            //_device.Open();
 
             var window = SDL.SDL_CreateWindow("An SDL Window", 100, 100, 640, 576, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
             var renderer = SDL.SDL_CreateRenderer(window, -1, 0);
@@ -122,6 +126,8 @@ namespace Gui
         }
 
         private static Emulator _emulator;
+        private static SdlAudio.SdlAudioDevice _device;
+
         private static void Draw(IntPtr renderer)
         {
             var surface = CreateSurface(_emulator.DisplayRenderer.FrameBuffer);
