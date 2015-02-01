@@ -50,14 +50,7 @@ namespace Core
             var renderBackground = (lcdc & 0x01) == 0x01;
             var renderWindow = (lcdc & 0x20) == 0x20;
 
-            var bgp = _mmu.GetByte(RegisterAddresses.BGP);
-            var shades = new DisplayShades[]
-            {
-                (DisplayShades) (bgp & 0x3),
-                (DisplayShades) ((bgp >> 2) & 0x3),
-                (DisplayShades) ((bgp >> 4) & 0x3),
-                (DisplayShades) ((bgp >> 6) & 0x3),
-            };
+            var shades = ReadColorShades();
 
             if (renderBackground)
             {
@@ -114,6 +107,19 @@ namespace Core
         {
             UpdateTileData(0x8000, _tiles8000);
             UpdateTileData(0x8800, _tiles8800);
+        }
+
+        private DisplayShades[] ReadColorShades()
+        {
+            var bgp = _mmu.GetByte(RegisterAddresses.BGP);
+            var shades = new[]
+            {
+                (DisplayShades) (bgp & 0x3),
+                (DisplayShades) ((bgp >> 2) & 0x3),
+                (DisplayShades) ((bgp >> 4) & 0x3),
+                (DisplayShades) ((bgp >> 6) & 0x3),
+            };
+            return shades;
         }
 
         private void UpdateTileData(ushort tileDataStartAddress, Tile[] tiles)
