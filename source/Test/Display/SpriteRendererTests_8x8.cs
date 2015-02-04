@@ -22,7 +22,7 @@ namespace Test.Display
             var first = GetLine(0);
             var second = GetLine(1);
             AssertLine(first, FirstTileFirstRow);
-            AssertLine(second, 2, 2, 0, 0, 0, 2, 2, 0);
+            AssertLine(second, Line(2, 2, 0, 0, 0, 2, 2, 0));
         }
 
         [Fact]
@@ -34,8 +34,20 @@ namespace Test.Display
             RenderLine(0);
 
             var first = GetLine(0);
-            AssertLine(first, 1, 3, 3, 3, 3, 3, 0, 0);
+            AssertLine(first, Line(1, 3, 3, 3, 3, 3, 0, 0));
         }
+
+        //[Fact]
+        //public void Sprite_color_0_does_not_overwrite_frame_buffer_color()
+        //{
+        //    InsertSpriteAttribute(1, 16, 8, 0, 0);
+        //    Framebuffer[0] = new Pixel(1, DisplayShades.White);
+        //    Framebuffer[1] = new Pixel(2, DisplayShades.White);
+        //    RenderLine(0);
+
+        //    var first = GetLine(0);
+        //    AssertLine(first, 1, 3, 3, 3, 3, 3, 0, 0);
+        //}
 
         [Fact]
         public void Does_not_draw_sprite_when_obj_display_is_disabled()
@@ -52,7 +64,7 @@ namespace Test.Display
             RenderLine(0);
 
             var line = GetLine(0);
-            AssertLine(line, 0, 0, 0, 0, 0, 0, 0, 0);
+            AssertLine(line, Line(0, 0, 0, 0, 0, 0, 0, 0));
         }
 
         [Fact]
@@ -90,8 +102,8 @@ namespace Test.Display
 
             var first = GetLine(0);
             var second = GetLine(1);
-            AssertLine(first, 0, 0, 3, 3, 3, 3, 3, 0, 0);
-            AssertLine(second, 0, 2, 2, 0, 0, 0, 2, 2, 0);
+            AssertLine(first, Line(0, 0, 3, 3, 3, 3, 3, 0, 0));
+            AssertLine(second, Line(0, 2, 2, 0, 0, 0, 2, 2, 0));
         }
 
         [Fact]
@@ -109,8 +121,8 @@ namespace Test.Display
 
             var first = GetLine(0);
             var second = GetLine(1);
-            AssertLine(first, 3, 3, 3, 3, 3, 0, 0, 0);
-            AssertLine(second, 2, 0, 0, 0, 2, 2, 0, 0);
+            AssertLine(first, Line(3, 3, 3, 3, 3, 0, 0, 0));
+            AssertLine(second, Line(2, 0, 0, 0, 2, 2, 0, 0));
         }
 
         [Fact]
@@ -121,7 +133,7 @@ namespace Test.Display
             RenderLine(0);
 
             var one = GetLine(1);
-            AssertLine(one, 0, 0, 0, 0, 0, 0, 0, 0);
+            AssertLine(one, Line(0, 0, 0, 0, 0, 0, 0, 0));
         }
 
         [Fact]
@@ -156,7 +168,7 @@ namespace Test.Display
 
             var first = GetLine(6);
             var second = GetLine(7);
-            AssertLine(first, 2, 2, 0, 0, 0, 2, 2, 0);
+            AssertLine(first, Line(2, 2, 0, 0, 0, 2, 2, 0));
             AssertLine(second, FirstTileFirstRow);
         }
     }

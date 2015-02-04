@@ -83,7 +83,7 @@ namespace Test.Display
             _sut.Render(line, _tiles, Framebuffer);
         }
 
-        protected void AssertLine(Pixel[] actualPixels, params byte[][] colors)
+        protected void AssertLine(Pixel[] actualPixels, byte[][] colors)
         {
             var expected = colors
                 .SelectMany(x => x)
@@ -92,7 +92,7 @@ namespace Test.Display
             AssertLine(actualPixels, expected);
         }
 
-        protected void AssertLine(Pixel[] actual, params byte[] colors)
+        protected void AssertLine(Pixel[] actual, byte[] colors)
         {
             var shades = Mmu.ExtractShades();
 
@@ -112,6 +112,16 @@ namespace Test.Display
 
             Assert.Equal(colors, actualColors);
             Assert.Equal(expectedShades, actualShades);
+        }
+
+        protected byte[] Line(params byte[] colors)
+        {
+            return colors;
+        }
+
+        protected byte[][] Line(params byte[][] colors)
+        {
+            return colors;
         }
 
         protected Pixel[] GetLine(int i)

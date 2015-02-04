@@ -14,19 +14,17 @@ namespace Test.Display
             mmu.SetByte(RegisterAddresses.ScrollY, scrollY);
         }
 
-        public static DisplayShades[] ExtractShades(this IMmu mmu)
+        public static DisplayShades[] ExtractShades(this IMmu mmu, ushort address = 0xFF47)
         {
-            var bgp = mmu.GetByte(0xFF47);
+            var source = mmu.GetByte(address);
             var shades = new[]
             {
-                (DisplayShades) (bgp & 0x3),
-                (DisplayShades) ((bgp >> 2) & 0x3),
-                (DisplayShades) ((bgp >> 4) & 0x3),
-                (DisplayShades) ((bgp >> 6) & 0x3),
+                (DisplayShades) (source & 0x3),
+                (DisplayShades) ((source >> 2) & 0x3),
+                (DisplayShades) ((source >> 4) & 0x3),
+                (DisplayShades) ((source >> 6) & 0x3),
             };
             return shades;
         }
     }
-
-
 }

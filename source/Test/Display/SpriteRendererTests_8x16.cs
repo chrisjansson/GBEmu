@@ -21,7 +21,7 @@ namespace Test.Display
             var first = GetLine(0);
             var second = GetLine(1);
             AssertLine(first, FirstTileFirstRow);
-            AssertLine(second, 2, 2, 0, 0, 0, 2, 2, 0);
+            AssertLine(second, Line(2, 2, 0, 0, 0, 2, 2, 0));
         }
 
         [Fact]
