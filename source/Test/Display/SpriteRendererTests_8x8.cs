@@ -37,17 +37,27 @@ namespace Test.Display
             AssertLine(first, Line(1, 3, 3, 3, 3, 3, 0, 0));
         }
 
-        //[Fact]
-        //public void Sprite_color_0_does_not_overwrite_frame_buffer_color()
-        //{
-        //    InsertSpriteAttribute(1, 16, 8, 0, 0);
-        //    Framebuffer[0] = new Pixel(1, DisplayShades.White);
-        //    Framebuffer[1] = new Pixel(2, DisplayShades.White);
-        //    RenderLine(0);
+        [Fact]
+        public void Draws_sprite_with_colors_from_OBP0()
+        {
+            Mmu.SetByte(0xFF48, 0xB1 & 0xFC); //only color 1-3 are used
+            InsertSpriteAttribute(1, 16, 8, 0, 0);
+            RenderLine(0);
 
-        //    var first = GetLine(0);
-        //    AssertLine(first, 1, 3, 3, 3, 3, 3, 0, 0);
-        //}
+            var first = GetLine(0);
+            AssertLine(first, Line(0, 3, 3, 3, 3, 3, 0, 0), 0xFF48);
+        }
+
+        [Fact]
+        public void Draws_sprite_with_colors_from_OBP1()
+        {
+            Mmu.SetByte(0xFF49, 0xB1 & 0xFC); //only color 1-3 are used
+            InsertSpriteAttribute(1, 16, 8, 0x10, 0); //select color from obp1
+            RenderLine(0);
+
+            var first = GetLine(0);
+            AssertLine(first, Line(0, 3, 3, 3, 3, 3, 0, 0), 0xFF49);
+        }
 
         [Fact]
         public void Does_not_draw_sprite_when_obj_display_is_disabled()

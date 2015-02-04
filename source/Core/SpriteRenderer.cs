@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System.Diagnostics;
+
+namespace Core
 {
     public interface ISpriteRenderer
     {
@@ -21,6 +23,9 @@
             if (!spriteEnable)
                 return;
 
+            var obp0 = ExtractShades(RegisterAddresses.OBP0);
+            var obp1 = ExtractShades(RegisterAddresses.OBP1);
+
             for (var sprite = 0; sprite < 40; sprite++)
             {
                 var spriteAddress = (ushort)(0xFE00 + sprite * 4);
@@ -35,15 +40,29 @@
                     var tileNumber = _mmu.GetByte((ushort)(spriteAddress + 2));
                     var attributes = _mmu.GetByte((ushort)(spriteAddress + 3));
 
-                    //Debug.Assert((lcdc & 0x80) != 0x80, "OBJ-to-BG priority is not implemented");
+                    //Debug.Assert((attributes & 0x80) != 0x80, "OBJ-to-BG priority is not implemented");
 
                     var flipY = (attributes & 0x40) == 0x40;
                     var sourceY = flipY ? (spriteSize - spriteY - 1) : spriteY;
+                    var shades = (attributes & 0x10) == 0x10 ? obp1 : obp0;
 
                     var tile = GetTile(largeSprites, tileNumber, sourceY, tiles);
-                    DrawSprite(xPos, sourceY % 8, attributes, tile, line * DisplayRenderer.WindowWidth, frameBuffer);
+                    DrawSprite(xPos, sourceY % 8, attributes, tile, line * DisplayRenderer.WindowWidth, frameBuffer, shades);
                 }
             }
+        }
+
+        private DisplayShades[] ExtractShades(ushort address)
+        {
+            var value = _mmu.GetByte(address);
+            var shades = new[]
+            {
+                (DisplayShades) (value & 0x2),
+                (DisplayShades) ((value >> 2) & 0x2),
+                (DisplayShades) ((value >> 4) & 0x2),
+                (DisplayShades) ((value >> 6) & 0x2),
+            };
+            return shades;
         }
 
         private DisplayRenderer.Tile GetTile(bool useLargeSprites, byte tileNumber, int spriteYCoord, DisplayRenderer.Tile[] tiles)
@@ -62,7 +81,7 @@
             return tiles[tileNumber];
         }
 
-        private static void DrawSprite(byte xPos, int sourceY, byte attributes, DisplayRenderer.Tile tile, int framebufferOffset, Pixel[] frameBuffer)
+        private static void DrawSprite(byte xPos, int sourceY, byte attributes, DisplayRenderer.Tile tile, int framebufferOffset, Pixel[] frameBuffer, DisplayShades[] shades)
         {
             var displayXstart = xPos - 8;
             var flipX = (attributes & 0x20) == 0x20;
@@ -75,7 +94,7 @@
                     var sourceX = flipX ? (7 - spriteX) : spriteX;
                     var color = tile.Pixels[sourceX + sourceY * 8];
                     if (color > 0)
-                        frameBuffer[framebufferOffset + displayX] = new Pixel(color, DisplayShades.White);
+                        frameBuffer[framebufferOffset + displayX] = new Pixel(color, shades[color]);
                 }
             }
         }

@@ -19,5 +19,7 @@
         public const ushort IE = 0xFFFF; //Interrupt enable
         public const ushort IF = 0xFF0F; //Interrupt request
         public const ushort P1 = 0xFF00; //Joypad
+        public const ushort OBP0 = 0xFF48;
+        public const ushort OBP1 = 0xFF49;
     }
 }

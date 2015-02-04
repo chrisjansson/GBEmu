@@ -92,9 +92,9 @@ namespace Test.Display
             AssertLine(actualPixels, expected);
         }
 
-        protected void AssertLine(Pixel[] actual, byte[] colors)
+        protected void AssertLine(Pixel[] actual, byte[] colors, ushort obpAddress = 0xFF48)
         {
-            var shades = Mmu.ExtractShades();
+            var shades = Mmu.ExtractShades(obpAddress);
 
             var expectedShades = colors
                 .Select(x => shades[x])
