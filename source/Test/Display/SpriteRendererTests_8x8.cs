@@ -40,7 +40,7 @@ namespace Test.Display
         [Fact]
         public void Draws_sprite_with_colors_from_OBP0()
         {
-            Mmu.SetByte(0xFF48, 0xB1 & 0xFC); //only color 1-3 are used
+            Mmu.SetByte(0xFF48, 0xC1 & 0xFC); //only color 1-3 are used
             InsertSpriteAttribute(1, 16, 8, 0, 0);
             RenderLine(0);
 

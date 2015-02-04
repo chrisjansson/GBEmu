@@ -57,10 +57,10 @@ namespace Core
             var value = _mmu.GetByte(address);
             var shades = new[]
             {
-                (DisplayShades) (value & 0x2),
-                (DisplayShades) ((value >> 2) & 0x2),
-                (DisplayShades) ((value >> 4) & 0x2),
-                (DisplayShades) ((value >> 6) & 0x2),
+                (DisplayShades) (value & 0x3),
+                (DisplayShades) ((value >> 2) & 0x3),
+                (DisplayShades) ((value >> 4) & 0x3),
+                (DisplayShades) ((value >> 6) & 0x3)
             };
             return shades;
         }
